@@ -1,5 +1,7 @@
 "use client";
 
-export default function InvestmentInsight() {
-  return <div>InvestmentInsight</div>;
+import OportunidadMercado from "./OportunidadMercado";
+
+export default function InvestmentInsightPage() {
+  return <OportunidadMercado />;
 }
