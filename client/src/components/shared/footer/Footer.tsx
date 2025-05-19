@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
     return (
@@ -11,16 +11,13 @@ const Footer = () => {
                     <Link href="/">
                         <div className="flex items-center mb-6 md:mb-0">
                             <img src="/images/IconOnly.png" alt="FennecLogo" className="w-20 h-20 object-contain object-center" />
-                            <span className="ml-3 text-xl font-bold">FENNEC ANALYTICS</span>
+                            <span className="text-xl font-bold">FENNEC</span>
                         </div>
                     </Link>
                     
                     <div className="flex space-x-4">
                         <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
                             <Facebook size={20} />
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
-                            <Twitter size={20} />
                         </a>
                         <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
                             <Instagram size={20} />
