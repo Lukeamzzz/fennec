@@ -1,5 +1,7 @@
 import Navbar from "@/components/shared/navbar/Navbar";
 import Footer from "@/components/shared/footer/Footer";
+import TypingEffect from "@/lib/TypingEffect";
+import MexicoCityMap from "@/components/platform/dashboard/mexico-city-map/MexicoCityMap";
 
 export default function Home() {
   return (
@@ -12,9 +14,9 @@ export default function Home() {
         <img src="./images/3DHouse.png" alt="" className="w-1/3"/>
       </div>
     
-      <div className="bg-gray-900 w-full shadow-xl h-screen">
-        <div>
-          <h2 className="text-gray-900 text-2xl font-bold">Marcas que confían en nosotros</h2>
+      <div className="bg-gray-900 w-full py-50">
+        <div className="text-center">
+          <TypingEffect />
         </div>
       </div>
 
@@ -23,6 +25,7 @@ export default function Home() {
 
       </div>
       
+      <MexicoCityMap />
       <Footer/>
     </div>
   );
