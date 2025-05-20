@@ -1,4 +1,11 @@
-function DetailsGrid({ price, size, bedrooms, bathrooms }) {
+interface DetailsGridProps {
+    price: number;
+    size: number;
+    bathrooms: number;
+    bedrooms: number;
+}
+
+function DetailsGrid({ price, size, bedrooms, bathrooms }: DetailsGridProps) {
     return (
         <div className="px-6 py-4 border-t grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
             <div>
