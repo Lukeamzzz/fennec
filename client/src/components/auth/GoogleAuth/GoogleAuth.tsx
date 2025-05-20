@@ -19,14 +19,14 @@ const GoogleAuth: React.FC<GoogleAuthProps> = ({
   };
 
   const buttonText = mode === 'signup' 
-    ? 'Registrarse con Google' 
-    : 'Iniciar sesión con Google';
+    ? 'Sign Up with Google' 
+    : 'Continue with Google';
 
   return (
     <button
       type="button"
       onClick={handleGoogleAuth}
-      className={`w-full py-2 px-4 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-50 flex items-center justify-center font-medium transition-colors shadow-sm ${className}`}
+      className={`w-full py-3 px-4 border border-gray-300 rounded-lg bg-white text-gray-700 hover:bg-gray-100 flex items-center justify-center font-medium transition-colors shadow-sm ${className}`}
     >
       <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
         <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>

@@ -12,16 +12,18 @@ const Navbar = () => {
                 <img src="./images/Fennec-logo-trans.png" alt="Logo Fennec" className='w-40' />
             </Link>
         </div>
+
         <nav className='w-1/3 flex flex-row justify-center items-center gap-x-8'>
-            <BasicLink text='Planes' href='/plans'></BasicLink>
+            <BasicLink text='Plans' href='/plans'></BasicLink>
 
-            <BasicLink text='Soluciones' href='/solutions'></BasicLink>
+            <BasicLink text='Solutions and services' href='/solutions'></BasicLink>
 
-            <BasicLink text='Nosotros' href='/about'></BasicLink>
+            <BasicLink text='About us' href='/about'></BasicLink>
         </nav>
+        
         <div className='flex flex-row justify-end items-center gap-x-2 w-1/3'>
-          <WhiteButton text='Iniciar Sesión'></WhiteButton>
-          <OrangeButton text='Comenzar' className='py-3 px-9'></OrangeButton> 
+          <WhiteButton text='Log In'></WhiteButton>
+          <OrangeButton text='Sign Up' className='py-3 px-9'></OrangeButton> 
         </div>
     </div>
   )
