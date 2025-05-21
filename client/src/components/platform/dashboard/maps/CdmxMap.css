@@ -1,0 +1,142 @@
+.cdmx-map-wrapper {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.cdmx-map-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* Custom styling for Mapbox controls */
+.mapboxgl-ctrl-group {
+  border-radius: 8px !important;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+}
+
+.mapboxgl-ctrl-group button {
+  width: 36px !important;
+  height: 36px !important;
+  background-color: white;
+}
+
+.mapboxgl-ctrl-group button:hover {
+  background-color: #f3f4f6;
+}
+
+/* Loading state styling */
+.map-loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #F56C12;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 16px;
+}
+
+.map-loading p {
+  color: #374151;
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Popup styling */
+.mapboxgl-popup {
+  max-width: 300px !important;
+}
+
+.mapboxgl-popup-content {
+  padding: 16px !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1) !important;
+}
+
+.alcaldia-popup {
+  font-family: system-ui, -apple-system, sans-serif;
+}
+
+.alcaldia-popup h3 {
+  margin: 0 0 12px 0;
+  color: #1F2937;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 2px solid #F56C12;
+  padding-bottom: 8px;
+}
+
+.alcaldia-stats {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.stat-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 0;
+}
+
+.stat-label {
+  color: #6B7280;
+  font-size: 14px;
+}
+
+.stat-value {
+  color: #1F2937;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Scale control styling */
+.mapboxgl-ctrl-scale {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-width: 2px !important;
+  border-color: #666 !important;
+  padding: 4px 8px !important;
+  border-radius: 4px !important;
+  color: #374151 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .cdmx-map-wrapper {
+    height: 400px;
+    border-radius: 8px;
+  }
+
+  .alcaldia-popup h3 {
+    font-size: 16px;
+  }
+
+  .stat-label,
+  .stat-value {
+    font-size: 13px;
+  }
+} 
