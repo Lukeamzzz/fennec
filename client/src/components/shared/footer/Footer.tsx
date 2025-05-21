@@ -1,26 +1,23 @@
 import React from 'react';
 import Link from 'next/link';
-import { Facebook, Twitter, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, Phone, MapPin } from 'lucide-react';
 
 const Footer = () => {
     return (
         <footer className="bg-gray-900 text-white">
             <div className="container mx-auto px-4">
                 {/* Top section with logo and social icons */}
-                <div className="py-10 flex flex-col md:flex-row items-center justify-between">
+                <div className="pt-10 flex flex-col md:flex-row items-center justify-between">
                     <Link href="/">
                         <div className="flex items-center mb-6 md:mb-0">
                             <img src="/images/IconOnly.png" alt="FennecLogo" className="w-20 h-20 object-contain object-center" />
-                            <span className="ml-3 text-xl font-bold">FENNEC ANALYTICS</span>
+                            <span className="text-xl font-bold">FENNEC</span>
                         </div>
                     </Link>
                     
                     <div className="flex space-x-4">
                         <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
                             <Facebook size={20} />
-                        </a>
-                        <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
-                            <Twitter size={20} />
                         </a>
                         <a href="#" className="text-gray-400 hover:text-white p-2 transition-colors duration-200">
                             <Instagram size={20} />
@@ -76,27 +73,9 @@ const Footer = () => {
                             </li>
                             <li className="flex items-center">
                                 <MapPin size={16} className="mr-2 text-gray-400" />
-                                <span>123 Analytics St, San Francisco</span>
+                                <span>123 Analytics St, Mexico City</span>
                             </li>
                         </ul>
-                    </div>
-                </div>
-
-                {/* Newsletter subscription */}
-                <div className="py-8">
-                    <div className="max-w-lg mx-auto text-center">
-                        <h3 className="text-xl font-bold mb-4">Subscribe to our newsletter</h3>
-                        <p className="text-gray-400 mb-4">Stay updated with the latest news and announcements</p>
-                        <div className="flex flex-col sm:flex-row gap-2">
-                            <input 
-                                type="email" 
-                                placeholder="Your email address" 
-                                className="px-4 py-2 bg-gray-700 rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-gray-500"
-                            />
-                            <button className="px-6 py-2 bg-gray-600 hover:bg-gray-500 transition-colors duration-200 rounded-md font-medium">
-                                Subscribe
-                            </button>
-                        </div>
                     </div>
                 </div>
 
@@ -106,7 +85,6 @@ const Footer = () => {
                     <div className="mt-4 space-x-4">
                         <Link href="/terms" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">Terms of Service</Link>
                         <Link href="/privacy" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">Privacy Policy</Link>
-                        <Link href="/cookies" className="text-sm text-gray-400 hover:text-white transition-colors duration-200">Cookie Policy</Link>
                     </div>
                 </div>
             </div>

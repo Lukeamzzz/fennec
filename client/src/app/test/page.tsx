@@ -1,9 +1,6 @@
 import React from 'react'
 import TrustedClients from '../../components/home/TrustedClients'
 import DataComponent from '@/components/home/DataComponent'
-import BenefitComponent from '@/components/home/BenefitComponent'
-import SignupForm from '@/components/auth/SignupForm/SignupForm'
-import LoginForm from '@/components/auth/LoginForm/LoginForm'
 import PlanSection from '@/components/payments/PlanSection/PlanSection'
 import PortafolioChart from '@/components/platform/investment-insights/portafolio/portafolio-chart/PortafolioChart'
 import DashboardPropertyCard from '@/components/platform/dashboard/property-card/DashboardPropertyCard'
@@ -38,18 +35,11 @@ function page() {
           <h1>Test Page for React Components</h1>
           <TrustedClients/>
           <DataComponent/>
-          <BenefitComponent imageOnRight={true}/>
-          <BenefitComponent imageOnRight={false}/>
-          <SignupForm/>
-          <LoginForm/>
           <PlanSection/>
           <PortafolioChart/>
           <PortafolioRisk/>
           <SearchFilters/>
           <PropertyList/>
-          <div>
-              <DashboardPropertyCard {...propertyData} />
-          </div>
       </div>
   )
 }

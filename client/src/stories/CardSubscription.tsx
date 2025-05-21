@@ -40,7 +40,7 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
         <div className={`w-90 max-w-sm p-4 shadow-xl rounded-xl duration-300 hover:-translate-y-1 relative ${bgColor}`}>
             {/* Conditional rendering of the "Popular" badge */}
             {isPopular && (
-                <span className='absolute -top-3 right-4 bg-orange-100 text-orange-600 text-xs font-semibold px-2.5 py-0.5 rounded-full'>
+                <span className='absolute -top-3 right-4 bg-orange-100 text-orange-600 text-xs font-semibold px-3 py-1 rounded-full'>
                     Popular
                 </span>
             )}
@@ -49,12 +49,11 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
 
             <div className='flex flex-col items-center mb-5'>
                 <h2 className='text-5xl font-semibold'>${price}</h2>
-                <p className='text-sm text-muted-foreground mb-5'>MXN al mes</p>
-                <ArrowButton text='Comenzar' className='w-full py-3 bg-gradient-to-r from-orange-400 to-orange-600' />
+                <p className='text-sm text-muted-foreground mb-5'>MXN per month</p>
+                <ArrowButton text='Get Started' className='w-full py-3 bg-gradient-to-r from-orange-400 to-orange-600' />
             </div>
 
-            <h3 className='mb-2 text-muted-foreground'> Este plan incluye: </h3>
-            <ul className='space-y-2 flex flex-col w-full'>
+            <ul className='space-y-2 w-full py-4 flex flex-col'>
                 {/* Map through the features array to render each feature as a list item */}
                 {features.map((text, index) => (
                     <li key={index} className='flex items-start gap-2'>
