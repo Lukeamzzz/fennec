@@ -42,7 +42,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             "Content-Type": "application/json"
                         }
                     });
-
                     setRole("premium"); // Temporal
                 } catch (err) {
                     console.error(err);
