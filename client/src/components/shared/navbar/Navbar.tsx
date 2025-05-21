@@ -22,8 +22,13 @@ const Navbar = () => {
         </nav>
         
         <div className='flex flex-row justify-end items-center gap-x-2 w-1/3'>
-          <WhiteButton text='Log In'></WhiteButton>
-          <OrangeButton text='Sign Up' className='py-3 px-9'></OrangeButton> 
+          <Link href={'/login'}>
+            <WhiteButton text='Log In'></WhiteButton>
+          </Link>
+          
+          <Link href={'signup'}>
+            <OrangeButton text='Sign Up' className='py-3 px-9'></OrangeButton> 
+          </Link>
         </div>
     </div>
   )
