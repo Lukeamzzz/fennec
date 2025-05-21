@@ -11,7 +11,6 @@ import InvestmentOpportunities from "@/components/platform/dashboard/InvestmentO
 import CardInvestment from "@/components/platform/dashboard/CardInvestment";
 import DashboardPropertyCard from "@/components/platform/dashboard/property-card/DashboardPropertyCard";
 
-
 interface Property {
   name: string;
   location: string;

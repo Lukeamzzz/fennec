@@ -29,6 +29,7 @@ interface DashboardPropertyCardProps {
     onClose: () => void;
 }
 
+
 export default function DashboardPropertyCard(props: DashboardPropertyCardProps) {
     const {
         name, location, description, price, size, bathrooms, bedrooms,

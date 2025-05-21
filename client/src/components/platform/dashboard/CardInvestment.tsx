@@ -14,7 +14,6 @@ interface InvestmentData{
     onClick?: () => void
 }
 
-
 const CardInvestment = ({title,localization, price, roi, risk, type, onClick}: InvestmentData) => {
 
     return(

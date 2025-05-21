@@ -18,4 +18,5 @@ const InvestmentOpportunities = () => {
     );
 }
 
+
 export default InvestmentOpportunities;
