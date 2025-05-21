@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Header_settings from "@/components/settings/shared/HeaderSettings";
 import MarketTrendsChart from "@/components/platform/dashboard/MarketTrendsChart";
@@ -9,6 +10,7 @@ import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator
 import InvestmentOpportunities from "@/components/platform/dashboard/InvestmentOpportunities";
 import CardInvestment from "@/components/platform/dashboard/CardInvestment";
 import DashboardPropertyCard from "@/components/platform/dashboard/property-card/DashboardPropertyCard";
+
 
 interface Property {
   name: string;

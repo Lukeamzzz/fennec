@@ -9,7 +9,7 @@ const InvestmentOpportunities = () => {
                 </h3>
 
                 <BasicLink
-                    text="Ver más →"
+                    text="Ver más"
                     href="/dashboard/investment-opportunities"
                 />
             </div>

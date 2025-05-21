@@ -26,7 +26,7 @@ interface DashboardPropertyCardProps {
     amenities: string[];
     investmentGrade: string;
     phone: string;
-    onClose: () => void; // <- Nuevo prop
+    onClose: () => void;
 }
 
 export default function DashboardPropertyCard(props: DashboardPropertyCardProps) {

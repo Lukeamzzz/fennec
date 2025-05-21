@@ -1,3 +1,4 @@
+
 interface DetailsGridProps {
     price: number;
     size: number;
