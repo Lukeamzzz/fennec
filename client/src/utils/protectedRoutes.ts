@@ -5,4 +5,5 @@ export const protectedRoutes = new Set([
   "/platform/market-trends",
   "/platform/property-search",
   "/platform/settings",
+  "/platform/investment-insight",
 ]);
