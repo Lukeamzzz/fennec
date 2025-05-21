@@ -36,10 +36,15 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const token = await getIdToken(firebaseUser);
           setIdToken(token);
 
+          // Inyectar token en Axios
           api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-          await api.post("/auth/google");
-          setRole("premium");
+          // SOLO llamar al endpoint /auth/google si el proveedor es Google
+          const providerId = firebaseUser.providerData[0]?.providerId;
+          if (providerId === "google.com") {
+            await api.post("/auth/google");
+            setRole("premium");
+          }
         } catch (err) {
           console.error(err);
           setIdToken(null);
@@ -47,7 +52,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           delete api.defaults.headers.common["Authorization"];
         }
       } else {
-        // Limpiar el token y el rol si el usuario no está autenticado
         setIdToken(null);
         setRole(null);
         delete api.defaults.headers.common["Authorization"];
@@ -72,13 +76,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 
-// Crear el hook para cualquier lado de la app consumir el context
 export const useAuth = () => {
   return useContext(AuthContext);
 };
