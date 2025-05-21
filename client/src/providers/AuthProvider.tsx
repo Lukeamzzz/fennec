@@ -36,17 +36,25 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const token = await getIdToken(firebaseUser);
           setIdToken(token);
 
-          await api.post("/auth/google");
-          setRole("premium"); // Temporal
+          // Inyectar token en Axios
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+          // SOLO llamar al endpoint /auth/google si el proveedor es Google
+          const providerId = firebaseUser.providerData[0]?.providerId;
+          if (providerId === "google.com") {
+            await api.post("/auth/google");
+            setRole("premium");
+          }
         } catch (err) {
           console.error(err);
           setIdToken(null);
           setRole(null);
+          delete api.defaults.headers.common["Authorization"];
         }
       } else {
-        // Limpiar el token y el rol si el usuario no está autenticado
         setIdToken(null);
         setRole(null);
+        delete api.defaults.headers.common["Authorization"];
       }
 
       setLoading(false);
@@ -61,19 +69,19 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setIdToken(null);
       setRole(null);
+      delete api.defaults.headers.common["Authorization"];
     } catch (error) {
       console.error("Error signing out:", error);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 
-// Crear el hook para cualquier lado de la app consumir el context
 export const useAuth = () => {
   return useContext(AuthContext);
 };

@@ -10,6 +10,8 @@ import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator
 import InvestmentOpportunities from "@/components/platform/dashboard/InvestmentOpportunities";
 import CardInvestment from "@/components/platform/dashboard/CardInvestment";
 import DashboardPropertyCard from "@/components/platform/dashboard/property-card/DashboardPropertyCard";
+import api from "@/services/api";
+import {useAuth} from "@/providers/AuthProvider";
 
 interface Property {
   name: string;
@@ -38,20 +40,24 @@ function DashboardPage() {
   const [propertyData, setPropertyData] = useState<Property[]>([]);
   const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
+
+
+
+  const { idToken } = useAuth();
+
   useEffect(() => {
+    if (!idToken) return;
+
     const fetchPropertyData = async () => {
-      try {
-        const response = await fetch("http://localhost:8080/api/propiedades/property");
-        if (!response.ok) throw new Error("Error al obtener datos");
-        const data = await response.json();
-        setPropertyData(data);
-      } catch (error) {
-        console.error("Error fetching property data:", error);
-      }
+      const response = await api.get("/api/propiedades/property");
+      setPropertyData(response.data);
     };
 
-    fetchPropertyData();
-  }, []);
+    fetchPropertyData().catch((error) => {
+      console.error("Error fetching property data:", error);
+    });
+  }, [idToken]);
+
 
   return (
       <div className="flex min-h-screen p-2">
