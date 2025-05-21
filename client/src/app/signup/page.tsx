@@ -2,14 +2,21 @@
 import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
 import Link from "next/link";
 import React, { useState } from "react";
+import { auth } from "@/lib/firebase";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { useRouter } from "next/navigation";
+import api from "@/services/api";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 function SignupPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -19,9 +26,45 @@ function SignupPage() {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Signup attempt with:", formData);
+    setError("");
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    try {
+      // Create user in Firebase
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      // Create user in your backend
+      const userData = {
+        email: formData.email,
+        name: formData.name,
+        firebaseId: userCredential.user.uid
+      };
+
+      const response = await api.post('/auth/signup', userData);
+      
+      if (!response.data.message) {
+        throw new Error('Error en el registro');
+      }
+
+      router.push("/platform/dashboard");
+    } catch (error: any) {
+      console.error("Signup error:", error);
+      setError(error.message || "An error occurred during signup");
+      showCustomToast({
+        message: "Error creating account",
+        type: "error",
+      });
+    }
   };
 
   return (

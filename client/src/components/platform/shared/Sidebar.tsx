@@ -35,7 +35,10 @@ const Sidebar = () => {
   return (
     <div className="relative border-r border-gray-200 bg-gray-50 w-60">
       <div className="p-4 border-b border-gray-200">
-        <span className="text-xl font-semibold text-orange-500">Fennec</span>
+        <Link href={'/'}>
+          <span className="text-xl font-semibold text-orange-500">Fennec</span>
+        </Link>
+        
       </div>
       <nav className="pt-4">
         <ul>

@@ -23,8 +23,8 @@ function TrustedClients() {
     <div className="py-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-2xl font-extrabold text-gray-900 sm:text-4xl">
-            Clientes que Confían en Nuestra Marca
+          <h2 className="text-5xl font-extrabold text-gray-900 sm:text-4xl">
+            Our clients
           </h2>
         </div>
 

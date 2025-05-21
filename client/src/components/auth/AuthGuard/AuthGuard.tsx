@@ -23,7 +23,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     }
   }, [user, loading, pathname, router]);
 
-  if (loading) return <div>Cargando...</div>; // TODO: Agregar un loader
+  //if (loading) return <div>Cargando...</div>; // TODO: Agregar un loader
 
   return (<>
     {children}

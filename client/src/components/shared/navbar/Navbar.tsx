@@ -6,7 +6,7 @@ import BasicLink from '@/stories/BasicLink';
 
 const Navbar = () => {
   return (
-    <div className='w-full h-fit py-6 flex flex-row justify-center px-40 items-center fixed z-50 bg-neutral-50 shadow'>
+    <div className='w-full h-fit py-6 flex flex-row justify-center px-40 items-center fixed z-50 bg-white shadow-sm'>
         <div className='w-1/3'>
             <Link href="/">
                 <img src="./images/Fennec-logo-trans.png" alt="Logo Fennec" className='w-40' />
