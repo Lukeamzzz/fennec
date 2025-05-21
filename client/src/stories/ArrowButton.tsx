@@ -10,7 +10,7 @@ interface ArrowButtonProps {
 /** An orange button component that displays an arrow icon when hovered over. */
 const ArrowButton: React.FC<ArrowButtonProps> = ({ text, className = '' }) => {
   return (
-    <button className={`bg-orange-600 rounded-lg text-white relative group cursor-pointer ${className}`}>
+    <button className={`bg-orange-500 rounded-lg text-white relative group cursor-pointer ${className}`}>
         {text}
         <span className="absolute right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             →

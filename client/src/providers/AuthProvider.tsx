@@ -3,6 +3,7 @@
 import { User, getIdToken, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../lib/firebase";
+import api from "../services/api";
 
 
 interface AuthContextProps {
@@ -32,52 +33,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
+            
             if (firebaseUser) {
-
                 try {
                     const token = await getIdToken(firebaseUser);
                     setIdToken(token);
 
-                    // Llamar al backend para registrar el usuario con Google
-                    await fetch("http://localhost:8080/auth/google", {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${token}`,
-                            "Content-Type": "application/json"
-                        }
-                    });
-
+                    await api.post('/auth/google');
                     setRole("premium"); // Temporal
                 } catch (err) {
                     console.error(err);
                     setIdToken(null);
                     setRole(null);
                 }
-                setLoading(false);
             } else {
-
-                try{
-                    const token = await getIdToken(firebaseUser);
-                    setIdToken(token);
-
-                    // TODO: Llamar al back para obtener el role del usuario
-                    setRole("premium"); // Temporal para probar
-
-                    // Mejora: si existe una sesión, obtener el rol del session storage
-                }
-                catch (err){
-                    console.error(err); // TODO: Mostrar al usuario que algo salió mal
-
-                    // Limpiar el idToken y el role
-                    setIdToken(null);
-                    setRole(null);                    
-                }
-                setLoading(false);
+                // Limpiar el token y el rol si el usuario no está autenticado
+                setIdToken(null);
+                setRole(null);
             }
-            else {
-
-                setLoading(false);
-            }
+            
+            setLoading(false);
         });
 
         return () => unsubscribe();
@@ -101,13 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
-
 // Crear el hook para cualquier lado de la app consumir el context
 export const useAuth = () => {
     return useContext(AuthContext);
 }
-

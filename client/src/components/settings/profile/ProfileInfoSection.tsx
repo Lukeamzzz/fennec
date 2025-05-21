@@ -34,10 +34,6 @@ function ProfileInfoSection() {
   const handleLogout = async () => {
     try {
       await logout();
-      showCustomToast({
-        message: "Logged out successfully",
-        type: "success",
-      });
       router.push("/login");
     } catch (error) {
       showCustomToast({

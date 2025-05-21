@@ -3,6 +3,8 @@ import { auth } from "@/lib/firebase";
 import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import api from "../../../services/api";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 interface GoogleAuthProps {
   mode: "login" | "signup";
@@ -10,7 +12,7 @@ interface GoogleAuthProps {
 
 const GoogleAuth = ({ mode }: GoogleAuthProps) => {
   const router = useRouter();
-  const [showNameForm, setShowNameForm] = useState(false);
+  const [showNameForm, setShowNameForm] = useState<boolean>(false);
   const [name, setName] = useState<string>("");
   const [tempUserData, setTempUserData] = useState<any>(null);
   
@@ -26,51 +28,56 @@ const GoogleAuth = ({ mode }: GoogleAuthProps) => {
         return;
       }
 
-      // If we have a name (either from Google or it's a login), proceed
-      const userData = {
-        email: user.email,
-        name: user.displayName || name,
-        firebase_id: user.uid
-      };
+      if (mode === "signup") {
+        const userData = {
+          email: user.email,
+          name: user.displayName || name,
+          firebaseId: user.uid
+        };
 
-      // Call the backend API to store user data
-      /*
-      await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData)
-      });
-      */
+        const response = await api.post('/auth/signup', userData);
+        
+        if (!response.data.message) {
+          throw new Error('Error en el registro');
+        }
+      }
 
       router.push("/platform/dashboard");
     } catch (error) {
-      console.error("Google auth error:", error);
+      console.error("Error de autenticación:", error);
+      showCustomToast({
+        message: "Error Signing Up",
+        type: "error",
+      });
     }
-  };
+};
 
-  const handleNameSubmit = async (e: React.FormEvent) => {
+const handleNameSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!name.trim()) return;
 
-    const userData = {
-      email: tempUserData.email,
-      name: name,
-      firebase_id: tempUserData.uid
-    };
+    try {
+      const userData = {
+        email: tempUserData.email,
+        name: name,
+        firebaseId: tempUserData.uid
+      };
 
-    // Call the backend API to store user data
-    await fetch('/api/auth/google', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(userData)
-    });
+      const response = await api.post('/auth/signup', userData);
+      
+      if (!response.data.message) {
+        throw new Error('Error en el registro');
+      }
 
-    router.push("/platform/dashboard");
-  };
+      router.push("/platform/dashboard");
+    } catch (error) {
+      console.error("Error al registrar usuario:", error);
+      showCustomToast({
+        message: "Error Signing Up",
+        type: "error",
+      });
+    }
+};
 
   if (showNameForm) {
     return (
