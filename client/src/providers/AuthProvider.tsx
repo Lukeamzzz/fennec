@@ -36,17 +36,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           const token = await getIdToken(firebaseUser);
           setIdToken(token);
 
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
           await api.post("/auth/google");
-          setRole("premium"); // Temporal
+          setRole("premium");
         } catch (err) {
           console.error(err);
           setIdToken(null);
           setRole(null);
+          delete api.defaults.headers.common["Authorization"];
         }
       } else {
         // Limpiar el token y el rol si el usuario no está autenticado
         setIdToken(null);
         setRole(null);
+        delete api.defaults.headers.common["Authorization"];
       }
 
       setLoading(false);
@@ -61,6 +65,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       setUser(null);
       setIdToken(null);
       setRole(null);
+      delete api.defaults.headers.common["Authorization"];
     } catch (error) {
       console.error("Error signing out:", error);
     }
