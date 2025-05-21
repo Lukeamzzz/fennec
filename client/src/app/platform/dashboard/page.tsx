@@ -10,6 +10,7 @@ import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator
 import InvestmentOpportunities from "@/components/platform/dashboard/InvestmentOpportunities";
 import CardInvestment from "@/components/platform/dashboard/CardInvestment";
 import DashboardPropertyCard from "@/components/platform/dashboard/property-card/DashboardPropertyCard";
+import api from "@/services/api";
 
 interface Property {
   name: string;
@@ -41,10 +42,8 @@ function DashboardPage() {
   useEffect(() => {
     const fetchPropertyData = async () => {
       try {
-        const response = await fetch("http://localhost:8080/api/propiedades/property");
-        if (!response.ok) throw new Error("Error al obtener datos");
-        const data = await response.json();
-        setPropertyData(data);
+        const response = await api.get("/api/propiedades/property");
+        setPropertyData(response.data);
       } catch (error) {
         console.error("Error fetching property data:", error);
       }
