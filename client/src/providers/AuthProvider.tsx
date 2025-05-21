@@ -4,6 +4,7 @@ import { User, getIdToken, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../lib/firebase";
 
+
 interface AuthContextProps {
     user: User | null;
     loading: boolean;
@@ -12,6 +13,7 @@ interface AuthContextProps {
     logout: () => Promise<void>;
 };
 
+
 const AuthContext = createContext<AuthContextProps>({
     user: null,
     loading: true,
@@ -19,6 +21,7 @@ const AuthContext = createContext<AuthContextProps>({
     role: null,
     logout: async () => {}
 });
+
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
@@ -30,6 +33,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
             setUser(firebaseUser);
             if (firebaseUser) {
+
                 try {
                     const token = await getIdToken(firebaseUser);
                     setIdToken(token);
@@ -50,6 +54,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 setLoading(false);
             } else {
+
+                try{
+                    const token = await getIdToken(firebaseUser);
+                    setIdToken(token);
+
+                    // TODO: Llamar al back para obtener el role del usuario
+                    setRole("premium"); // Temporal para probar
+
+                    // Mejora: si existe una sesión, obtener el rol del session storage
+                }
+                catch (err){
+                    console.error(err); // TODO: Mostrar al usuario que algo salió mal
+
+                    // Limpiar el idToken y el role
+                    setIdToken(null);
+                    setRole(null);                    
+                }
+                setLoading(false);
+            }
+            else {
+
                 setLoading(false);
             }
         });
@@ -75,6 +100,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
+
 export const useAuth = () => {
     return useContext(AuthContext);
 };
+
+// Crear el hook para cualquier lado de la app consumir el context
+export const useAuth = () => {
+    return useContext(AuthContext);
+}
+
