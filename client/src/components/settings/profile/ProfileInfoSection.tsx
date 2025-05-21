@@ -2,8 +2,12 @@
 
 import { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
+import { useAuth } from "@/providers/AuthProvider";
+import { useRouter } from "next/navigation";
 
 function ProfileInfoSection() {
+  const { logout } = useAuth();
+  const router = useRouter();
   const [profileData, setProfileData] = useState({
     fullName: "Usuario Demo",
     email: "usuario@ejemplo.com",
@@ -27,14 +31,29 @@ function ProfileInfoSection() {
     });
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+      showCustomToast({
+        message: "Logged out successfully",
+        type: "success",
+      });
+      router.push("/login");
+    } catch (error) {
+      showCustomToast({
+        message: "Error logging out",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <div className="bg-white rounded-lg p-6">
       <h2 className="text-xl font-medium text-center mb-2">
-        Información del perfil
+        Profile Information
       </h2>
       <p className="text-gray-500 text-center text-sm mb-6">
-        Esta información será mostrada públicamente, así que ten cuidado con lo
-        que compartes.
+        This information will be displayed publicly, so be careful what you share.
       </p>
 
       <form onSubmit={handleSubmit}>
@@ -72,12 +91,19 @@ function ProfileInfoSection() {
           />
         </div>
 
-        <div className="flex justify-end">
+        <div className="flex justify-between items-center mt-6">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="px-4 py-2 bg-red-500 text-white font-medium rounded-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+          >
+            Log Out
+          </button>
           <button
             type="submit"
             className="px-4 py-2 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
           >
-            Guardar cambios
+            Save Changes
           </button>
         </div>
       </form>
