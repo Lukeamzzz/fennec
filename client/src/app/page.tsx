@@ -55,13 +55,12 @@ export default function Home() {
             Icon={Gauge}
           />
           
-          <div className="bg-white text-xl font-semibold flex items-center justify-center border-2 border-orange-500 border-dashed rounded-xl hover:scale-103 duration-300">
-              <button className="flex items-center"> 
-                <Link href="/plans">
-                  Get Started with Fennec →
-                </Link>
-              </button>
-          </div>
+          <Link href="/plans" className="bg-white text-xl font-semibold flex items-center justify-center border-2 border-orange-500 border-dashed rounded-xl hover:scale-103 duration-300">
+            <div className="flex items-center p-6">
+              Get Started with Fennec
+              <ArrowRight className="h-6 w-6 ml-2" />
+            </div>
+          </Link>
         </div>
       </div>
 
