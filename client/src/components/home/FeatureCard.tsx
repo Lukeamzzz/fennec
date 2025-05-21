@@ -13,7 +13,7 @@ const FeatureCard = ({ title, description, Icon }: FeatureCardProps) => {
         <Icon className="text-orange-600 size-7"/>
       </div>
       <h1 className="font-bold text-xl">{title}</h1>
-      <p className="text-gray-500">{description}</p>
+      <p className="text-gray-700">{description}</p>
     </div>
   );
 };

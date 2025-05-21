@@ -9,7 +9,7 @@ const TypingEffect = () => {
 
   useEffect(() => {
     const currentWord = words[currentWordIndex];
-    let typingSpeed = 115;
+    let typingSpeed = 100;
 
     if (isDeleting) { // Delete faster than typing
       typingSpeed -= 30;
@@ -38,12 +38,12 @@ const TypingEffect = () => {
   }, [displayText, isDeleting, currentWordIndex]);
 
   return (
-    <h1 className="text-5xl font-semibold text-white">
+    <h1 className="text-5xl font-semibold text-gray-900">
       Ideal for real state <span className="text-orange-500">{displayText}</span>
-      <span className="blinking-cursor text-gray-100">|</span>
+      <span className="blinking-cursor text-white">|</span>
       <style>{`
         .blinking-cursor {
-          animation: blink 1.5s step-end infinite;
+          animation: blink 1.3s step-end infinite;
         }
 
         @keyframes blink {

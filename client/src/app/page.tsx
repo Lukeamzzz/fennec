@@ -4,6 +4,7 @@ import {ArrowRight, ChartNoAxesCombined, CircleDollarSign, Gauge, Shield, Trendi
 import FeatureCard from "@/components/home/FeatureCard";
 import Link from "next/link";
 import TypingEffect from "@/lib/TypingEffect";
+import TestimonialCard from "@/components/home/TestimonialCard";
 
 export default function Home() {
   return (
@@ -27,7 +28,7 @@ export default function Home() {
         <h1 className="text-gray-900 text-5xl font-bold text-center mb-7">We turn data into opportunities</h1>
         <h4 className="text-gray-600 text-center text-xl font-medium mb-10">Discover the potential and real value of any property with Fennec's advanced tools</h4>
 
-        <div className="grid grid-cols-3 gap-7 mx-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-7 mx-5">
           <FeatureCard
             title="Precise Valuation"
             description="Leverage advanced algorithms to analyze multiple factors and determine accurate property values."
@@ -55,21 +56,42 @@ export default function Home() {
           />
           
           <div className="bg-white text-xl font-semibold flex items-center justify-center border-2 border-orange-500 border-dashed rounded-xl hover:scale-103 duration-300">
-            <Link href="/plans">
               <button className="flex items-center"> 
-                Get Started with Fennec
-                <ArrowRight className="h-6 w-6 ml-2" />
+                <Link href="/plans">
+                  Get Started with Fennec →
+                </Link>
               </button>
-            </Link>
           </div>
         </div>
-
-        <div className="bg-gray-900 py-20 text-center">
-          <TypingEffect/>
-        </div>
-        
-
       </div>
+
+
+      <div className="bg-gray-300 w-full py-30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-15">
+            <TypingEffect/>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <TestimonialCard
+              quote="Thanks to Fennec I was able to identify an opportunity that other investors missed. My return was 3 times what I expected."
+              name="María Zardoya"
+              role="Real Estate Investor"
+            />
+            <TestimonialCard
+              quote="As a real estate agent, Fennec has allowed me to offer accurate valuations in record time and gain my clients trust."
+              name="Ella Marija Lani"
+              role="Real Estate Agent"
+            />
+            <TestimonialCard
+              quote="The trend analysis has helped me anticipate market changes before the competition."
+              name="Fiona Apple"
+              role="Real Estate Developer"
+            />
+          </div>
+        </div>
+      </div>
+
       <Footer/>
     </div>
   );
