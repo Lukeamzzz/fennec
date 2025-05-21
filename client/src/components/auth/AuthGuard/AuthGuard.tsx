@@ -16,8 +16,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       if (protectedRoutes.has(pathname) && !user) {
         router.push("/login");
       }
-      // Si está logueado y va a login o register, redirige platform, pues ya está logueado
-      if (user && (pathname === "/login" || pathname === "/register")) {
+      // Si está logueado y va a login o signup, redirige platform, pues ya está logueado
+      if (user && (pathname === "/login" || pathname === "/signup")) {
         router.push("/platform/dashboard");
       }
     }
