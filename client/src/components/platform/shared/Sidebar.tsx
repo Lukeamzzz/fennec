@@ -10,7 +10,7 @@ import {
   FileText,
   Settings,
 } from "lucide-react";
-import { usePathname } from 'next/navigation';
+import { usePathname } from "next/navigation";
 
 const Sidebar = () => {
   const pathname = usePathname();
