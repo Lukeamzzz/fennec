@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import Header_settings from "@/components/settings/shared/HeaderSettings";
 import MarketTrendsChart from "@/components/platform/dashboard/MarketTrendsChart";
@@ -10,16 +11,38 @@ import InvestmentOpportunities from "@/components/platform/dashboard/InvestmentO
 import CardInvestment from "@/components/platform/dashboard/CardInvestment";
 import DashboardPropertyCard from "@/components/platform/dashboard/property-card/DashboardPropertyCard";
 
+interface Property {
+  name: string;
+  location: string;
+  description: string;
+  type: string;
+  price: number;
+  size: number;
+  bathrooms: number;
+  bedrooms: number;
+  previousPrices: number[];
+  valuation3Years: number;
+  valuation5Years: number;
+  growthRate: number;
+  roiMonthly: number;
+  breakevenYears: number;
+  occupancyRate: number;
+  riskFactors: string[];
+  levelRisk: string;
+  amenities: string[];
+  investmentGrade: string;
+  phone: string;
+}
+
 function DashboardPage() {
-  const [propertyData, setPropertyData] = useState(null);
+  const [propertyData, setPropertyData] = useState<Property[]>([]);
+  const [selectedProperty, setSelectedProperty] = useState<Property | null>(null);
 
   useEffect(() => {
     const fetchPropertyData = async () => {
       try {
         const response = await fetch("http://localhost:8080/api/propiedades/property");
-        if (!response.ok) {
-          throw new Error("Error al obtener datos");
-        }
+        if (!response.ok) throw new Error("Error al obtener datos");
         const data = await response.json();
         setPropertyData(data);
       } catch (error) {
@@ -30,10 +53,6 @@ function DashboardPage() {
     fetchPropertyData();
   }, []);
 
-  if (!propertyData) {
-    return <div>Loading...</div>;
-  }
-
   return (
       <div className="flex min-h-screen p-2">
         <div className="flex-1 pt-5 pl-1">
@@ -43,24 +62,35 @@ function DashboardPage() {
             <CardProperties title={"Listed Properties"} amount={1245} change={-3.2} />
             <CardMarketGrowth title={"Market Growth"} amount={-7.8} change={-0.5} />
           </div>
+
           <div className="bg-white rounded-lg overflow-hidden shadow-sm flex items-center justify-center space-x-20 pb-10">
             <PropertyEstimator />
             <MarketTrendsChart />
           </div>
+
           <div>
             <InvestmentOpportunities />
             <div className="flex flex-wrap gap-6 items-center justify-center pb-2">
-              <CardInvestment title="Polanco Luxury Apartment" localization="Polanco, CDMX" price={3450000} roi={8.2} risk="Low" type="Casa" />
-              <CardInvestment title="Roma Norte Development" localization="Roma Norte, CDMX" price={4900000} roi={12.5} risk="Medium" type="Departamento" />
-              <CardInvestment title="Condesa Commercial Space" localization="La Condesa, CDMX" price={5800000} roi={7.8} risk="Low" type="Terreno" />
+              {propertyData.map((property) => (
+                  <CardInvestment
+                      key={property.name}
+                      title={property.name}
+                      localization={property.location}
+                      price={property.price}
+                      roi={property.roiMonthly}
+                      risk={property.levelRisk}
+                      type={property.type}
+                      onClick={() => setSelectedProperty(property)}
+                  />
+              ))}
             </div>
           </div>
-          <div>
-            <DashboardPropertyCard {...propertyData} />
-          </div>
+
+          {selectedProperty && (
+              <DashboardPropertyCard {...selectedProperty} onClose={() => setSelectedProperty(null)} />
+          )}
         </div>
       </div>
-
   );
 }
 
