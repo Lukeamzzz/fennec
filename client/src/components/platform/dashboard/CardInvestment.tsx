@@ -10,13 +10,14 @@ interface InvestmentData{
     price: number,
     roi: number,
     risk: string,
-    type: string
-};
+    type: string,
+    onClick?: () => void
+}
 
-const CardInvestment = ({title,localization, price, roi, risk, type}: InvestmentData) => {
+const CardInvestment = ({title,localization, price, roi, risk, type, onClick}: InvestmentData) => {
 
     return(
-        <div className="shadow-xl p-4 rounded-lg">
+        <div className="shadow-xl p-4 rounded-lg cursor-pointer max-w-sm" onClick={onClick}>
             <div className="text-center mb-2">
                 <h3>{title}</h3>
             </div>
@@ -25,15 +26,15 @@ const CardInvestment = ({title,localization, price, roi, risk, type}: Investment
                 <p className="ml-1">{localization}</p>
             </div>
 
-            <div className="flex justify-between items-start w-full">
+            <div className="flex justify-between items-start w-full pl-5 pr-5">
 
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start pr-1">
                     <p className="text-neutral-500 ">Price</p>
                     <p className="font-semibold text-black">${price}</p>
                 </div>
 
 
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start pr-2">
                     <p className="text-neutral-500">ROI</p>
                     <p className="flex items-center text-green-600 ">
                         {roi}%
@@ -41,7 +42,7 @@ const CardInvestment = ({title,localization, price, roi, risk, type}: Investment
                     </p>
                 </div>
 
-                <div className="flex flex-col items-start">
+                <div className="flex flex-col items-start pr-1">
                     <p className="text-neutral-500">Risk</p>
                     <p className="font-semibold text-black">{risk}</p>
                 </div>
