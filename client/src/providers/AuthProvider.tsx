@@ -46,6 +46,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                             "Content-Type": "application/json"
                         }
                     });
+
                     setRole("premium"); // Temporal
                 } catch (err) {
                     console.error(err);
@@ -54,27 +55,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 }
                 setLoading(false);
             } else {
-
-                try{
-                    const token = await getIdToken(firebaseUser);
-                    setIdToken(token);
-
-                    // TODO: Llamar al back para obtener el role del usuario
-                    setRole("premium"); // Temporal para probar
-
-                    // Mejora: si existe una sesión, obtener el rol del session storage
-                }
-                catch (err){
-                    console.error(err); // TODO: Mostrar al usuario que algo salió mal
-
-                    // Limpiar el idToken y el role
-                    setIdToken(null);
-                    setRole(null);                    
-                }
-                setLoading(false);
-            }
-            else {
-
                 setLoading(false);
             }
         });
@@ -100,13 +80,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     );
 };
 
-
 export const useAuth = () => {
     return useContext(AuthContext);
 };
-
-// Crear el hook para cualquier lado de la app consumir el context
-export const useAuth = () => {
-    return useContext(AuthContext);
-}
-
