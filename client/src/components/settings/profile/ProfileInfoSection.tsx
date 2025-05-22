@@ -14,7 +14,7 @@ function ProfileInfoSection() {
     email: "",
   });
 
-  // Obtener perfil del backend
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
