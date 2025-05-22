@@ -3,11 +3,12 @@ interface DetailsGridProps {
     size: number;
     bathrooms: number;
     bedrooms: number;
+    parking: number;
 }
 
-function DetailsGrid({ price, size, bedrooms, bathrooms }: DetailsGridProps) {
+function DetailsGrid({ price, size, bedrooms, bathrooms, parking }: DetailsGridProps) {
     return (
-        <div className="px-6 py-4 border-t grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+        <div className="px-6 py-4 border-t grid grid-cols-2 md:grid-cols-5 gap-5 text-center">
             <div>
                 <span className="block text-gray-500">Precio</span>
                 <span className="font-semibold">${price.toLocaleString()}</span>
@@ -24,7 +25,12 @@ function DetailsGrid({ price, size, bedrooms, bathrooms }: DetailsGridProps) {
                 <span className="block text-gray-500">Baños</span>
                 <span className="font-semibold">{bathrooms}</span>
             </div>
+            <div>
+                <span className="block text-gray-500">Estacionamientos</span>
+                <span className="font-semibold">{parking}</span>
+            </div>
         </div>
     );
 }
- export default DetailsGrid;
+
+export default DetailsGrid;

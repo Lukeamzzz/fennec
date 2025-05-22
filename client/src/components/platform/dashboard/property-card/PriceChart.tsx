@@ -14,7 +14,7 @@ export default function PriceChart({ previousPrices }) {
         datasets: [
             {
                 data: previousPrices,
-                fill: true,
+
                 tension: 0.4,
                 borderWidth: 2
             }
@@ -23,7 +23,10 @@ export default function PriceChart({ previousPrices }) {
     const options = {
         plugins: { legend: { display: false } },
         scales: { y: { beginAtZero: false } },
-        maintainAspectRatio: false
+        maintainAspectRatio: false,
+        fill:true,
+        backgroundColor: "orange",
+        borderColor: "orange",
     };
 
     return (

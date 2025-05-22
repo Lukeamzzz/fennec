@@ -15,6 +15,7 @@ interface DashboardPropertyCardProps {
     size: number;
     bathrooms: number;
     bedrooms: number;
+    parking: number;
     previousPrices: number[];
     valuation3Years: number;
     valuation5Years: number;
@@ -25,17 +26,16 @@ interface DashboardPropertyCardProps {
     riskFactors: string[];
     amenities: string[];
     investmentGrade: string;
-    phone: string;
     onClose: () => void;
 }
 
 
 export default function DashboardPropertyCard(props: DashboardPropertyCardProps) {
     const {
-        name, location, description, price, size, bathrooms, bedrooms,
+        name, location, description, price, size, bathrooms, bedrooms, parking,
         previousPrices, valuation3Years, valuation5Years, growthRate,
         roiMonthly, breakevenYears, occupancyRate,
-        riskFactors, amenities, investmentGrade, phone, onClose
+        riskFactors, amenities, investmentGrade, onClose
     } = props;
 
     return (
@@ -51,18 +51,16 @@ export default function DashboardPropertyCard(props: DashboardPropertyCardProps)
 
                 <Header name={name} location={location} />
                 <span>{description}</span>
-                <DetailsGrid price={price} size={size} bedrooms={bedrooms} bathrooms={bathrooms} />
+                <DetailsGrid price={price} size={size} bedrooms={bedrooms} bathrooms={bathrooms} parking={parking} />
                 <PriceChart previousPrices={previousPrices} />
                 <InvestmentForecast
                     valuation3Years={valuation3Years}
                     valuation5Years={valuation5Years}
                     growthRate={growthRate}
                     roiMonthly={roiMonthly}
-                    breakevenYears={breakevenYears}
-                    occupancyRate={occupancyRate}
                 />
                 <RiskFactors riskFactors={riskFactors} />
-                <Amenities amenities={amenities} investmentGrade={investmentGrade} phone={phone} />
+                <Amenities amenities={amenities} investmentGrade={investmentGrade}  />
             </div>
         </div>
     );

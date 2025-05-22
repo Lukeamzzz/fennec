@@ -1,4 +1,4 @@
-export default function Amenities({ amenities, investmentGrade, phone }) {
+export default function Amenities({ amenities, investmentGrade }) {
     return (
         <>
             <div className="px-6 py-4 border-t">
@@ -9,14 +9,11 @@ export default function Amenities({ amenities, investmentGrade, phone }) {
                     ))}
                 </ul>
             </div>
-            <div className="px-6 py-4 border-t flex flex-col md:flex-row items-center justify-between">
+            <div className="px-6 py-4 border-t flex justify-end text-right">
                 <div>
                     <span className="text-gray-500">Grado de inversión:</span>
                     <span className="font-semibold ml-2">{investmentGrade}</span>
                 </div>
-                <a href={`tel:${phone}`} className="px-4 py-2 bg-orange-500 text-white font-medium rounded-md hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
-                   Contacta con un inversor
-                </a>
             </div>
         </>
     );

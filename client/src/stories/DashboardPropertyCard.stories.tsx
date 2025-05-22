@@ -26,12 +26,10 @@ export const Default: Story = {
         valuation5Years: 5500000,
         growthRate: 0.05,
         roiMonthly: 0.003,
-        breakevenYears: 7,
         occupancyRate: 0.85,
         riskFactors: ["Inundaciones", "Grietas"],
         amenities: ["Piscina", "Gimnasio", "Estacionamiento"],
         investmentGrade: "A",
-        phone: "5551234567",
     },
 };
 
@@ -55,7 +53,7 @@ export const Minimal: Story = {
         riskFactors: [],
         amenities: [],
         investmentGrade: "B",
-        phone: "5559876543",
+
     },
 };
 
@@ -80,6 +78,5 @@ export const HighRisk: Story = {
         riskFactors: ["Sismos", "Retraso de obra", "Deterioro"],
         amenities: ["Jardín"],
         investmentGrade: "C",
-        phone: "5511122233",
     },
 };
