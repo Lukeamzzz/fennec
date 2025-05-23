@@ -12,6 +12,7 @@ import {
     Legend,
 } from "chart.js";
 import { Line } from "react-chartjs-2";
+import MarketTrendsInputs from "@/components/platform/dashboard/MarketTrendsInputs";
 
 ChartJS.register(
     LineElement,
@@ -198,6 +199,10 @@ const DashboardMarketTrendsChart = () => {
             </div>
             <div className="h-64">
                 <Line data={chartDataSets[selectedPeriod]} options={options}/>
+
+            </div>
+            <div>
+                <MarketTrendsInputs/>
             </div>
         </div>
     );
