@@ -1,4 +1,3 @@
-import BasicLink from "@/stories/BasicLink";
 
 const InvestmentOpportunities = () => {
     return (
@@ -7,11 +6,6 @@ const InvestmentOpportunities = () => {
                 <h3 className="pl-2 text-2xl font-medium text-black">
                     Investment Opportunities
                 </h3>
-
-                <BasicLink
-                    text="Ver más"
-                    href="/dashboard/investment-opportunities"
-                />
             </div>
         </div>
 
