@@ -1,21 +1,22 @@
 import React, { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
+import { useRouter } from "next/router";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
 function DeleteCard({ onClose }) {
     const [inputValue, setInputValue] = useState("");
+    const router = useRouter();
 
     const handleSubmit = (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
-        if (inputValue.trim().toLowerCase() === "eliminar") {
-            // Aquí tengo que poner la lógica para que se elimine
-            onClose();
+        if (inputValue === "eliminar") {
             showCustomToast({
-                message: "Cuenta eliminada",
+                message: "Cuenta eliminada exitosamente",
                 type: "success",
-            });
+            })
+            router.push("/")
         } else {
             alert("Por favor escribe 'eliminar' exactamente para confirmar.");
         }
