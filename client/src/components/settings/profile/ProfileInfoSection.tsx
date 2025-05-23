@@ -5,32 +5,58 @@ import { showCustomToast } from "@/lib/showCustomToast";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
 import api from "@/services/api";
+import { TailChase } from 'ldrs/react'
+import 'ldrs/react/TailChase.css'
 
 function ProfileInfoSection() {
-  const { logout } = useAuth();
+  const { logout, idToken, user, loading } = useAuth();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState(true);
   const [profileData, setProfileData] = useState({
     fullName: "",
     email: "",
   });
 
-
   useEffect(() => {
     const fetchProfile = async () => {
+      if (!user || !idToken) return;
+      
       try {
-        const response = await api.get("/api/profile"); // token ya está en api headers
-        console.log(">> Datos recibidos del backend:", response.data);
+        setIsLoading(true);
+        const response = await api.get("/api/profile");
         setProfileData(response.data);
-      } catch (error) {
+      } 
+      catch (error: any) {
+        if (error?.response?.status === 401) {
+          router.push('/login');
+          return;
+        }
         showCustomToast({
           message: "No se pudo cargar el perfil",
           type: "error",
         });
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchProfile();
-  }, []);
+    if (!loading) {
+      fetchProfile();
+    }
+  }, [user, idToken, loading, router]);
+
+  // Show loading state while auth is being checked
+  if (loading || isLoading) {
+    return (
+      <div className="bg-white rounded-lg p-6 flex items-center justify-center">
+        <TailChase
+          size="40"
+          speed="1.75"
+          color="#F56C12" 
+        />
+      </div>
+    );
+  }
 
   const handleChange = (
       e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

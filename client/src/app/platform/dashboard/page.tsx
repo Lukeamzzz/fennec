@@ -62,7 +62,7 @@ function DashboardPage() {
       <div className="flex min-h-screen p-2">
         <div className="flex-1 pt-5 pl-1">
           <Header_settings />
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center pb-10">
             <CardValuationData title="Average Property Value" amount={2456000} change={12.5} />
             <CardProperties title={"Listed Properties"} amount={1245} change={-3.2} />
             <CardMarketGrowth title={"Market Growth"} amount={-7.8} change={-0.5} />

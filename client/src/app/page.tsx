@@ -28,7 +28,7 @@ export default function Home() {
         <h1 className="text-gray-900 text-5xl font-bold text-center mb-7">We turn data into opportunities</h1>
         <h4 className="text-gray-600 text-center text-xl font-medium mb-10">Discover the potential and real value of any property with Fennec's advanced tools</h4>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-7 mx-5">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-7 mx-20">
           <FeatureCard
             title="Precise Valuation"
             description="Leverage advanced algorithms to analyze multiple factors and determine accurate property values."
