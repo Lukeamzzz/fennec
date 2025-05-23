@@ -30,9 +30,8 @@ interface Property {
   roiMonthly: number;
   breakevenYears: number;
   occupancyRate: number;
-  riskFactors: string[];
+
   levelRisk: string;
-  amenities: string[];
   investmentGrade: string;
 }
 

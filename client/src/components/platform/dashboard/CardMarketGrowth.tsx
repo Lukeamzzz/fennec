@@ -12,7 +12,7 @@ const CardMarketGrowth = ({ title, amount, change }: CardValuationData) => {
     const isPositive = change > 0
 
     return(
-        <div  className="bg-orange-50 border-none text-center shadow-sm m-5">
+        <div  className="rounded-md border-none text-center shadow-md m-5">
             <div className="p-4 space-y-2">
                 <div className="text-sm font-medium text-neutral-700 flex justify-center items-center gap-1">
                     {title}
