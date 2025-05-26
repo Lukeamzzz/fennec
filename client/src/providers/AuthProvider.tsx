@@ -44,6 +44,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             await api.post("/auth/google");
             setRole("premium");
           }
+
         } catch (err) {
           console.error(err);
           setIdToken(null);
