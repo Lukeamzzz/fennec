@@ -80,6 +80,14 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                     return `${label}: ${value}%`;
                   },
                 },
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                titleColor: "#1F2937",
+                bodyColor: "#1F2937",
+                borderColor: "#E5E7EB",
+                borderWidth: 1,
+                padding: 12,
+                displayColors: true,
+                boxPadding: 6,
               },
             },
           },
@@ -100,32 +108,8 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
         <p className="text-gray-600 text-sm">{subtitle}</p>
       </div>
-      {/* cambiar este contenedor para ajustar la altura del chart */}
       <div className="relative max-w-80 mx-auto">
         <canvas ref={chartRef} height="250" className="mb-6"></canvas>
-
-        {/* Labels positioned around the chart */}
-        <div className="absolute w-full h-full inset-0 pointer-events-none">
-          {distributionData.map((item, index) => (
-            <div
-              key={index}
-              className="absolute text-sm"
-              style={{
-                ...(index === 0 ? { top: "15%", right: "15%" } : {}), // Residencial CDMX
-                ...(index === 1 ? { left: "15%", top: "40%" } : {}), // Comercial CDMX
-                ...(index === 2 ? { bottom: "20%", left: "35%" } : {}), // Residencial GDL
-                ...(index === 3 ? { bottom: "30%", right: "25%" } : {}), // Comercial MTY
-                ...(index === 4 ? { top: "35%", right: "15%" } : {}), // Desarrollos Mixtos
-              }}
-            >
-              <div className="flex items-center" style={{ color: item.color }}>
-                <span className="font-semibold">
-                  {item.name} {item.value}%
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
       </div>
 
       <div>
