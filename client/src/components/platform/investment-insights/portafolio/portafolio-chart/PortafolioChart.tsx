@@ -43,7 +43,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
   const [formData, setFormData] = useState({
     type: "Departamento",
     name: "",
-    investmentAmount: 0,
+    investmentAmount: "",
     date: new Date().toISOString().split("T")[0],
   });
   const chartRef = useRef<HTMLCanvasElement>(null);
@@ -112,8 +112,9 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Here you would typically make an API call to save the property
-    console.log("New property data:", formData);
+    const investmentAmount = parseFloat(formData.investmentAmount) || 0;
+    const dataToSave = { ...formData, investmentAmount };
+    console.log("New property data:", dataToSave);
     setIsFlipped(false);
   };
 
@@ -155,7 +156,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                   </div>
                   <div className="flex items-center">
                     <span className="font-semibold mr-4">
-                      ${property.value.toFixed(1)}M
+                      ${(property.value * 1_000_000).toLocaleString("en-US")}
                     </span>
                     <span
                       className={`px-2 py-1 rounded text-xs ${
@@ -249,13 +250,14 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                   </span>
                   <input
                     type="number"
+                    step="any"
                     value={formData.investmentAmount}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        investmentAmount: Number(e.target.value),
-                      })
-                    }
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      if (val === "" || /^\d*\.?\d*$/.test(val)) {
+                        setFormData({ ...formData, investmentAmount: val });
+                      }
+                    }}
                     className="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
                     placeholder="1,500,000"
                     min="0"
