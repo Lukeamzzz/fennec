@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
+import styles from "./PortafolioChart.module.css";
 
 interface Property {
   type: string;
@@ -38,11 +39,18 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
     { type: "Terrenos", units: 2, value: 5.3, percentYield: 4.8 },
   ],
 }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
+  const [formData, setFormData] = useState({
+    type: "Departamento",
+    name: "",
+    investmentAmount: 0,
+    date: new Date().toISOString().split("T")[0],
+  });
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && !isFlipped) {
       Chart.register(PieController, ArcElement, Tooltip, Legend);
 
       if (chartInstance.current) {
@@ -100,66 +108,194 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         chartInstance.current.destroy();
       }
     };
-  }, [distributionData]);
+  }, [distributionData, isFlipped]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Here you would typically make an API call to save the property
+    console.log("New property data:", formData);
+    setIsFlipped(false);
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-        <p className="text-gray-600 text-sm">{subtitle}</p>
-      </div>
-      <div className="relative max-w-80 mx-auto">
-        <canvas ref={chartRef} height="250" className="mb-6"></canvas>
-      </div>
-
-      <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Resumen por Tipo de Propiedad
-        </h3>
-
-        {properties.map((property, index) => (
-          <div key={index} className="flex justify-between items-center mb-3">
-            <div>
-              <span className="font-medium">{property.type}</span>
-              <span className="text-gray-500 ml-2 text-sm">
-                {property.units} unidades
-              </span>
-            </div>
-            <div className="flex items-center">
-              <span className="font-semibold mr-4">
-                ${property.value.toFixed(1)}M
-              </span>
-              <span
-                className={`px-2 py-1 rounded text-xs ${
-                  property.percentYield >= 7
-                    ? "bg-green-100 text-green-800"
-                    : property.percentYield >= 6
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {property.percentYield}%
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button className="mt-6 w-full flex items-center justify-center text-gray-600 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 mr-2"
-          viewBox="0 0 20 20"
-          fill="currentColor"
+      <div className={styles.flipContainer}>
+        <div
+          className={`${styles.flipInner} ${
+            isFlipped ? styles.flipInnerFlipped : ""
+          }`}
         >
-          <path
-            fillRule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Añadir Propiedad
-      </button>
+          {/* Front side - Chart */}
+          <div
+            className={`${styles.flipSide} ${
+              isFlipped ? styles.flipSideHidden : styles.flipSideVisible
+            }`}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+              <p className="text-gray-600 text-sm">{subtitle}</p>
+            </div>
+            <div className="relative max-w-80 mx-auto">
+              <canvas ref={chartRef} height="250" className="mb-6"></canvas>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Resumen por Tipo de Propiedad
+              </h3>
+              {properties.map((property, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center mb-3"
+                >
+                  <div>
+                    <span className="font-medium">{property.type}</span>
+                    <span className="text-gray-500 ml-2 text-sm">
+                      {property.units} unidades
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-semibold mr-4">
+                      ${property.value.toFixed(1)}M
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        property.percentYield >= 7
+                          ? "bg-green-100 text-green-800"
+                          : property.percentYield >= 6
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {property.percentYield}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setIsFlipped(true)}
+              className="mt-6 w-full flex items-center justify-center text-gray-600 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Añadir Propiedad
+            </button>
+          </div>
+
+          {/* Back side - Form */}
+          <div
+            className={`${styles.flipSide} ${styles.flipBack} ${
+              isFlipped ? styles.flipSideVisible : styles.flipSideHidden
+            }`}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Añadir Nueva Propiedad
+              </h2>
+              <p className="text-gray-600 text-sm">
+                Complete los datos de la nueva propiedad
+              </p>
+            </div>
+            <form onSubmit={handleSubmit} className="space-y-5">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Tipo de Propiedad
+                </label>
+                <select
+                  value={formData.type}
+                  onChange={(e) =>
+                    setFormData({ ...formData, type: e.target.value })
+                  }
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  required
+                >
+                  <option value="Departamento">Departamento</option>
+                  <option value="Terreno">Terreno</option>
+                  <option value="Casa">Casa</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Nombre de la Propiedad
+                </label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Ej: Casa en Polanco"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Monto de Inversión (MXN)
+                </label>
+                <div className="relative">
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                    $
+                  </span>
+                  <input
+                    type="number"
+                    value={formData.investmentAmount}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        investmentAmount: Number(e.target.value),
+                      })
+                    }
+                    className="w-full pl-8 pr-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                    placeholder="1,500,000"
+                    min="0"
+                    required
+                  />
+                </div>
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Fecha de Inversión
+                </label>
+                <input
+                  type="date"
+                  value={formData.date}
+                  onChange={(e) =>
+                    setFormData({ ...formData, date: e.target.value })
+                  }
+                  className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  required
+                />
+              </div>
+              <div className="flex justify-end space-x-3 pt-4">
+                <button
+                  type="button"
+                  onClick={() => setIsFlipped(false)}
+                  className="px-6 py-2.5 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-gray-500"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  Guardar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
