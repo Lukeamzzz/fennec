@@ -27,7 +27,7 @@ const GoogleAuth = ({ mode }: GoogleAuthProps) => {
         setShowNameForm(true);
         return;
       }
-  
+
       if (mode === "signup") {
         const userData = {
           email: user.email,
@@ -35,41 +35,19 @@ const GoogleAuth = ({ mode }: GoogleAuthProps) => {
           firebaseId: user.uid,
           tipoRole: "USER",
         };
-<<<<<<< Updated upstream
-  
-        const response = await api.post('/auth/signup', userData);
-        
-=======
 
         const response = await api.post("/auth/signup", userData);
 
->>>>>>> Stashed changes
         if (!response.data.message) {
           throw new Error("Error en el registro");
         }
-      } else {
-        // Add backend validation for login mode
-        try {
-          const response = await api.post('/auth/login', {
-            firebaseId: user.uid,
-            email: user.email
-          });
-          
-          if (!response.data) {
-            throw new Error('Backend validation failed');
-          }
-        } catch (backendErr) {
-          // If backend validation fails, sign out from Firebase
-          await auth.signOut();
-          throw new Error('Account not found in the system. Please sign up first.');
-        }
       }
-  
+
       router.push("/platform/dashboard");
     } catch (error) {
       console.error("Error de autenticación:", error);
       showCustomToast({
-        message: error instanceof Error ? error.message : "Error during authentication",
+        message: "Error Signing Up",
         type: "error",
       });
     }
