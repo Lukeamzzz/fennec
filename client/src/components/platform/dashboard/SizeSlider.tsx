@@ -1,13 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
 import * as SliderPrimitive from "@radix-ui/react-slider";
 
-function SizeSlider() {
-    const [value, setValue] = useState<number[]>([270]);
+interface Props {
+    value: number;
+    onChange: (value: number) => void;
+}
 
+function SizeSlider({ value, onChange }: Props) {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVal = Number(e.target.value);
         if (!isNaN(newVal) && newVal >= 0 && newVal <= 5000) {
-            setValue([newVal]);
+            onChange(newVal);
         }
     };
 
@@ -20,7 +23,7 @@ function SizeSlider() {
             <div className="flex items-center space-x-4">
                 <input
                     type="number"
-                    value={value[0]}
+                    value={value}
                     onChange={handleInputChange}
                     className="w-24 px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
                     min={0}
@@ -31,8 +34,8 @@ function SizeSlider() {
 
             <SliderPrimitive.Root
                 className="relative flex items-center select-none touch-none w-full h-4"
-                value={value}
-                onValueChange={setValue}
+                value={[value]}
+                onValueChange={(val) => onChange(val[0])}
                 max={5000}
                 step={1}
             >
