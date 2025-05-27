@@ -1,5 +1,3 @@
-import React, { useState } from "react";
-
 const alcaldias = [
     "Álvaro Obregón",
     "Azcapotzalco",
@@ -19,25 +17,20 @@ const alcaldias = [
     "Xochimilco",
 ];
 
-function AlcaldiaDropdown() {
-    const [selectedAlcaldia, setSelectedAlcaldia] = useState(alcaldias[0]);
+const AlcaldiaDropdown = ({ value, onChange }: { value: string, onChange: (val: string) => void }) => {
 
-    return (
-        <div>
-            <h3>Alcaldía</h3>
-            <select
-                value={selectedAlcaldia}
-                onChange={(e) => setSelectedAlcaldia(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-            >
-                {alcaldias.map((alc) => (
-                    <option key={alc} value={alc}>
-                        {alc}
-                    </option>
-                ))}
-            </select>
-        </div>
-    );
-}
+  return (
+    <select
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      className="w-full px-3 py-2 border rounded-md bg-white"
+    >
+      <option value="">Selecciona una alcaldía</option>
+      {alcaldias.map((a) => (
+        <option key={a} value={a}>{a}</option>
+      ))}
+    </select>
+  );
+};
 
 export default AlcaldiaDropdown;
