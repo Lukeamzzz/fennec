@@ -34,20 +34,6 @@ interface Property {
 }
 
 function DashboardPage() {
-  const { idToken } = useAuth();
-
-  useEffect(() => {
-    if (!idToken) return;
-
-    const fetchPropertyData = async () => {
-      const response = await api.get("/");
-    };
-
-    fetchPropertyData().catch((error) => {
-      console.error("Error fetching property data:", error);
-    });
-  }, [idToken]);
-
   return (
     <div className="flex min-h-screen p-2">
       <div className="flex-1 pt-5 pl-1">

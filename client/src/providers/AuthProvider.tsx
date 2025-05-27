@@ -48,12 +48,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         } catch (err) {
           console.error(err);
           setIdToken(null);
-          setRole(null);
+          setRole("usuario");
           delete api.defaults.headers.common["Authorization"];
         }
       } else {
         setIdToken(null);
-        setRole(null);
+        setRole("null");
         delete api.defaults.headers.common["Authorization"];
       }
 
