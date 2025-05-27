@@ -49,7 +49,7 @@ function SignupPage() {
       };
 
       console.log("Enviando a backend:", userData);
-      const response = await api.post('http://localhost:8080/auth/signup', userData);
+      const response = await api.post('/auth/signup', userData);
 
       if (response.status !== 200) {
         throw new Error('Registration failed');

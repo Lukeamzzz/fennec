@@ -3,7 +3,6 @@ import Header from './Header';
 import DetailsGrid from './DetailsGrid';
 import PriceChart from './PriceChart';
 import InvestmentForecast from './InvestmentForecast';
-import RiskFactors from './RiskFactors';
 import Amenities from './Amenities';
 import { X } from 'lucide-react';
 
@@ -15,6 +14,7 @@ interface DashboardPropertyCardProps {
     size: number;
     bathrooms: number;
     bedrooms: number;
+    parking: number;
     previousPrices: number[];
     valuation3Years: number;
     valuation5Years: number;
@@ -22,25 +22,21 @@ interface DashboardPropertyCardProps {
     roiMonthly: number;
     breakevenYears: number;
     occupancyRate: number;
-    riskFactors: string[];
-    amenities: string[];
     investmentGrade: string;
-    phone: string;
     onClose: () => void;
 }
 
 
 export default function DashboardPropertyCard(props: DashboardPropertyCardProps) {
     const {
-        name, location, description, price, size, bathrooms, bedrooms,
+        name, location, description, price, size, bathrooms, bedrooms, parking,
         previousPrices, valuation3Years, valuation5Years, growthRate,
-        roiMonthly, breakevenYears, occupancyRate,
-        riskFactors, amenities, investmentGrade, phone, onClose
+        roiMonthly, investmentGrade, onClose
     } = props;
 
     return (
-        <div className={"fixed inset-0 bg-gray-500/50 flex items-center justify-center z-50"}>
-            <div className="relative m-2 p-5 bg-white shadow-lg rounded-lg overflow-hidden max-w-7xl">
+        <div className="fixed inset-0 bg-gray-500/50 flex items-center justify-center z-50">
+            <div className="relative m-2 bg-white shadow-lg rounded-lg overflow-y-auto max-h-[95vh] w-full max-w-3xl">
 
                 <button
                     onClick={onClose}
@@ -49,21 +45,22 @@ export default function DashboardPropertyCard(props: DashboardPropertyCardProps)
                     <X/>
                 </button>
 
-                <Header name={name} location={location} />
-                <span>{description}</span>
-                <DetailsGrid price={price} size={size} bedrooms={bedrooms} bathrooms={bathrooms} />
-                <PriceChart previousPrices={previousPrices} />
-                <InvestmentForecast
-                    valuation3Years={valuation3Years}
-                    valuation5Years={valuation5Years}
-                    growthRate={growthRate}
-                    roiMonthly={roiMonthly}
-                    breakevenYears={breakevenYears}
-                    occupancyRate={occupancyRate}
-                />
-                <RiskFactors riskFactors={riskFactors} />
-                <Amenities amenities={amenities} investmentGrade={investmentGrade} phone={phone} />
+                <div className="p-4">
+                    <Header name={name} location={location}/>
+                    <span>{description}</span>
+                    <DetailsGrid price={price} size={size} bedrooms={bedrooms} bathrooms={bathrooms} parking={parking}/>
+                    <PriceChart previousPrices={previousPrices}/>
+                    <InvestmentForecast
+                        valuation3Years={valuation3Years}
+                        valuation5Years={valuation5Years}
+                        growthRate={growthRate}
+                        roiMonthly={roiMonthly}
+                    />
+                    <Amenities investmentGrade={investmentGrade}/>
+                </div>
+
             </div>
         </div>
+
     );
 }

@@ -1,7 +1,11 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
+import styles from "./PortafolioChart.module.css";
+import PropertyForm, { PropertyFormData } from "./PropertyForm";
+import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 interface Property {
   type: string;
@@ -38,11 +42,12 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
     { type: "Terrenos", units: 2, value: 5.3, percentYield: 4.8 },
   ],
 }) => {
+  const [isFlipped, setIsFlipped] = useState(false);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
   useEffect(() => {
-    if (chartRef.current) {
+    if (chartRef.current && !isFlipped) {
       Chart.register(PieController, ArcElement, Tooltip, Legend);
 
       if (chartInstance.current) {
@@ -80,6 +85,14 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                     return `${label}: ${value}%`;
                   },
                 },
+                backgroundColor: "rgba(255, 255, 255, 0.9)",
+                titleColor: "#1F2937",
+                bodyColor: "#1F2937",
+                borderColor: "#E5E7EB",
+                borderWidth: 1,
+                padding: 12,
+                displayColors: true,
+                boxPadding: 6,
               },
             },
           },
@@ -92,90 +105,143 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         chartInstance.current.destroy();
       }
     };
-  }, [distributionData]);
+  }, [distributionData, isFlipped]);
+
+  const handleSubmit = async (formData: PropertyFormData) => {
+    try {
+      const investmentData = {
+        monto_invertido: Number(formData.investmentAmount),
+        precio_propiedad: Number(formData.propertyPrice),
+        tipo_propiedad: formData.type,
+        direccion: formData.address,
+        descripcion: formData.name,
+        alcaldia: formData.alcaldia,
+        colonia: formData.colonia,
+        dimensiones_m2: Number(formData.squareMeters),
+        fecha_inversion: formData.date,
+        banos: formData.bathrooms ? Number(formData.bathrooms) : 0,
+        recamaras: formData.bedrooms ? Number(formData.bedrooms) : 0,
+        estacionamientos: formData.parkingSpots
+          ? Number(formData.parkingSpots)
+          : 0,
+        id_usuario: "1", // TODO: Get this from auth context
+      };
+
+      await createInvestment(investmentData);
+      showCustomToast({
+        message: "Inversión creada exitosamente",
+        type: "success",
+        duration: 3000,
+      });
+      setIsFlipped(false);
+    } catch (error) {
+      showCustomToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Error al crear la inversión",
+        type: "error",
+        duration: 3000,
+      });
+    }
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-        <p className="text-gray-600 text-sm">{subtitle}</p>
-      </div>
-      {/* cambiar este contenedor para ajustar la altura del chart */}
-      <div className="relative max-w-80 mx-auto">
-        <canvas ref={chartRef} height="250" className="mb-6"></canvas>
-
-        {/* Labels positioned around the chart */}
-        <div className="absolute w-full h-full inset-0 pointer-events-none">
-          {distributionData.map((item, index) => (
-            <div
-              key={index}
-              className="absolute text-sm"
-              style={{
-                ...(index === 0 ? { top: "15%", right: "15%" } : {}), // Residencial CDMX
-                ...(index === 1 ? { left: "15%", top: "40%" } : {}), // Comercial CDMX
-                ...(index === 2 ? { bottom: "20%", left: "35%" } : {}), // Residencial GDL
-                ...(index === 3 ? { bottom: "30%", right: "25%" } : {}), // Comercial MTY
-                ...(index === 4 ? { top: "35%", right: "15%" } : {}), // Desarrollos Mixtos
-              }}
-            >
-              <div className="flex items-center" style={{ color: item.color }}>
-                <span className="font-semibold">
-                  {item.name} {item.value}%
-                </span>
-              </div>
+      <div className={styles.flipContainer}>
+        <div
+          className={`${styles.flipInner} ${
+            isFlipped ? styles.flipInnerFlipped : ""
+          }`}
+        >
+          {/* Front side - Chart */}
+          <div
+            className={`${styles.flipSide} ${
+              isFlipped ? styles.flipSideHidden : styles.flipSideVisible
+            }`}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+              <p className="text-gray-600 text-sm">{subtitle}</p>
             </div>
-          ))}
+            <div className="relative max-w-80 mx-auto">
+              <canvas ref={chartRef} height="250" className="mb-6"></canvas>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                Resumen por Tipo de Propiedad
+              </h3>
+              {properties.map((property, index) => (
+                <div
+                  key={index}
+                  className="flex justify-between items-center mb-3"
+                >
+                  <div>
+                    <span className="font-medium">{property.type}</span>
+                    <span className="text-gray-500 ml-2 text-sm">
+                      {property.units} unidades
+                    </span>
+                  </div>
+                  <div className="flex items-center">
+                    <span className="font-semibold mr-4">
+                      ${(property.value * 1_000_000).toLocaleString("en-US")}
+                    </span>
+                    <span
+                      className={`px-2 py-1 rounded text-xs ${
+                        property.percentYield >= 7
+                          ? "bg-green-100 text-green-800"
+                          : property.percentYield >= 6
+                          ? "bg-blue-100 text-blue-800"
+                          : "bg-gray-100 text-gray-800"
+                      }`}
+                    >
+                      {property.percentYield}%
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={() => setIsFlipped(true)}
+              className="mt-6 w-full flex items-center justify-center text-gray-600 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 mr-2"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              Añadir Propiedad
+            </button>
+          </div>
+
+          {/* Back side - Form */}
+          <div
+            className={`${styles.flipSide} ${styles.flipBack} ${
+              isFlipped ? styles.flipSideVisible : styles.flipSideHidden
+            }`}
+          >
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-800">
+                Añadir Nueva Propiedad
+              </h2>
+              <p className="text-gray-600 text-sm">
+                Complete los datos de la nueva propiedad
+              </p>
+            </div>
+            <PropertyForm
+              onSubmit={handleSubmit}
+              onCancel={() => setIsFlipped(false)}
+            />
+          </div>
         </div>
       </div>
-
-      <div>
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">
-          Resumen por Tipo de Propiedad
-        </h3>
-
-        {properties.map((property, index) => (
-          <div key={index} className="flex justify-between items-center mb-3">
-            <div>
-              <span className="font-medium">{property.type}</span>
-              <span className="text-gray-500 ml-2 text-sm">
-                {property.units} unidades
-              </span>
-            </div>
-            <div className="flex items-center">
-              <span className="font-semibold mr-4">
-                ${property.value.toFixed(1)}M
-              </span>
-              <span
-                className={`px-2 py-1 rounded text-xs ${
-                  property.percentYield >= 7
-                    ? "bg-green-100 text-green-800"
-                    : property.percentYield >= 6
-                    ? "bg-blue-100 text-blue-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {property.percentYield}%
-              </span>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <button className="mt-6 w-full flex items-center justify-center text-gray-600 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 mr-2"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-        >
-          <path
-            fillRule="evenodd"
-            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-            clipRule="evenodd"
-          />
-        </svg>
-        Añadir Propiedad
-      </button>
     </div>
   );
 };
