@@ -33,27 +33,26 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="relative border-r border-gray-200 bg-gray-50 w-60">
-      <div className="p-4 border-b border-gray-200">
-        <Link href={'/'}>
+    <div className="relative border-r border-gray-200 bg-gray-50 w-48 sticky top-0 h-screen">
+      <div className="p-2 border-b border-gray-200">
+        <Link href={"/"}>
           <span className="text-xl font-semibold text-orange-500">Fennec</span>
         </Link>
-        
       </div>
-      <nav className="pt-4">
+      <nav className="pt-2">
         <ul>
           {menuItems.map((item) => (
             <li key={item.id}>
               <Link
                 href={`/${item.id}`}
-                className={`flex items-center px-4 py-3 text-sm ${
+                className={`flex items-center px-3 py-2 text-sm ${
                   pathname === `/${item.id}`
                     ? "bg-orange-500 text-white"
                     : "text-gray-700 hover:bg-gray-100"
                 }`}
               >
-                <span className="inline-block w-5 mr-3">
-                  {React.createElement(item.icon, { size: 20 })}
+                <span className="inline-block w-5 mr-2">
+                  {React.createElement(item.icon, { size: 18 })}
                 </span>
                 {item.label}
               </Link>
