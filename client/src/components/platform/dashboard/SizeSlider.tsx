@@ -15,7 +15,7 @@ function SizeSlider({ value, onChange }: Props) {
     };
 
     return (
-        <div className="w-full max-w-md p-4 space-y-2">
+        <div className="w-full  p-4 space-y-2">
             <label className="block text-sm font-medium text-gray-700">
                 Tamaño de Propiedad (m²)
             </label>
