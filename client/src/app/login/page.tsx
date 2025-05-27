@@ -6,6 +6,7 @@ import { auth } from "@/lib/firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
+import api from "@/services/api";
 
 function LoginPage() {
   const router = useRouter();
@@ -19,11 +20,23 @@ function LoginPage() {
     setError("");
     
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      router.push("/platform/dashboard");
+      // First Firebase authentication
+      const result = await signInWithEmailAndPassword(auth, email, password);
+      
+      // Then validate with backend
+      try {
+        await api.post('/auth/signup', { 
+          firebaseId: result.user.uid,
+          email: result.user.email 
+        });
+        router.push("/platform/dashboard");
+      } catch (backendErr) {
+        // If backend validation fails, sign out from Firebase
+        await auth.signOut();
+        setError("Account not found in the system. Please sign up first.");
+      }
     } catch (err) {
       setError("Invalid credentials. Please try again.");
-      console.error("Login error:", err);
     }
   };
 
