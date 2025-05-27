@@ -4,6 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 import styles from "./PortafolioChart.module.css";
 import PropertyForm, { PropertyFormData } from "./PropertyForm";
+import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
+import { showCustomToast } from "@/lib/showCustomToast";
 
 interface Property {
   type: string;
@@ -105,9 +107,43 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
     };
   }, [distributionData, isFlipped]);
 
-  const handleSubmit = (formData: PropertyFormData) => {
-    console.log("New property data:", formData);
-    setIsFlipped(false);
+  const handleSubmit = async (formData: PropertyFormData) => {
+    try {
+      const investmentData = {
+        monto_invertido: Number(formData.investmentAmount),
+        precio_propiedad: Number(formData.propertyPrice),
+        tipo_propiedad: formData.type,
+        direccion: formData.address,
+        descripcion: formData.name,
+        alcaldia: formData.alcaldia,
+        colonia: formData.colonia,
+        dimensiones_m2: Number(formData.squareMeters),
+        fecha_inversion: formData.date,
+        banos: formData.bathrooms ? Number(formData.bathrooms) : 0,
+        recamaras: formData.bedrooms ? Number(formData.bedrooms) : 0,
+        estacionamientos: formData.parkingSpots
+          ? Number(formData.parkingSpots)
+          : 0,
+        id_usuario: "1", // TODO: Get this from auth context
+      };
+
+      await createInvestment(investmentData);
+      showCustomToast({
+        message: "Inversión creada exitosamente",
+        type: "success",
+        duration: 3000,
+      });
+      setIsFlipped(false);
+    } catch (error) {
+      showCustomToast({
+        message:
+          error instanceof Error
+            ? error.message
+            : "Error al crear la inversión",
+        type: "error",
+        duration: 3000,
+      });
+    }
   };
 
   return (
