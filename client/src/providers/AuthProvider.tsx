@@ -29,40 +29,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+
       if (firebaseUser) {
         try {
           const token = await getIdToken(firebaseUser);
           setIdToken(token);
 
-          // Inject token in Axios
+          // Inyectar token en Axios
           api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-          // Use the Google endpoint to validate the token and get user info
-          try {
-            await api.post('/auth/google');
-            setUser(firebaseUser);
-            const providerId = firebaseUser.providerData[0]?.providerId;
-            if (providerId === "google.com") {
-              setRole("premium");
-            }
-          } catch (backendErr) {
-            // If backend validation fails or backend is not running, sign out
-            console.error("Backend validation failed:", backendErr);
-            await auth.signOut();
-            setUser(null);
-            setIdToken(null);
-            setRole(null);
-            delete api.defaults.headers.common["Authorization"];
+          const providerId = firebaseUser.providerData[0]?.providerId;
+          if (providerId === "google.com") {
+            await api.post("/auth/google");
+            setRole("premium");
           }
+
         } catch (err) {
-          console.error("Firebase token error:", err);
-          setUser(null);
+          console.error(err);
           setIdToken(null);
           setRole(null);
           delete api.defaults.headers.common["Authorization"];
         }
       } else {
-        setUser(null);
         setIdToken(null);
         setRole(null);
         delete api.defaults.headers.common["Authorization"];
