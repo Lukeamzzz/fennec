@@ -42,11 +42,11 @@ const InvestmentOverview: React.FC = () => {
   ); // Sets portafolio as default tab
   const [reitData, setReitData] = useState<{
     funo: REITData | null;
-    dabhos: REITData | null;
+    fibrapl: REITData | null;
     fmty: REITData | null;
   }>({
     funo: null,
-    dabhos: null,
+    fibrapl: null,
     fmty: null,
   });
   const [loading, setLoading] = useState(true);
@@ -55,15 +55,15 @@ const InvestmentOverview: React.FC = () => {
     const fetchREITData = async () => {
       try {
         setLoading(true);
-        const [funoData, dabhosData, fmtyData] = await Promise.all([
-          getREIT({ reit: "funo" }),
-          getREIT({ reit: "danhos" }),
-          getREIT({ reit: "fmty" }),
+        const [funoData, fibraplData, fmtyData] = await Promise.all([
+          getREIT({ reit: "FUNO" }),
+          getREIT({ reit: "FMTY" }),
+          getREIT({ reit: "FIBRAPL" }),
         ]);
 
         setReitData({
           funo: funoData,
-          dabhos: dabhosData,
+          fibrapl: fibraplData,
           fmty: fmtyData,
         });
       } catch (error) {
@@ -89,23 +89,51 @@ const InvestmentOverview: React.FC = () => {
         : reitData.funo
         ? `$${reitData.funo.precio.toFixed(2)}`
         : "N/A",
-      change: null,
-      changeType: null,
+      change: reitData.funo?.variacion
+        ? `${
+            reitData.funo.variacion > 0 ? "+" : ""
+          }${reitData.funo.variacion.toFixed(2)}%`
+        : null,
+      changeType: reitData.funo?.variacion
+        ? reitData.funo.variacion > 0
+          ? "up"
+          : "down"
+        : null,
       subLabel: reitData.funo?.fecha
-        ? new Date(reitData.funo.fecha).toLocaleDateString("es-MX")
+        ? `Actualizado ${new Date(reitData.funo.fecha).toLocaleDateString(
+            "es-MX",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          )}`
         : "Fecha no disponible",
     },
     {
       label: "DANHOS",
       value: loading
         ? "Cargando..."
-        : reitData.dabhos
-        ? `$${reitData.dabhos.precio.toFixed(2)}`
+        : reitData.fibrapl
+        ? `$${reitData.fibrapl.precio.toFixed(2)}`
         : "N/A",
-      change: null,
-      changeType: null,
-      subLabel: reitData.dabhos?.fecha
-        ? new Date(reitData.dabhos.fecha).toLocaleDateString("es-MX")
+      change: reitData.fibrapl?.variacion
+        ? `${
+            reitData.fibrapl.variacion > 0 ? "+" : ""
+          }${reitData.fibrapl.variacion.toFixed(2)}%`
+        : null,
+      changeType: reitData.fibrapl?.variacion
+        ? reitData.fibrapl.variacion > 0
+          ? "up"
+          : "down"
+        : null,
+      subLabel: reitData.fibrapl?.fecha
+        ? `Actualizado ${new Date(reitData.fibrapl.fecha).toLocaleDateString(
+            "es-MX",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          )}`
         : "Fecha no disponible",
     },
     {
@@ -115,10 +143,24 @@ const InvestmentOverview: React.FC = () => {
         : reitData.fmty
         ? `$${reitData.fmty.precio.toFixed(2)}`
         : "N/A",
-      change: null,
-      changeType: null,
+      change: reitData.fmty?.variacion
+        ? `${
+            reitData.fmty.variacion > 0 ? "+" : ""
+          }${reitData.fmty.variacion.toFixed(2)}%`
+        : null,
+      changeType: reitData.fmty?.variacion
+        ? reitData.fmty.variacion > 0
+          ? "up"
+          : "down"
+        : null,
       subLabel: reitData.fmty?.fecha
-        ? new Date(reitData.fmty.fecha).toLocaleDateString("es-MX")
+        ? `Actualizado ${new Date(reitData.fmty.fecha).toLocaleDateString(
+            "es-MX",
+            {
+              day: "numeric",
+              month: "short",
+            }
+          )}`
         : "Fecha no disponible",
     },
     {

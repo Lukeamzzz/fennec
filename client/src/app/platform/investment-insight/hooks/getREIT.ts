@@ -4,6 +4,7 @@ export interface REITData {
   ticker: string;
   precio: number;
   fecha: string;
+  variacion: number;
 }
 
 export async function getREIT({ reit }: { reit: string }): Promise<REITData> {
