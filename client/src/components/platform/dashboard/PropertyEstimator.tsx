@@ -3,7 +3,7 @@ import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/Alcaldia
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
 import ButtonPropertyEstimator from "@/components/platform/dashboard/ButtonPropertyEstimator";
-import { usePropertyEstimator, PredictionInput } from "@/components/platform/dashboard/hooks/usePropertyEstimator";
+import { usePropertyEstimator, PredictionInput } from "@/app/platform/dashboard/hooks/usePropertyEstimator";
 
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
