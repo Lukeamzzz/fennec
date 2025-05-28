@@ -1,37 +1,143 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import {
+  getREIT,
+  REITData,
+} from "@/app/platform/investment-insight/hooks/getREIT";
+import { showCustomToast } from "@/lib/showCustomToast";
 
-const stats = [
+const portfolioStats = [
   {
-    label: "Rendimiento Promedio",
-    value: "8.2%",
-    change: "+0.5%",
+    label: "Valor Total",
+    value: "$2,450,000",
+    change: "+12.3%",
     changeType: "up",
     subLabel: "Últimos 12 meses",
   },
   {
-    label: "Cap Rate Promedio",
-    value: "6.7%",
-    change: "-0.3%",
-    changeType: "down",
-    subLabel: "Cambio desde Q1",
-  },
-  {
-    label: "Precio / m²",
-    value: "$28,450",
-    change: "+4.2%",
+    label: "Rendimiento Anual",
+    value: "9.1%",
+    change: "+1.2%",
     changeType: "up",
-    subLabel: "Incremento anual",
+    subLabel: "Superando el mercado",
   },
   {
-    label: "Índice de Riesgo",
-    value: "Moderado",
-    change: null,
-    changeType: null,
-    subLabel: "Estable por 3 trimestres",
+    label: "Propiedades",
+    value: "8",
+    change: "+2",
+    changeType: "up",
+    subLabel: "Nuevas adquisiciones",
+  },
+  {
+    label: "Ocupación",
+    value: "95%",
+    change: "+5%",
+    changeType: "up",
+    subLabel: "Promedio anual",
   },
 ];
 
 const InvestmentOverview: React.FC = () => {
+  const [activeTab, setActiveTab] = useState<"portafolio" | "mercado">(
+    "portafolio"
+  ); // Sets portafolio as default tab
+  const [reitData, setReitData] = useState<{
+    funo: REITData | null;
+    dabhos: REITData | null;
+    fmty: REITData | null;
+  }>({
+    funo: null,
+    dabhos: null,
+    fmty: null,
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchREITData = async () => {
+      try {
+        setLoading(true);
+        const [funoData, dabhosData, fmtyData] = await Promise.all([
+          getREIT({ reit: "funo" }),
+          getREIT({ reit: "danhos" }),
+          getREIT({ reit: "fmty" }),
+        ]);
+
+        setReitData({
+          funo: funoData,
+          dabhos: dabhosData,
+          fmty: fmtyData,
+        });
+      } catch (error) {
+        showCustomToast({
+          message: `Error al obtener datos de los REITs`,
+          type: "error",
+          duration: 3000,
+        });
+        console.error("Error fetching REIT data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchREITData();
+  }, []);
+
+  const marketStats = [
+    {
+      label: "FUNO",
+      value: loading
+        ? "Cargando..."
+        : reitData.funo
+        ? `$${reitData.funo.precio.toFixed(2)}`
+        : "N/A",
+      change: null,
+      changeType: null,
+      subLabel: reitData.funo?.fecha
+        ? new Date(reitData.funo.fecha).toLocaleDateString("es-MX")
+        : "Fecha no disponible",
+    },
+    {
+      label: "DANHOS",
+      value: loading
+        ? "Cargando..."
+        : reitData.dabhos
+        ? `$${reitData.dabhos.precio.toFixed(2)}`
+        : "N/A",
+      change: null,
+      changeType: null,
+      subLabel: reitData.dabhos?.fecha
+        ? new Date(reitData.dabhos.fecha).toLocaleDateString("es-MX")
+        : "Fecha no disponible",
+    },
+    {
+      label: "FMTY",
+      value: loading
+        ? "Cargando..."
+        : reitData.fmty
+        ? `$${reitData.fmty.precio.toFixed(2)}`
+        : "N/A",
+      change: null,
+      changeType: null,
+      subLabel: reitData.fmty?.fecha
+        ? new Date(reitData.fmty.fecha).toLocaleDateString("es-MX")
+        : "Fecha no disponible",
+    },
+    {
+      label: "Índice de Riesgo",
+      value: "Moderado",
+      change: null,
+      changeType: null,
+      subLabel: "Estable por 3 trimestres",
+    },
+  ];
+
+  const currentStats =
+    activeTab === "portafolio" ? portfolioStats : marketStats;
+  const currentTitle = activeTab === "portafolio" ? "Portafolio" : "Mercado";
+  const currentDescription =
+    activeTab === "portafolio"
+      ? "Tu portafolio de inversión inmobiliaria muestra un crecimiento sólido y consistente. Las propiedades en zonas premium han generado rendimientos superiores al promedio del mercado, con una ocupación estable y flujo de efectivo positivo."
+      : "El mercado inmobiliario mexicano muestra signos de estabilización después de la volatilidad post-pandemia. Las zonas premium de CDMX, Monterrey y Guadalajara siguen siendo los polos de mayor rentabilidad, con un crecimiento sostenido en el segmento de propiedades de lujo. Se anticipa un incremento moderado pero constante en los precios durante los próximos 18 meses.";
+
   return (
     <>
       <div className="text-center mb-8">
@@ -42,19 +148,30 @@ const InvestmentOverview: React.FC = () => {
       </div>
       <div className="flex justify-center mb-6">
         <div className="inline-flex bg-[#F3F0E8] rounded-xl p-1">
-          <button className="px-6 py-2 rounded-xl bg-white font-semibold text-gray-900 shadow-sm">
-            General
+          <button
+            className={`px-6 py-2 rounded-xl font-semibold transition-all duration-200 cursor-pointer ${
+              activeTab === "portafolio"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("portafolio")}
+          >
+            Portafolio
           </button>
-          <button className="px-6 py-2 rounded-xl text-gray-500">
-            Residencial
-          </button>
-          <button className="px-6 py-2 rounded-xl text-gray-500">
-            Comercial
+          <button
+            className={`px-6 py-2 rounded-xl font-semibold transition-all duration-200 cursor-pointer ${
+              activeTab === "mercado"
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-500 hover:text-gray-700"
+            }`}
+            onClick={() => setActiveTab("mercado")}
+          >
+            Mercado
           </button>
         </div>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-        {stats.map((stat) => (
+        {currentStats.map((stat) => (
           <div
             key={stat.label}
             className="bg-white rounded-2xl shadow p-6 flex flex-col items-start"
@@ -91,21 +208,12 @@ const InvestmentOverview: React.FC = () => {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <h2 className="font-semibold text-xl text-primary">
-              Perspectiva de <span className="text-orange-500">Mercado</span>
+              Perspectiva de{" "}
+              <span className="text-orange-500">{currentTitle}</span>
             </h2>
           </div>
           <p className="text-muted-foreground text-base leading-relaxed">
-            El mercado inmobiliario mexicano muestra signos de{" "}
-            <span className="font-semibold text-primary">estabilización</span>{" "}
-            después de la volatilidad post-pandemia. Las zonas premium de{" "}
-            <span className="font-semibold">CDMX, Monterrey y Guadalajara</span>{" "}
-            siguen siendo los polos de mayor rentabilidad, con un crecimiento
-            sostenido en el segmento de propiedades de lujo. Se anticipa un
-            incremento{" "}
-            <span className="font-semibold text-primary">
-              moderado pero constante
-            </span>{" "}
-            en los precios durante los próximos 18 meses.
+            {currentDescription}
           </p>
         </div>
       </div>
