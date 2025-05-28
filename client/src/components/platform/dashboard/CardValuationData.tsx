@@ -22,8 +22,9 @@ const CardValuationData = ({ title, amount, change }: CardValuationData) => {
         <div className="border-none text-center shadow-md m-5 rounded-md">
             <div className="p-4 space-y-2">
                 <div className="text-sm font-medium text-neutral-700 flex justify-center items-center gap-1">
-                    {title}
                     <span className="text-orange-500">$</span>
+                    {title}
+
                 </div>
                 <div className="text-3xl font-bold text-neutral-900">
                     {formattedAmount}
@@ -35,8 +36,8 @@ const CardValuationData = ({ title, amount, change }: CardValuationData) => {
                     )}
                 >
                     {isPositive ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                    <span className="font-medium">{`${Math.abs(change).toFixed(1)}%`}</span>
-                    <span className="text-muted-foreground">from last month</span>
+                    <span className="font-medium">{`${Math.abs(change).toFixed(1)}%`} </span>
+                    <span className="text-muted-foreground">Respecto a toda CDMX</span>
                 </div>
             </div>
         </div>
