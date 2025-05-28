@@ -5,6 +5,11 @@ import {
 } from "@/app/platform/investment-insight/hooks/getREIT";
 import { showCustomToast } from "@/lib/showCustomToast";
 
+// Skeleton component for loading state
+const Skeleton = ({ className }: { className?: string }) => (
+  <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
+);
+
 const portfolioStats = [
   {
     label: "Valor Total",
@@ -84,84 +89,114 @@ const InvestmentOverview: React.FC = () => {
   const marketStats = [
     {
       label: "FUNO",
-      value: loading
-        ? "Cargando..."
-        : reitData.funo
-        ? `$${reitData.funo.precio.toFixed(2)}`
-        : "N/A",
-      change: reitData.funo?.variacion
+      value: loading ? (
+        <Skeleton className="h-8 w-20" />
+      ) : reitData.funo ? (
+        `$${reitData.funo.precio.toFixed(2)}`
+      ) : (
+        "N/A"
+      ),
+      change: loading
+        ? null
+        : reitData.funo?.variacion
         ? `${
             reitData.funo.variacion > 0 ? "+" : ""
           }${reitData.funo.variacion.toFixed(2)}%`
         : null,
-      changeType: reitData.funo?.variacion
+      changeType: loading
+        ? null
+        : reitData.funo?.variacion
         ? reitData.funo.variacion > 0
           ? "up"
           : "down"
         : null,
-      subLabel: reitData.funo?.fecha
-        ? `Actualizado ${new Date(reitData.funo.fecha).toLocaleDateString(
-            "es-MX",
-            {
-              day: "numeric",
-              month: "short",
-            }
-          )}`
-        : "Fecha no disponible",
+      subLabel: loading ? (
+        <Skeleton className="h-3 w-24" />
+      ) : reitData.funo?.fecha ? (
+        `Actualizado ${new Date(reitData.funo.fecha).toLocaleDateString(
+          "es-MX",
+          {
+            day: "numeric",
+            month: "short",
+          }
+        )}`
+      ) : (
+        "Fecha no disponible"
+      ),
     },
     {
-      label: "DANHOS",
-      value: loading
-        ? "Cargando..."
-        : reitData.fibrapl
-        ? `$${reitData.fibrapl.precio.toFixed(2)}`
-        : "N/A",
-      change: reitData.fibrapl?.variacion
+      label: "FIBRAPL",
+      value: loading ? (
+        <Skeleton className="h-8 w-20" />
+      ) : reitData.fibrapl ? (
+        `$${reitData.fibrapl.precio.toFixed(2)}`
+      ) : (
+        "N/A"
+      ),
+      change: loading
+        ? null
+        : reitData.fibrapl?.variacion
         ? `${
             reitData.fibrapl.variacion > 0 ? "+" : ""
           }${reitData.fibrapl.variacion.toFixed(2)}%`
         : null,
-      changeType: reitData.fibrapl?.variacion
+      changeType: loading
+        ? null
+        : reitData.fibrapl?.variacion
         ? reitData.fibrapl.variacion > 0
           ? "up"
           : "down"
         : null,
-      subLabel: reitData.fibrapl?.fecha
-        ? `Actualizado ${new Date(reitData.fibrapl.fecha).toLocaleDateString(
-            "es-MX",
-            {
-              day: "numeric",
-              month: "short",
-            }
-          )}`
-        : "Fecha no disponible",
+      subLabel: loading ? (
+        <Skeleton className="h-3 w-24" />
+      ) : reitData.fibrapl?.fecha ? (
+        `Actualizado ${new Date(reitData.fibrapl.fecha).toLocaleDateString(
+          "es-MX",
+          {
+            day: "numeric",
+            month: "short",
+          }
+        )}`
+      ) : (
+        "Fecha no disponible"
+      ),
     },
     {
       label: "FMTY",
-      value: loading
-        ? "Cargando..."
-        : reitData.fmty
-        ? `$${reitData.fmty.precio.toFixed(2)}`
-        : "N/A",
-      change: reitData.fmty?.variacion
+      value: loading ? (
+        <Skeleton className="h-8 w-20" />
+      ) : reitData.fmty ? (
+        `$${reitData.fmty.precio.toFixed(2)}`
+      ) : (
+        "N/A"
+      ),
+      change: loading
+        ? null
+        : reitData.fmty?.variacion
         ? `${
             reitData.fmty.variacion > 0 ? "+" : ""
           }${reitData.fmty.variacion.toFixed(2)}%`
         : null,
-      changeType: reitData.fmty?.variacion
+      changeType: loading
+        ? null
+        : reitData.fmty?.variacion
         ? reitData.fmty.variacion > 0
           ? "up"
           : "down"
         : null,
-      subLabel: reitData.fmty?.fecha
-        ? `Actualizado ${new Date(reitData.fmty.fecha).toLocaleDateString(
-            "es-MX",
-            {
-              day: "numeric",
-              month: "short",
-            }
-          )}`
-        : "Fecha no disponible",
+      subLabel: loading ? (
+        <Skeleton className="h-3 w-24" />
+      ) : reitData.fmty?.fecha ? (
+        `Actualizado ${new Date(reitData.fmty.fecha).toLocaleDateString(
+          "es-MX",
+          {
+            day: "numeric",
+            month: "short",
+          }
+        )}`
+      ) : (
+        "Fecha no disponible"
+      ),
     },
     {
       label: "Índice de Riesgo",
@@ -230,7 +265,9 @@ const InvestmentOverview: React.FC = () => {
               )}
             </span>
             <div className="flex items-end mb-1">
-              <span className="text-3xl font-bold mr-2">{stat.value}</span>
+              <span className="text-3xl font-bold mr-2">
+                {typeof stat.value === "string" ? stat.value : stat.value}
+              </span>
               {stat.change && (
                 <span
                   className={`text-sm font-semibold ${
@@ -241,7 +278,11 @@ const InvestmentOverview: React.FC = () => {
                 </span>
               )}
             </div>
-            <span className="text-gray-400 text-xs">{stat.subLabel}</span>
+            <span className="text-gray-400 text-xs">
+              {typeof stat.subLabel === "string"
+                ? stat.subLabel
+                : stat.subLabel}
+            </span>
           </div>
         ))}
       </div>
