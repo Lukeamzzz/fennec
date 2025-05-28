@@ -23,7 +23,9 @@ export default function Reports() {
   const [reports, setReports] = useState<ValuationReport[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedReport, setSelectedReport] = useState<ValuationReport | null>(null);
+  const [selectedReport, setSelectedReport] = useState<ValuationReport | null>(
+    null
+  );
   const [showModal, setShowModal] = useState(false);
 
   // Simular datos de ejemplo (reemplazar con llamada real a API)
@@ -33,7 +35,7 @@ export default function Reports() {
         // Aquí harías la llamada real a tu API
         // const response = await fetch('/api/valuation-reports');
         // const data = await response.json();
-        
+
         // Datos de ejemplo para mostrar la interfaz
         const mockData: ValuationReport[] = [
           {
@@ -47,7 +49,8 @@ export default function Reports() {
             bathrooms: 2,
             tamanoPropiedad: 120,
             condicion: "Buena",
-            anotaciones_valuacion: "Departamento en excelente ubicación con vista panorámica. Cuenta con acabados de primera calidad, cocina integral, closets empotrados y balcón amplio. Edificio con amenidades: gimnasio, roof garden y seguridad 24 horas. Estacionamiento techado incluido."
+            anotaciones_valuacion:
+              "Departamento en excelente ubicación con vista panorámica. Cuenta con acabados de primera calidad, cocina integral, closets empotrados y balcón amplio. Edificio con amenidades: gimnasio, roof garden y seguridad 24 horas. Estacionamiento techado incluido.",
           },
           {
             id: "2",
@@ -60,7 +63,8 @@ export default function Reports() {
             bathrooms: 3,
             tamanoPropiedad: 250,
             condicion: "Excelente",
-            anotaciones_valuacion: "Casa completamente remodelada con diseño contemporáneo. Pisos de madera en planta alta, cocina italiana con isla central, jardín privado con asador. Sistema de calefacción, paneles solares y cisterna de 10,000 litros. Zona muy cotizada de la Roma Norte."
+            anotaciones_valuacion:
+              "Casa completamente remodelada con diseño contemporáneo. Pisos de madera en planta alta, cocina italiana con isla central, jardín privado con asador. Sistema de calefacción, paneles solares y cisterna de 10,000 litros. Zona muy cotizada de la Roma Norte.",
           },
           {
             id: "3",
@@ -73,10 +77,11 @@ export default function Reports() {
             bathrooms: 2,
             tamanoPropiedad: 95,
             condicion: "Muy Buena",
-            anotaciones_valuacion: "Departamento de lujo en Polanco con vista al Parque Lincoln. Acabados premium, mármol en baños, cocina con electrodomésticos europeos. Building de gran prestigio con conserje, valet parking y spa. Ubicación privilegiada a 2 cuadras de Presidente Masaryk."
-          }
+            anotaciones_valuacion:
+              "Departamento de lujo en Polanco con vista al Parque Lincoln. Acabados premium, mármol en baños, cocina con electrodomésticos europeos. Building de gran prestigio con conserje, valet parking y spa. Ubicación privilegiada a 2 cuadras de Presidente Masaryk.",
+          },
         ];
-        
+
         setReports(mockData);
         setLoading(false);
       } catch (err) {
@@ -89,9 +94,9 @@ export default function Reports() {
   }, []);
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-MX', {
-      style: 'currency',
-      currency: 'MXN',
+    return new Intl.NumberFormat("es-MX", {
+      style: "currency",
+      currency: "MXN",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
@@ -99,17 +104,17 @@ export default function Reports() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return new Intl.DateTimeFormat('es-MX', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+    return new Intl.DateTimeFormat("es-MX", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     }).format(date);
   };
 
   const handleViewDetails = (reportId: string) => {
-    const report = reports.find(r => r.id === reportId);
+    const report = reports.find((r) => r.id === reportId);
     if (report) {
       setSelectedReport(report);
       setShowModal(true);
@@ -148,7 +153,9 @@ export default function Reports() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Informes de Valuación</h1>
+          <h1 className="text-3xl font-bold text-gray-900">
+            Informes de Valuación
+          </h1>
           <p className="mt-2 text-gray-600">
             Aquí puedes ver todos los reportes de valuación que has generado
           </p>
@@ -159,14 +166,28 @@ export default function Reports() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-orange-500 rounded-md p-3">
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                  />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Total Reportes</dt>
-                  <dd className="text-lg font-medium text-gray-900">{reports.length}</dd>
+                  <dt className="text-sm font-medium text-gray-500 truncate">
+                    Total Reportes
+                  </dt>
+                  <dd className="text-lg font-medium text-gray-900">
+                    {reports.length}
+                  </dd>
                 </dl>
               </div>
             </div>
@@ -175,18 +196,34 @@ export default function Reports() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-green-500 rounded-md p-3">
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1"
+                  />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Valor Promedio</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">
+                    Valor Promedio
+                  </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {reports.length > 0 
-                      ? formatCurrency(reports.reduce((sum, report) => sum + report.valorEstimado, 0) / reports.length)
-                      : '$0'
-                    }
+                    {reports.length > 0
+                      ? formatCurrency(
+                          reports.reduce(
+                            (sum, report) => sum + report.valorEstimado,
+                            0
+                          ) / reports.length
+                        )
+                      : "$0"}
                   </dd>
                 </dl>
               </div>
@@ -196,18 +233,35 @@ export default function Reports() {
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="flex-shrink-0 bg-blue-500 rounded-md p-3">
-                <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3a4 4 0 118 0v4m-4 6v6m0 0v3m0-3h.01M12 14h.01" />
+                <svg
+                  className="h-6 w-6 text-white"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M8 7V3a4 4 0 118 0v4m-4 6v6m0 0v3m0-3h.01M12 14h.01"
+                  />
                 </svg>
               </div>
               <div className="ml-5 w-0 flex-1">
                 <dl>
-                  <dt className="text-sm font-medium text-gray-500 truncate">Último Reporte</dt>
+                  <dt className="text-sm font-medium text-gray-500 truncate">
+                    Último Reporte
+                  </dt>
                   <dd className="text-lg font-medium text-gray-900">
-                    {reports.length > 0 
-                      ? new Date(Math.max(...reports.map(r => new Date(r.fechaCreacion).getTime()))).toLocaleDateString('es-MX')
-                      : 'N/A'
-                    }
+                    {reports.length > 0
+                      ? new Date(
+                          Math.max(
+                            ...reports.map((r) =>
+                              new Date(r.fechaCreacion).getTime()
+                            )
+                          )
+                        ).toLocaleDateString("es-MX")
+                      : "N/A"}
                   </dd>
                 </dl>
               </div>
@@ -218,16 +272,33 @@ export default function Reports() {
         {/* Reports Grid */}
         {reports.length === 0 ? (
           <div className="text-center py-12">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            <svg
+              className="mx-auto h-12 w-12 text-gray-400"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+              />
             </svg>
-            <h3 className="mt-2 text-sm font-medium text-gray-900">No hay reportes</h3>
-            <p className="mt-1 text-sm text-gray-500">Comienza creando tu primer reporte de valuación.</p>
+            <h3 className="mt-2 text-sm font-medium text-gray-900">
+              No hay reportes
+            </h3>
+            <p className="mt-1 text-sm text-gray-500">
+              Comienza creando tu primer reporte de valuación.
+            </p>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {reports.map((report) => (
-              <div key={report.id} className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200">
+              <div
+                key={report.id}
+                className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200"
+              >
                 <div className="p-6">
                   {/* Property Type Badge */}
                   <div className="flex items-center justify-between mb-4">
@@ -251,15 +322,21 @@ export default function Reports() {
                   {report.tipoPropiedad !== "Terreno" && (
                     <div className="grid grid-cols-3 gap-4 mb-4 text-sm">
                       <div className="text-center">
-                        <div className="font-medium text-gray-900">{report.habitaciones || 0}</div>
+                        <div className="font-medium text-gray-900">
+                          {report.habitaciones || 0}
+                        </div>
                         <div className="text-gray-500">Recámaras</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-medium text-gray-900">{report.bathrooms || 0}</div>
+                        <div className="font-medium text-gray-900">
+                          {report.bathrooms || 0}
+                        </div>
                         <div className="text-gray-500">Baños</div>
                       </div>
                       <div className="text-center">
-                        <div className="font-medium text-gray-900">{report.tamanoPropiedad}</div>
+                        <div className="font-medium text-gray-900">
+                          {report.tamanoPropiedad}
+                        </div>
                         <div className="text-gray-500">m²</div>
                       </div>
                     </div>
@@ -269,20 +346,28 @@ export default function Reports() {
                   <div className="border-t pt-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-medium text-gray-500">Valor Estimado</p>
+                        <p className="text-sm font-medium text-gray-500">
+                          Valor Estimado
+                        </p>
                         <p className="text-2xl font-bold text-green-600">
                           {formatCurrency(report.valorEstimado)}
                         </p>
                       </div>
                       <div className="text-right">
                         <p className="text-xs text-gray-500 mb-2">Condición</p>
-                        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                          report.condicion === 'Excelente' ? 'bg-green-100 text-green-800' :
-                          report.condicion === 'Muy Buena' ? 'bg-blue-100 text-blue-800' :
-                          report.condicion === 'Buena' ? 'bg-yellow-100 text-yellow-800' :
-                          report.condicion === 'Regular' ? 'bg-orange-100 text-orange-800' :
-                          'bg-red-100 text-red-800'
-                        }`}>
+                        <span
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                            report.condicion === "Excelente"
+                              ? "bg-green-100 text-green-800"
+                              : report.condicion === "Muy Buena"
+                              ? "bg-blue-100 text-blue-800"
+                              : report.condicion === "Buena"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : report.condicion === "Regular"
+                              ? "bg-orange-100 text-orange-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
                           {report.condicion}
                         </span>
                       </div>
@@ -338,8 +423,12 @@ export default function Reports() {
                   transition={{ delay: 0.1, duration: 0.3 }}
                 >
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Reporte de Valuación</h2>
-                    <p className="text-gray-600 mt-1">{selectedReport.direccion}</p>
+                    <h2 className="text-2xl font-bold text-gray-900">
+                      Reporte de Valuación
+                    </h2>
+                    <p className="text-gray-600 mt-1">
+                      {selectedReport.direccion}
+                    </p>
                   </div>
                   <motion.button
                     onClick={closeModal}
@@ -348,8 +437,18 @@ export default function Reports() {
                     whileTap={{ scale: 0.9 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <svg
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M6 18L18 6M6 6l12 12"
+                      />
                     </svg>
                   </motion.button>
                 </motion.div>
@@ -363,24 +462,36 @@ export default function Reports() {
                     transition={{ delay: 0.2, duration: 0.4 }}
                   >
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Dirección</h3>
-                      <p className="text-lg text-gray-900">{selectedReport.direccion}</p>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Dirección
+                      </h3>
+                      <p className="text-lg text-gray-900">
+                        {selectedReport.direccion}
+                      </p>
                     </div>
 
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Código Postal</h3>
-                      <p className="text-lg text-gray-900">{selectedReport.codigoPostal}</p>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Código Postal
+                      </h3>
+                      <p className="text-lg text-gray-900">
+                        {selectedReport.codigoPostal}
+                      </p>
                     </div>
 
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Tipo de Propiedad</h3>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Tipo de Propiedad
+                      </h3>
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-orange-100 text-orange-800">
                         {selectedReport.tipoPropiedad}
                       </span>
                     </div>
 
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Condición</h3>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Condición
+                      </h3>
                       <span
                         className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium ${
                           selectedReport.condicion === "Excelente"
@@ -406,18 +517,30 @@ export default function Reports() {
                     transition={{ delay: 0.3, duration: 0.4 }}
                   >
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Valor Estimado</h3>
-                      <p className="text-3xl font-bold text-green-600">{formatCurrency(selectedReport.valorEstimado)}</p>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Valor Estimado
+                      </h3>
+                      <p className="text-3xl font-bold text-green-600">
+                        {formatCurrency(selectedReport.valorEstimado)}
+                      </p>
                     </div>
 
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Fecha de Creación</h3>
-                      <p className="text-lg text-gray-900">{formatDate(selectedReport.fechaCreacion)}</p>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Fecha de Creación
+                      </h3>
+                      <p className="text-lg text-gray-900">
+                        {formatDate(selectedReport.fechaCreacion)}
+                      </p>
                     </div>
 
                     <div className="p-3 rounded-lg">
-                      <h3 className="text-sm font-medium text-gray-500">Tamaño</h3>
-                      <p className="text-lg text-gray-900">{selectedReport.tamanoPropiedad} m²</p>
+                      <h3 className="text-sm font-medium text-gray-500">
+                        Tamaño
+                      </h3>
+                      <p className="text-lg text-gray-900">
+                        {selectedReport.tamanoPropiedad} m²
+                      </p>
                     </div>
                   </motion.div>
                 </div>
@@ -432,15 +555,21 @@ export default function Reports() {
                     whileHover={{ backgroundColor: "#f3f4f6" }}
                   >
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{selectedReport.habitaciones || 0}</div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {selectedReport.habitaciones || 0}
+                      </div>
                       <div className="text-sm text-gray-500">Recámaras</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{selectedReport.bathrooms || 0}</div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {selectedReport.bathrooms || 0}
+                      </div>
                       <div className="text-sm text-gray-500">Baños</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-2xl font-bold text-gray-900">{selectedReport.tamanoPropiedad}</div>
+                      <div className="text-2xl font-bold text-gray-900">
+                        {selectedReport.tamanoPropiedad}
+                      </div>
                       <div className="text-sm text-gray-500">m²</div>
                     </div>
                   </motion.div>
@@ -453,7 +582,9 @@ export default function Reports() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.3 }}
                 >
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">Análisis de Valuación</h3>
+                  <h3 className="text-lg font-medium text-gray-900 mb-3">
+                    Análisis de Valuación
+                  </h3>
                   <motion.div
                     className="bg-blue-50 border border-blue-200 rounded-lg p-4"
                     whileHover={{
@@ -503,7 +634,6 @@ export default function Reports() {
           </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }
