@@ -1,13 +1,15 @@
 import { ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import clsx from 'clsx';
 
-interface CardValuationData {
+interface CardPropertiesProps {
     title: string;
     amount: number;
-    change: number
+    change: number;
+    loading?: boolean;
+    error?: string | null;
 }
 
-const CardProperties = ({ title, amount, change }: CardValuationData) => {
+const CardProperties = ({ title, amount, change ,loading = false, error = null,}: CardPropertiesProps) => {
     const isPositive = change > 0
 
     return(
@@ -21,7 +23,13 @@ const CardProperties = ({ title, amount, change }: CardValuationData) => {
                         fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path></svg></span>
                 </div>
                 <div className="text-3xl font-bold text-neutral-900">
-                    {amount}
+                    {loading ? (
+                        <p>loading</p>
+                    ) : error ? (
+                        <span className="text-red-600 text-sm">Error</span>
+                    ) : (
+                        amount.toLocaleString("en-US")
+                    )}
                 </div>
                 <div
                     className={clsx(

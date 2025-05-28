@@ -9,13 +9,17 @@ import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator
 import DashboardMarketTrendsChart from "@/components/platform/dashboard/DashboardMarketTrendsChart";
 
 import { useAuth } from "@/providers/AuthProvider";
-import {useAverageCasaPrice} from "@/components/platform/dashboard/hooks/useAverageCasaPrice"; // Asegúrate que esté implementado
+import {useAverageCasaPrice} from "@/app/platform/dashboard/hooks/useAverageCasaPrice";
+import {useCasaCount} from "@/app/platform/dashboard/hooks/useCasaCount";
+import {useAverageM2Price} from "@/app/platform/dashboard/hooks/useAverageM2Price";
 
 function DashboardPage() {
   const { idToken } = useAuth();
 
   const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("");
   const { promedio, loading, error } = useAverageCasaPrice(selectedAlcaldia);
+  const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
+  const {cantidad_m2, loding: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
 
   const handleAlcaldiaChange = (newAlcaldia: string) => {
     setSelectedAlcaldia(newAlcaldia);
@@ -32,13 +36,15 @@ function DashboardPage() {
             />
 
             <CardProperties
-                title={"Listed Properties"}
-                amount={1245}
+                title={"Propiedades Listadas"}
+                amount={cantidad}
+                loading={loadingCasas}
+                error={errorCasas}
                 change={-3.2}
             />
             <CardMarketGrowth
-                title={"Market Growth"}
-                amount={-7.8}
+                title={"Precio por m2"}
+                amount={cantidad_m2}
                 change={-0.5}
             />
           </div>

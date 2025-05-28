@@ -5,10 +5,12 @@ interface CardValuationData {
     title: string;
     amount: number;
     change: number
+    loading?: boolean;
+    error?: string | null;
 }
 
 
-const CardMarketGrowth = ({ title, amount, change }: CardValuationData) => {
+const CardMarketGrowth = ({ title, amount, change, loading = false, error = null }: CardValuationData) => {
     const isPositive = change > 0
 
     return(
@@ -25,7 +27,13 @@ const CardMarketGrowth = ({ title, amount, change }: CardValuationData) => {
 </span>
                 </div>
                 <div className="text-3xl font-bold text-neutral-900">
-                    {amount}%
+                    {loading ? (
+                        <p>loading</p>
+                    ) : error ? (
+                        <span className="text-red-600 text-sm">Error</span>
+                    ) : (
+                        amount.toLocaleString("en-US")
+                    )}
                 </div>
                 <div
                     className={clsx(
