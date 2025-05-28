@@ -33,7 +33,7 @@ export default function PlansPage() {
       name: "Enterprise",
       price: 1999,
       features: [
-        "Ilimited property valuations per month",
+        "50 property valuations per month",
         "Real-time market analytics",
         "Advanced risk modeling",
         "Custom data visualization",
@@ -47,20 +47,16 @@ export default function PlansPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="w-full bg-white shadow-sm">
-        <div className="container mx-auto px-4 py-6">
-          <Link href="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
-            <ArrowLeft className="h-5 w-5 mr-2" />
-            Back to Home
-          </Link>
-        </div>
+      <div className="container mx-auto px-4 py-6">
+        <Link href="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
+          <ArrowLeft className="h-5 w-5 mr-2" />
+          Back to Home
+        </Link>
       </div>
 
-      {/* Main Content */}
       <div className="container mx-auto px-4 py-16">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose your plan</h1>
-          <p className="text-xl text-gray-600">Select the perfect plan for your real estate investment needs</p>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose the right plan for you</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">

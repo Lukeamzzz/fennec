@@ -45,11 +45,11 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
                 </span>
             )}
 
-            <h1 className='text-3xl mt-2 mb-4 font-semibold'>{name}</h1>
+            <h1 className='text-3xl mt-2 mb-4 font-semibold text-orange-600'>{name}</h1>
 
             <div className='flex flex-col items-center mb-5'>
                 <h2 className='text-5xl font-semibold'>${price}</h2>
-                <p className='text-sm text-muted-foreground mb-5'>MXN per month</p>
+                <p className='text-sm text-muted-foreground mb-5'>mxn/month</p>
                 <ArrowButton text='Get Started' className='w-full py-3 bg-gradient-to-r from-orange-400 to-orange-600' />
             </div>
 

@@ -39,21 +39,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           // Inyectar token en Axios
           api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
-          // SOLO llamar al endpoint /auth/google si el proveedor es Google
           const providerId = firebaseUser.providerData[0]?.providerId;
           if (providerId === "google.com") {
             await api.post("/auth/google");
             setRole("premium");
           }
+
         } catch (err) {
           console.error(err);
           setIdToken(null);
-          setRole(null);
+          setRole("usuario");
           delete api.defaults.headers.common["Authorization"];
         }
       } else {
         setIdToken(null);
-        setRole(null);
+        setRole("null");
         delete api.defaults.headers.common["Authorization"];
       }
 

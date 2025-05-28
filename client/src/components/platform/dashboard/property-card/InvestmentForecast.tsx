@@ -1,8 +1,9 @@
-import {AlarmClock, Calendar, CirclePercent, DollarSign, TrendingUp} from 'lucide-react';
+import {Calendar, TrendingUp} from 'lucide-react';
+import * as React from "react";
 
 function InvestmentForecast({
                                                valuation3Years, valuation5Years, growthRate,
-                                               roiMonthly, breakevenYears, occupancyRate
+                                               roiMonthly
                                            }) {
     return (
         <div className="px-6 py-4 border-t grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -27,28 +28,14 @@ function InvestmentForecast({
 
                 </ul>
             </div>
-            <div>
-                <h4 className="font-medium text-gray-700 mb-2">Retorno de Inversión</h4>
-                <ul className="space-y-1 text-gray-600">
-                    <div className="flex">
-                        <DollarSign
-                            className="pr-1"/>
-                        <li>Ingreso por renta: <span className="font-semibold"> ${roiMonthly.toLocaleString()} mensuales</span></li>
-                    </div>
-
-                    <div className="flex">
-                        <AlarmClock className="pr-1"/>
-                        <li>Punto de equilibrio: <span className="font-semibold">{breakevenYears} años</span></li>
-                    </div>
-
-                    <div className="flex">
-                        <CirclePercent/>
-                        <li>Tasa de ocupación: <span className="font-semibold">{occupancyRate}%</span></li>
-                    </div>
-
-
-                </ul>
+            <div className="flex items-center space-x-1">
+                <p className="font-semibold">ROI</p>
+                <p className="text-green-600 flex items-center">
+                    {roiMonthly}%
+                    <TrendingUp size={15} className="ml-1"/>
+                </p>
             </div>
+
         </div>
     );
 }

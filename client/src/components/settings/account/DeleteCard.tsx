@@ -1,23 +1,59 @@
 import React, { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
+import { useRouter } from "next/navigation";
+import {auth} from "@/lib/firebase";
+import api from "@/services/api";
+import {deleteUser} from "@firebase/auth";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
-function DeleteCard({ onClose }) {
-    const [inputValue, setInputValue] = useState("");
+// ... existing code ...
 
-    const handleSubmit = (e: { preventDefault: () => void }) => {
+function DeleteCard({ onClose }) {
+    const [inputValue, setInputValue] = useState<string>("");
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
+
+    const handleSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
 
-        if (inputValue.trim().toLowerCase() === "eliminar") {
-            // Aquí tengo que poner la lógica para que se elimine
-            onClose();
+        if (inputValue !== "eliminar") {
             showCustomToast({
-                message: "Cuenta eliminada",
+                message: "Por favor, escribe 'eliminar' para confirmar",
+                type: "error",
+            });
+            return;
+        }
+
+        try {
+            setIsLoading(true);
+            const currentUser = auth.currentUser;
+
+            if (!currentUser) {
+                throw new Error("Usuario no autenticado");
+            }
+
+            // Eliminar en la API
+            await api.post('/auth/delete/user');
+
+            // Eliminar en Firebase
+            await deleteUser(currentUser);
+
+            // Redirect to landing page and show toast
+            router.push('/');
+            showCustomToast({
+                message: "Cuenta eliminada exitosamente",
                 type: "success",
             });
-        } else {
-            alert("Por favor escribe 'eliminar' exactamente para confirmar.");
+
+        } catch (error) {
+            console.error("Error al eliminar cuenta:", error);
+            showCustomToast({
+                message: "Error al eliminar la cuenta. Por favor, intenta de nuevo.",
+                type: "error",
+            });
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -51,6 +87,7 @@ function DeleteCard({ onClose }) {
                         >
                             Cancelar
                         </button>
+
                         <button
                             type="submit"
                             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
@@ -61,7 +98,7 @@ function DeleteCard({ onClose }) {
                 </form>
             </div>
         </div>
-    );
+    )
 }
 
 export default DeleteCard;

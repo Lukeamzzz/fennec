@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+interface Props {
+    input: {
+        tipo: string;
+        recamaras: number;
+        banos: number;
+        estacionamientos: number;
+    };
+    onChange: (key: string, value: any) => void;
+}
 
-const tiposPropiedad = ["Casa", "Departamento", "Terreno"];
-const habitaciones = ["1", "2", "3", "4+"];
-const bathrooms = ["1", "2", "3", "4+"];
-
-function GroupDropdowns() {
-    const [selectedTipo, setSelectedTipo] = useState(tiposPropiedad[0]);
-    const [selectedHabitacion, setSelectedHabitacion] = useState(habitaciones[0]);
-    const [selectedBathrooms, setSelectedBathrooms] = useState(bathrooms[0]);
+const GroupDropdowns = ({ input, onChange }: Props) => {
+    const tiposPropiedad = ["Casa", "Departamento"];
+    const habitaciones = ["1", "2", "3", "4"];
+    const bathrooms = ["1", "2", "3", "4"];
+    const parking = ["1", "2", "3", "4"];
 
     return (
-        <div className="flex justify-between mb-3 items-center">
+        <div className="space-y-4">
             <div>
-                <h3>Tipo de propiedad</h3>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Tipo de propiedad
+                </label>
                 <select
-                    value={selectedTipo}
-                    onChange={(e) => setSelectedTipo(e.target.value)}
-                    className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+                    value={input.tipo}
+                    onChange={(e) => onChange("tipo", e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
                 >
                     {tiposPropiedad.map((tipo) => (
                         <option key={tipo} value={tipo}>
@@ -26,41 +33,54 @@ function GroupDropdowns() {
                 </select>
             </div>
 
-            {selectedTipo !== "Terreno" && (
-                <div className="space-y-4">
-                    <div>
-                        <h3>Número de habitaciones</h3>
-                        <select
-                            value={selectedHabitacion}
-                            onChange={(e) => setSelectedHabitacion(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-                        >
-                            {habitaciones.map((h) => (
-                                <option key={h} value={h}>
-                                    {h}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-
-                    <div>
-                        <h3>Número de baños</h3>
-                        <select
-                            value={selectedBathrooms}
-                            onChange={(e) => setSelectedBathrooms(e.target.value)}
-                            className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-                        >
-                            {bathrooms.map((b) => (
-                                <option key={b} value={b}>
-                                    {b}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Habitaciones</label>
+                    <select
+                        value={input.recamaras}
+                        onChange={(e) => onChange("recamaras", parseInt(e.target.value))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+                    >
+                        {habitaciones.map((h) => (
+                            <option key={h} value={h}>
+                                {h}
+                            </option>
+                        ))}
+                    </select>
                 </div>
-            )}
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Baños</label>
+                    <select
+                        value={input.banos}
+                        onChange={(e) => onChange("banos", parseInt(e.target.value))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+                    >
+                        {bathrooms.map((b) => (
+                            <option key={b} value={b}>
+                                {b}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Estacionamientos</label>
+                    <select
+                        value={input.estacionamientos}
+                        onChange={(e) => onChange("estacionamientos", parseInt(e.target.value))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
+                    >
+                        {parking.map((p) => (
+                            <option key={p} value={p}>
+                                {p}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            </div>
         </div>
     );
-}
+};
 
 export default GroupDropdowns;

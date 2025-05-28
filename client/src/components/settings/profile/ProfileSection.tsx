@@ -1,6 +1,6 @@
 import ProfilePhotoSection from "./ProfilePhotoSection";
 import ProfileInfoSection from "./ProfileInfoSection";
-import { Toaster } from "sonner"; // Añade esta importación
+import { Toaster } from "sonner";
 
 function ProfileSection() {
   return (

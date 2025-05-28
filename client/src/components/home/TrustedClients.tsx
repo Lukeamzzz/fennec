@@ -23,8 +23,8 @@ function TrustedClients() {
     <div className="py-12 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h2 className="text-5xl font-extrabold text-gray-900 sm:text-4xl">
-            Our clients
+          <h2 className="text-5xl font-bold text-gray-900 sm:text-4xl">
+            We partner with the best
           </h2>
         </div>
 
@@ -50,7 +50,7 @@ function TrustedClients() {
               {duplicatedClients.map((client) => (
                 <div 
                   key={`${client.id}-${Math.random()}`} 
-                  className="flex-none h-24 w-48  flex items-center justify-center"
+                  className="flex-none h-24 w-48 flex items-center justify-center"
                 >
                   <div className="w-36 h-16 rounded flex items-center justify-center">
                     <img 
