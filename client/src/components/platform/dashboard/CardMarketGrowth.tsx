@@ -43,7 +43,7 @@ const CardMarketGrowth = ({ title, amount, change, loading = false, error = null
                 >
                     {isPositive ? <ArrowUpRight className="w-4 h-4"/> : <ArrowDownRight className="w-4 h-4"/>}
                     <span className="font-medium">{`${Math.abs(change).toFixed(1)}%`}</span>
-                    <span className="text-muted-foreground">from last month</span>
+                    <span className="text-muted-foreground">Respecto a toda CDMX</span>
                 </div>
             </div>
         </div>
