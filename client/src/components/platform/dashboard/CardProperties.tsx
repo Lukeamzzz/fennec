@@ -4,16 +4,14 @@ import clsx from 'clsx';
 interface CardPropertiesProps {
     title: string;
     amount: number;
-    change: number;
     loading?: boolean;
     error?: string | null;
 }
 
-const CardProperties = ({ title, amount, change ,loading = false, error = null,}: CardPropertiesProps) => {
-    const isPositive = change > 0
+const CardProperties = ({ title, amount ,loading = false, error = null,}: CardPropertiesProps) => {
 
     return(
-        <div  className="rounded-md border-none text-center shadow-md m-5">
+        <div  className="rounded-md border-none text-center shadow-md m-5 p-2">
             <div className="p-4 space-y-2">
                 <div className="text-sm font-medium text-neutral-700 flex justify-center items-center gap-1">
                     {title}
@@ -30,16 +28,6 @@ const CardProperties = ({ title, amount, change ,loading = false, error = null,}
                     ) : (
                         amount.toLocaleString("en-US")
                     )}
-                </div>
-                <div
-                    className={clsx(
-                        'text-sm flex justify-center items-center gap-1',
-                        isPositive ? 'text-green-600' : 'text-red-500'
-                    )}
-                >
-                    {isPositive ? <ArrowUpRight className="w-4 h-4"/> : <ArrowDownRight className="w-4 h-4"/>}
-                    <span className="font-medium">{`${Math.abs(change).toFixed(1)}%`}</span>
-                    <span className="text-muted-foreground">from last month</span>
                 </div>
             </div>
         </div>

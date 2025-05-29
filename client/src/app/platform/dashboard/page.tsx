@@ -12,6 +12,7 @@ import {useAverageCasaPrice} from "@/app/platform/dashboard/hooks/useAverageCasa
 import {useCasaCount} from "@/app/platform/dashboard/hooks/useCasaCount";
 import {useAverageM2Price} from "@/app/platform/dashboard/hooks/useAverageM2Price";
 import {useAverageAllCasa} from "@/app/platform/dashboard/hooks/useAverageAllCasa";
+import {useAverageM2AllCasa} from "@/app/platform/dashboard/hooks/useAverageM2PriceAllCasa";
 
 function DashboardPage() {
 
@@ -20,6 +21,7 @@ function DashboardPage() {
   const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
   const {cantidad_m2, loding: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
   const { averagePrice, loading: loadingAllAvg, error: errorAllAvg } = useAverageAllCasa();
+  const { averageM2Price, loading: loadingM2AllAvg, error: errorM2AllAvg } = useAverageM2AllCasa();
 
 
   const handleAlcaldiaChange = (newAlcaldia: string) => {
@@ -47,7 +49,9 @@ function DashboardPage() {
             <CardMarketGrowth
                 title={"Precio por m2"}
                 amount={cantidad_m2}
-                change={1.5}
+                loading={loadingCasas}
+                error={errorCasas}
+                change={(cantidad_m2 / averageM2Price) * 100}
             />
           </div>
 
