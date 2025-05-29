@@ -247,7 +247,7 @@ export default function PropertySearchPage() {
                     Encuentra tu Propiedad Ideal
                   </h2>
                   <p className="text-gray-600 mb-8">
-                    Utiliza nuestra búsqueda avanzada para encontrar la oportunidad de inversión perfecta
+                    Utiliza nuestra búsqueda avanzada para encontrar la oportunidad de inversión perfecta.
                   </p>
                   <div className="flex justify-center">
                     <div className="relative">
@@ -278,7 +278,7 @@ export default function PropertySearchPage() {
                 </div>
 
                 <div className="bg-white rounded-lg shadow-sm p-8">
-                  <PropertySearch />
+                  <PropertySearch onSearch={handleSearch} />
                 </div>
               </div>
             ) : (

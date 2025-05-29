@@ -2,10 +2,22 @@ import React from 'react';
 import AreaCard from './AreaCard';
 import PropertyTypeCard from './PropertyTypeCard';
 
+interface PropertySearchProps {
+  onSearch: (filters: {
+    location: string;
+    propertyType: string;
+    priceRange: [number, number];
+    bedrooms: string;
+    bathrooms: string;
+    minSize: number;
+    maxSize: number;
+  }) => void;
+}
+
 /**
  * PropertySearch component that displays both alcaldías and property types
  */
-const PropertySearch: React.FC = () => {
+const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
   // Alcaldías data
   const alcaldias = [
     'Miguel Hidalgo',
@@ -25,11 +37,27 @@ const PropertySearch: React.FC = () => {
 
   // Click handlers
   const handleAreaClick = (area: string) => {
-    console.log(`Alcaldía seleccionada: ${area}`);
+    onSearch({
+      location: area,
+      propertyType: 'Cualquier',
+      priceRange: [0, 150000000],
+      bedrooms: 'Cualquier',
+      bathrooms: 'Cualquier',
+      minSize: 0,
+      maxSize: 5000
+    });
   };
 
   const handlePropertyTypeClick = (type: string) => {
-    console.log(`Tipo de propiedad seleccionado: ${type}`);
+    onSearch({
+      location: 'Cualquier',
+      propertyType: type.slice(0, -1), // Removemos la 's' final para que coincida con el formato esperado
+      priceRange: [0, 150000000],
+      bedrooms: 'Cualquier',
+      bathrooms: 'Cualquier',
+      minSize: 0,
+      maxSize: 5000
+    });
   };
 
   return (
