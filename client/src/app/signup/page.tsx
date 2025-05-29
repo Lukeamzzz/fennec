@@ -82,6 +82,7 @@ function SignupPage() {
                 <label htmlFor="nombre" className="text-sm font-medium text-gray-700">
                   Name
                 </label>
+
                 <input
                     id="nombre"
                     name="nombre"

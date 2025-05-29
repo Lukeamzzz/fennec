@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -102,31 +102,17 @@ function ProfileInfoSection() {
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
               Nombre completo
             </label>
-            <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={profileData.fullName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+            <h1  className={"bar_409d0f"}>{profileData.fullName}</h1>
           </div>
 
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
               Correo electrónico
             </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value={profileData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+            <h1>{profileData.email}</h1>
           </div>
 
-          <div className="flex justify-between items-center mt-6">
+          <div className="flex items-center justify-end mt-6">
             <button
                 type="button"
                 onClick={handleLogout}
@@ -134,13 +120,8 @@ function ProfileInfoSection() {
             >
               Cerrar sesión
             </button>
-            <button
-                type="submit"
-                className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-            >
-              Guardar cambios
-            </button>
           </div>
+
         </form>
       </div>
   );
