@@ -1,11 +1,16 @@
+// PropertyEstimator.tsx
+
 import { useState } from "react";
 import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
 import ButtonPropertyEstimator from "@/components/platform/dashboard/ButtonPropertyEstimator";
-import { Quantum } from 'ldrs/react'
-import 'ldrs/react/Quantum.css'
+import { Quantum } from 'ldrs/react';
+import 'ldrs/react/Quantum.css';
 import { PredictionInput, usePropertyEstimator } from "@/app/platform/dashboard/hooks/usePropertyEstimator";
+import { useReporteGenerator } from "@/app/platform/dashboard/hooks/useReporteGenerator";
+import ReporteModal from "@/components/platform/dashboard/ReporteModal";
+
 
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
@@ -22,6 +27,10 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
   });
 
   const { submitPrediction, prediction, loading, error } = usePropertyEstimator();
+  const { generarReporte } = useReporteGenerator();
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tempPayload, setTempPayload] = useState<any | null>(null);
 
   const handleChange = (key: keyof PredictionInput, value: any) => {
     const newInput = { ...input, [key]: value };
@@ -34,6 +43,38 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
   const handleEstimate = () => {
     submitPrediction(input);
+
+    const direccion = (document.getElementById("street") as HTMLInputElement)?.value || "";
+    const codigoPostal = (document.getElementById("zip") as HTMLInputElement)?.value || "";
+    const condicion = (document.getElementById("condicion") as HTMLSelectElement)?.value || "";
+    const anotacionesExtra = (document.getElementById("anotacionesExtras") as HTMLTextAreaElement)?.value || "";
+
+    const payload = {
+      direccion,
+      colonia: input.alcaldia,
+      alcaldia: input.alcaldia,
+      codigoPostal,
+      tipoPropiedad: input.tipo,
+      recamaras: input.recamaras,
+      banos: input.banos,
+      estacionamientos: input.estacionamientos,
+      dimensionesM2: input.metro_cuadrados,
+      antiguedadAnos: 5,
+      condicionesPropiedad: condicion,
+      anotacionesExtra,
+      valorEstimado: 0,
+      anotacionesValuacion: "Estimación generada automáticamente..."
+    };
+
+    setTempPayload(payload);
+    setModalOpen(true);
+  };
+
+  const handleGenerarReporte = () => {
+    if (tempPayload) {
+      generarReporte(tempPayload);
+      setModalOpen(false);
+    }
   };
 
   return (
@@ -54,7 +95,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
           <div className="flex items-center space-x-4">
             <div className="flex-1">
               <label htmlFor="street" className="block mb-1">Dirección</label>
-              <input id="street" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md"  />
+              <input id="street" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md" />
             </div>
             <div className="flex-1">
               <label htmlFor="zip" className="block mb-1">Código Postal</label>
@@ -68,11 +109,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
           <div>
             <label htmlFor="condicion" className="block mb-1">Condición</label>
-            <select
-                id="condicion"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                defaultValue=""
-            >
+            <select id="condicion" className="w-full px-3 py-2 border border-gray-300 rounded-md" defaultValue="">
               <option value="">Selecciona una condición</option>
               <option value="Excelente">Excelente</option>
               <option value="Muy Buena">Muy Buena</option>
@@ -94,25 +131,18 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
           <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
 
-          {loading && 
-            <div className="my-4 flex justify-center items-center">
-              <Quantum
-                size="100"
-                speed="1.75"
-                color="#F56C12"
-              />
-            </div>
-            
-          }
-
-          {prediction && (
-              <div className="mt-4 p-4 bg-orange-100 border border-orange-400 rounded-md">
-                <p><strong>Tipo:</strong> {prediction.tipo_propiedad.charAt(0).toUpperCase() + prediction.tipo_propiedad.slice(1)}</p>
-                <p><strong>Estimado:</strong>${prediction.precio_estimado.toLocaleString()} MXN</p>
-                <p><strong>Alcaldía:</strong> {prediction.alcaldia}</p>
-                <p><strong>Fecha:</strong> {new Date(prediction.fecha_prediccion).toLocaleString()}</p>
+          {loading && (
+              <div className="my-4 flex justify-center items-center">
+                <Quantum size="100" speed="1.75" color="#F56C12" />
               </div>
           )}
+
+          <ReporteModal
+              open={modalOpen}
+              onClose={() => setModalOpen(true)}
+              prediction={prediction}
+              onSubmit={handleGenerarReporte}
+          />
 
           {error && (
               <div className="mt-4 p-4 bg-red-50 border border-red-400 rounded-md text-red-700 text-sm">

@@ -14,6 +14,7 @@ export function useAverageAllCasa() {
                 const response = await api.post("/api/casa/promedio_todas");
                 // Si el backend retorna un número directamente
                 setAveragePrice(response.data);
+                console.log("Promedio calculado:", response);
             } catch (err) {
                 console.error("Error al obtener promedio:", err);
                 setError("No se pudo obtener el promedio");

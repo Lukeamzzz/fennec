@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "@/services/api";
 
 export function useAverageCasaPrice(alcaldia: string) {
-    const [averagePrice, setAveragePrice] = useState<number>(0);
+    const [averagePriceCasa, setAveragePrice] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -14,7 +14,19 @@ export function useAverageCasaPrice(alcaldia: string) {
             setError(null);
             try {
                 const response = await api.post("/api/casa/promedio", { alcaldia });
-                setAveragePrice(response.data.promedio);
+
+                const promedio = response?.data?.promedio;
+
+                const parsedPromedio = typeof promedio === "number"
+                    ? promedio
+                    : parseFloat(promedio ?? "0");
+
+                const finalValue = isNaN(parsedPromedio) ? 0 : parsedPromedio  ;
+
+                setAveragePrice(finalValue);
+
+                console.log("Promedio calculado:", finalValue);
+
             } catch (err) {
                 console.error("Error al obtener promedio:", err);
                 setError("No se pudo obtener el promedio");
@@ -26,5 +38,5 @@ export function useAverageCasaPrice(alcaldia: string) {
         fetchAverage();
     }, [alcaldia]);
 
-    return { averagePrice, loading, error };
+    return { averagePriceCasa, loading, error };
 }
