@@ -17,7 +17,7 @@ import {useAverageM2AllCasa} from "@/app/platform/dashboard/hooks/useAverageM2Pr
 
 function DashboardPage() {
   const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("");
-  const { promedio, loading, error } = useAverageCasaPrice(selectedAlcaldia);
+  const { averagePriceCasa, loading, error } = useAverageCasaPrice(selectedAlcaldia);
   const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
   const { cantidad_m2, loading: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
   const { averagePrice, loading: loadingAllAvg, error: errorAllAvg } = useAverageAllCasa();
@@ -32,10 +32,15 @@ function DashboardPage() {
       <div className="flex-1 pt-5">
         <div className="flex items-center justify-center pb-10 space-x-4">
           <CardValuationData
-            title={"Precio Promedio"}
-            amount={promedio ?? 0}
-            change={(cantidad_m2 / averagePrice!) * 100}
+              title={"Precio Promedio"}
+              amount={averagePriceCasa !== undefined && averagePriceCasa !== null ? averagePriceCasa : NaN}
+              change={
+                averagePrice && averagePriceCasa
+                    ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
+                    : 0
+              }
           />
+
 
           <CardProperties
             title={"Propiedades Listadas"}
@@ -49,7 +54,7 @@ function DashboardPage() {
             amount={cantidad_m2}
             loading={loadingCasas}
             error={errorCasas}
-            change={(cantidad_m2 / averageM2Price!) * 100}
+            change={((cantidad_m2 - averageM2Price!) / averageM2Price!) * 100}
           />
         </div>
 
