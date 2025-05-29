@@ -23,6 +23,7 @@ interface SearchFiltersProps {
     minSize: number;
     maxSize: number;
   }) => void;
+  onReset?: () => void;
 }
 
 interface Option {
@@ -31,7 +32,7 @@ interface Option {
   icon?: React.ReactNode;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch }) => {
+const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch, onReset }) => {
   const [location, setLocation] = useState('Benito Juárez');
   const [propertyType, setPropertyType] = useState('Departamento');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 150000000]);
@@ -130,15 +131,15 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
     setBathrooms('Cualquier');
     setSizeRange([0, 5000]);
     setSizeSliderValues([0, 100]);
-    onFiltersChange?.({
-      location: 'Benito Juárez',
-      propertyType: 'Departamento',
-      priceRange: [0, 150000000],
-      bedrooms: 'Cualquier',
-      bathrooms: 'Cualquier',
-      minSize: 0,
-      maxSize: 5000
-    });
+    
+    // Cerrar todos los dropdowns
+    setIsLocationOpen(false);
+    setIsPropertyTypeOpen(false);
+    setIsBedroomsOpen(false);
+    setIsBathroomsOpen(false);
+    
+    // Llamar al callback de reset para mostrar el estado inicial
+    onReset?.();
   };
 
   const formatPrice = (price: number) => {

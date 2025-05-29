@@ -1,50 +1,31 @@
 import React from 'react';
-import '@/styles/animations.css';
 
-interface LikeButtonProps {
-  /**
-   * Whether the item is liked/favorited
-   */
+interface HeartButtonProps {
   isLiked: boolean;
-  /**
-   * Function to handle like/unlike action
-   */
-  onToggle: () => void;
-  /**
-   * Optional className for additional styling
-   */
-  className?: string;
+  onClick?: () => void;
+  label?: string;
 }
 
-/**
- * Like/favorite button component with hover and click animations
- */
-const LikeButton: React.FC<LikeButtonProps> = ({
+const HeartButton: React.FC<HeartButtonProps> = ({
   isLiked,
-  onToggle,
-  className = ''
+  onClick,
+  label = "Guardar"
 }) => {
   return (
-    <button 
+    <button
       className={`
-        w-10 h-10 
+        flex-1 flex items-center justify-center 
+        py-2 px-3 rounded 
         bg-white/80 backdrop-blur-sm
-        rounded-full 
-        flex items-center justify-center 
-        shadow-sm 
+        border border-gray-200
+        hover:bg-orange-50 hover:border-orange-300 
         transition-all duration-300 ease-in-out
-        hover:bg-orange-50 
-        focus:outline-none focus:ring-2 focus:ring-orange-300 
         group
-        ${className}
+        ${isLiked ? 'text-orange-500 border-orange-500' : 'text-gray-600'}
       `}
-      onClick={(e) => {
-        e.stopPropagation();
-        onToggle();
-      }}
-      aria-label={isLiked ? "Quitar de favoritos" : "Añadir a favoritos"}
+      onClick={onClick}
     >
-      <div className="relative">
+      <div className="relative mr-2">
         {/* Corazón base */}
         <svg 
           width="20" 
@@ -58,14 +39,14 @@ const LikeButton: React.FC<LikeButtonProps> = ({
         >
           <path 
             d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" 
-            fill={isLiked ? "#f97316" : "none"}
-            stroke={isLiked ? "#f97316" : "currentColor"}
+            fill={isLiked ? "currentColor" : "none"}
+            stroke="currentColor"
             strokeWidth="2" 
             strokeLinecap="round" 
             strokeLinejoin="round"
             className={`
               transition-all duration-300 ease-in-out
-              ${isLiked ? '' : 'text-gray-400 group-hover:text-orange-500'}
+              ${isLiked ? 'opacity-100' : 'opacity-100'}
             `}
           />
         </svg>
@@ -90,8 +71,9 @@ const LikeButton: React.FC<LikeButtonProps> = ({
           </div>
         )}
       </div>
+      {label}
     </button>
   );
 };
 
-export default LikeButton;
+export default HeartButton; 
