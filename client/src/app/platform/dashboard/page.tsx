@@ -19,7 +19,7 @@ function DashboardPage() {
   const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("");
   const { promedio, loading, error } = useAverageCasaPrice(selectedAlcaldia);
   const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
-  const {cantidad_m2, loding: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
+  const { cantidad_m2, loading: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
   const { averagePrice, loading: loadingAllAvg, error: errorAllAvg } = useAverageAllCasa();
   const { averageM2Price, loading: loadingM2AllAvg, error: errorM2AllAvg } = useAverageM2AllCasa();
 
@@ -46,6 +46,7 @@ function DashboardPage() {
                 error={errorCasas}
                 change={-3.2}
             />
+            
             <CardMarketGrowth
                 title={"Precio por m2"}
                 amount={cantidad_m2}
