@@ -77,19 +77,19 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
   onPropertyTypeClick = () => {}
 }) => {
   return (
-    <div className="max-w-sm rounded-lg overflow-hidden shadow-md bg-white relative">
+    <div className="w-full rounded-xl overflow-hidden shadow-lg bg-white hover:shadow-xl transition-shadow duration-300 relative">
       {/* Property image with type badge and favorite button */}
-      <div className="relative">
+      <div className="relative aspect-[4/3] w-full">
         <img 
           src={imageUrl} 
           alt={title} 
-          className="w-full h-56 object-cover"
+          className="w-full h-full object-cover"
         />
         
         {/* Property type badge */}
         <PropertyTypeTag 
           type={propertyType}
-          className="absolute bottom-4 left-4"
+          className="absolute bottom-4 left-4 z-10"
           onClick={() => onPropertyTypeClick(propertyType)}
         />
         
@@ -97,23 +97,23 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <LikeButton 
           isLiked={isFavorited}
           onToggle={onFavoriteToggle}
-          className="absolute top-4 right-4"
+          className="absolute top-4 right-4 z-10"
         />
       </div>
       
       {/* Property details */}
-      <div className="p-4" onClick={onClick}>
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-xl font-bold text-gray-800 truncate">{title}</h3>
-          <p className="text-2xl font-bold text-gray-900">${price.toLocaleString()}</p>
+      <div className="p-6" onClick={onClick}>
+        <div className="flex justify-between items-start mb-3">
+          <h3 className="text-xl font-bold text-gray-800 truncate flex-1 mr-4">{title}</h3>
+          <p className="text-2xl font-bold text-gray-900 whitespace-nowrap">${price.toLocaleString()}</p>
         </div>
         
-        <div className="flex items-center text-gray-600 mb-3">
-          <MapPin size={16} className="mr-1" />
-          <p className="text-sm">{address}</p>
+        <div className="flex items-center text-gray-600 mb-4">
+          <MapPin size={16} className="mr-2 flex-shrink-0" />
+          <p className="text-sm truncate">{address}</p>
         </div>
         
-        <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+        <p className="text-gray-600 text-sm mb-6 line-clamp-2">
           {description}
         </p>
         
@@ -141,9 +141,9 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
       </div>
       
       {/* View details button */}
-      <div className="px-4 pb-4">
+      <div className="px-6 pb-6">
         <button 
-          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded transition-colors"
+          className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-3 px-4 rounded-lg transition-colors"
           onClick={onClick}
         >
           Ver Detalles
