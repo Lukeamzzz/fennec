@@ -1,27 +1,22 @@
 "use client";
 
 import React from "react";
-import { ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"; // Icons for change indicator
+import { ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons";
+import { LucideIcon } from "lucide-react";
 
 interface StatCardProps {
   title: string;
   value: string;
   change: string;
   changeType: "positive" | "negative";
-  icon: React.ReactNode; // The main icon for the card
+  Icon: LucideIcon;
 }
 
-const StatCard: React.FC<StatCardProps> = ({
-  title,
-  value,
-  change,
-  changeType,
-  icon,
-}) => {
+const StatCard: React.FC<StatCardProps> = ({ title, value, change, changeType, Icon }) => {
   return (
-    <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col justify-between">
+    <div className="bg-white p-6 rounded-xl shadow-lg flex flex-col justify-between hover:-translate-y-1 duration-300">
       <div className="flex justify-between items-start mb-4">
-        {icon}
+        <Icon className="text-orange-500 size-9"/>
         <span
           className={`text-sm font-semibold ${
             changeType === "positive" ? "text-green-500" : "text-red-500"

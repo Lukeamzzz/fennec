@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import api from "@/services/api";
 
 export function useAverageCasaPrice(alcaldia: string) {
-    const [averagePrice, setAveragePrice] = useState<number | null>(null);
+    const [averagePrice, setAveragePrice] = useState<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
 

@@ -3,7 +3,9 @@ import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/Alcaldia
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
 import ButtonPropertyEstimator from "@/components/platform/dashboard/ButtonPropertyEstimator";
-import { usePropertyEstimator, PredictionInput } from "@/app/platform/dashboard/hooks/usePropertyEstimator";
+import { Quantum } from 'ldrs/react'
+import 'ldrs/react/Quantum.css'
+import { PredictionInput, usePropertyEstimator } from "@/app/platform/dashboard/hooks/usePropertyEstimator";
 
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
@@ -13,7 +15,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
   const [input, setInput] = useState<PredictionInput>({
     tipo: "Departamento",
     alcaldia: "",
-    metro_cuadrados: 50,
+    metro_cuadrados: 150,
     recamaras: 1,
     banos: 1,
     estacionamientos: 1,
@@ -92,10 +94,21 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
           <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
 
+          {loading && 
+            <div className="my-4 flex justify-center items-center">
+              <Quantum
+                size="100"
+                speed="1.75"
+                color="#F56C12"
+              />
+            </div>
+            
+          }
+
           {prediction && (
-              <div className="mt-4 p-4 bg-green-50 border border-green-300 rounded-md text-sm">
-                <p><strong>Estimado:</strong> ${prediction.precio_estimado.toFixed(2)}</p>
-                <p><strong>Tipo:</strong> {prediction.tipo_propiedad}</p>
+              <div className="mt-4 p-4 bg-orange-100 border border-orange-400 rounded-md">
+                <p><strong>Tipo:</strong> {prediction.tipo_propiedad.charAt(0).toUpperCase() + prediction.tipo_propiedad.slice(1)}</p>
+                <p><strong>Estimado:</strong>${prediction.precio_estimado.toLocaleString()} MXN</p>
                 <p><strong>Alcaldía:</strong> {prediction.alcaldia}</p>
                 <p><strong>Fecha:</strong> {new Date(prediction.fecha_prediccion).toLocaleString()}</p>
               </div>
