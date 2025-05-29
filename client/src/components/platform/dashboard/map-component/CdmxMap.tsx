@@ -7,85 +7,71 @@ import './CdmxMap.css';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 
-interface AlcaldiaData {
-  id: string;
-  nombre: string;
-  datos: {
-    poblacion?: number;
-    superficie?: number;
-    precio_promedio?: number;
-    propiedades_disponibles?: number;
-    [key: string]: any;
-  };
-}
-
 interface CdmxMapProps {
   className?: string;
-  initialZoom?: number;
-  initialCenter?: [number, number];
-  dataEndpoint?: string;
 }
 
-const CdmxMap: React.FC<CdmxMapProps> = ({
-  className = '',
-  initialZoom = 10,
-  initialCenter = [-99.133209, 19.432608],
-  dataEndpoint = '/api/alcaldias-data',
-}) => {
-  const mapContainer = useRef<HTMLDivElement>(null);
-  const map = useRef<mapboxgl.Map | null>(null);
-  const popup = useRef<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [alcaldiasData, setAlcaldiasData] = useState<Record<string, AlcaldiaData>>({});
+// Configura el token de Mapbox
+const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-  const fetchAlcaldiasData = async () => {
-    try {
-      const response = await fetch(dataEndpoint);
-      const data = await response.json();
-      setAlcaldiasData(data);
-    } catch (error) {
-      console.error('Error fetching alcaldías data:', error);
-    }
-  };
+const CdmxMap: React.FC<CdmxMapProps> = ({ className = '' }) => {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const [mapError, setMapError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!mapContainer.current) return;
 
-    // Initialize the map
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4M29iazA2Z2gycXA4N2pmbDZmangifQ.-g_vE53SD2WrJ6tFX7QHmA';
+    try {
+      // Set the access token
+      (mapboxgl as any).accessToken = accessToken;
 
-    const mapInstance = new mapboxgl.Map({
-      container: mapContainer.current,
-      style: 'mapbox://styles/mapbox/light-v11',
-      center: initialCenter,
-      zoom: initialZoom,
-    });
+      // Create the map
+      const map = new mapboxgl.Map({
+        container: mapContainer.current,
+        style: 'mapbox://styles/mapbox/streets-v12',
+        center: [-99.133209, 19.432608], // CDMX coordinates
+        zoom: 11
+      });
 
-    // Add navigation controls
-    mapInstance.addControl(new mapboxgl.NavigationControl(), 'top-right');
-    
-    // Save map instance
-    map.current = mapInstance;
+      // Add navigation controls
+      map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
-    mapInstance.on('load', () => {
-      setLoading(false);
-    });
+      // Handle map load
+      map.on('load', () => {
+        console.log('Map loaded successfully');
+      });
 
-    // Cleanup
-    return () => {
-      mapInstance.remove();
-    };
-  }, [initialCenter, initialZoom]);
+      // Handle map errors
+      map.on('error', (e: any) => {
+        console.error('Mapbox error:', e);
+        setMapError('Error loading map. Please check your connection.');
+      });
+
+      // Cleanup
+      return () => map.remove();
+    } catch (error) {
+      console.error('Error initializing map:', error);
+      setMapError('Error initializing map. Please try again later.');
+    }
+  }, []);
 
   return (
-    <div className={`map-container ${className}`} ref={mapContainer}>
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-75">
-          <div className="text-gray-600">Cargando mapa...</div>
+    <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
+      <div 
+        ref={mapContainer} 
+        className="absolute inset-0"
+        style={{
+          width: '100%',
+          height: '100%'
+        }}
+      />
+      {mapError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
+          <p className="text-red-600">{mapError}</p>
         </div>
       )}
     </div>
   );
 };
 
-export default CdmxMap; 
+export default CdmxMap;
