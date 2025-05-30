@@ -74,7 +74,6 @@ function DashboardPage() {
 
         <div className="flex flex-col gap-6 p-10 ">
 
-          {/* Estimador y Tendencias */}
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
 
             {/* Estimador de Valor */}
