@@ -38,13 +38,13 @@ function DashboardPage() {
             <h1 className="text-3xl font-bold text-gray-800 capitalize">
               Bienvenido{profile?.fullName ? `, ${profile.fullName}` : ""}
             </h1>
-            <div className="flex items-center gap-4">{/* Opcional: acciones */}</div>
+
           </div>
           <p className="text-gray-600">
             Accede al análisis y estimación del mercado inmobiliario de la CDMX
           </p>
         </header>
-        <div className="flex items-center justify-center pb-10 space-x-4">
+        <div className="flex items-center justify-center pb-10 space-x-4 border-b border-gray-300 w-full">
           <CardValuationData
               title={"Precio Promedio"}
               amount={averagePriceCasa !== undefined && averagePriceCasa !== null ? averagePriceCasa : NaN}
@@ -54,7 +54,6 @@ function DashboardPage() {
                     : 0
               }
           />
-
 
           <CardProperties
               title={"Propiedades Listadas"}
@@ -72,24 +71,24 @@ function DashboardPage() {
           />
         </div>
 
-        <div className="flex flex-col gap-6 p-10 drop-shadow-xl">
 
-          {/* Estimador y Tendencias */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="flex flex-col gap-6 p-10 ">
 
-            {/* Estimador de Valor */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center text-center">
+          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
+
+
+            <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Estimador de Valor</h2>
-              <p className="text-sm text-gray-500 mb-4">
+              <p className="text-sm text-gray-500 pb-4">
                 Ingresa las características para obtener una valuación automática.
               </p>
-              <div className="w-full max-w-md">
+              <div className="w-full">
                 <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange}/>
               </div>
             </div>
 
             {/* Tendencias del Mercado */}
-            <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col items-center text-center">
+            <div className="bg-white rounded-2xlp-6 flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Tendencias del Mercado</h2>
               <p className="text-sm text-gray-500 mb-4">
                 Evolución de precios por zona de la CDMX.
