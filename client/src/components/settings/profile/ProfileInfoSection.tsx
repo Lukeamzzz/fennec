@@ -15,6 +15,7 @@ function ProfileInfoSection() {
   const [profileData, setProfileData] = useState({
     fullName: "",
     email: "",
+    telefono: ""
   });
 
   useEffect(() => {
@@ -25,6 +26,7 @@ function ProfileInfoSection() {
         setIsLoading(true);
         const response = await api.get("/api/profile");
         setProfileData(response.data);
+        console.log(response);
       } 
       catch (error: any) {
         if (error?.response?.status === 401) {
@@ -57,16 +59,6 @@ function ProfileInfoSection() {
       </div>
     );
   }
-
-  const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProfileData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -106,10 +98,18 @@ function ProfileInfoSection() {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <h1 className="block text-sm font-medium text-gray-700 mb-1">
               Correo electrónico
-            </label>
+            </h1>
             <h1>{profileData.email}</h1>
+
+          </div>
+
+          <div>
+            <h1 className="block text-sm font-medium text-gray-700 mb-1">
+              Teléfono
+            </h1>
+            <h1>{profileData.telefono}</h1>
           </div>
 
           <div className="flex items-center justify-end mt-6">

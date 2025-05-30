@@ -1,4 +1,4 @@
-// PropertyEstimator.tsx
+
 
 import { useState } from "react";
 import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
@@ -11,10 +11,27 @@ import { PredictionInput, usePropertyEstimator } from "@/app/platform/dashboard/
 import { useReporteGenerator } from "@/app/platform/dashboard/hooks/useReporteGenerator";
 import ReporteModal from "@/components/platform/dashboard/ReporteModal";
 
-
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
 }
+
+interface ValuacionPayload {
+  direccion: string;
+  colonia: string;
+  alcaldia: string;
+  codigoPostal: string;
+  tipoPropiedad: string;
+  recamaras: number;
+  banos: number;
+  estacionamientos: number;
+  dimensionesM2: number;
+  antiguedadAnos: number;
+  condicionesPropiedad: string;
+  anotacionesExtra: string;
+  valorEstimado: number;
+  anotacionesValuacion: string;
+}
+
 
 const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange }) => {
   const [input, setInput] = useState<PredictionInput>({
@@ -30,16 +47,17 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
   const { generarReporte } = useReporteGenerator();
 
   const [modalOpen, setModalOpen] = useState(false);
-  const [tempPayload, setTempPayload] = useState<any | null>(null);
+  const [tempPayload, setTempPayload] = useState<ValuacionPayload | null>(null);
 
-  const handleChange = (key: keyof PredictionInput, value: any) => {
-    const newInput = { ...input, [key]: value };
+  const handleChange = (key: keyof PredictionInput, value: string | number) => {
+    const newInput = { ...input, [key]: value } as PredictionInput;
     setInput(newInput);
 
-    if (key === "alcaldia" && onAlcaldiaChange) {
+    if (key === "alcaldia" && typeof value === "string" && onAlcaldiaChange) {
       onAlcaldiaChange(value);
     }
   };
+
 
   const handleEstimate = () => {
     submitPrediction(input);
@@ -49,7 +67,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
     const condicion = (document.getElementById("condicion") as HTMLSelectElement)?.value || "";
     const anotacionesExtra = (document.getElementById("anotacionesExtras") as HTMLTextAreaElement)?.value || "";
 
-    const payload = {
+    const payload: ValuacionPayload = {
       direccion,
       colonia: input.alcaldia,
       alcaldia: input.alcaldia,
@@ -62,7 +80,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
       antiguedadAnos: 5,
       condicionesPropiedad: condicion,
       anotacionesExtra,
-      valorEstimado: 0,
+      valorEstimado: 0, // se actualiza en el siguiente paso
       anotacionesValuacion: "Estimación generada automáticamente..."
     };
 
@@ -71,14 +89,19 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
   };
 
   const handleGenerarReporte = () => {
-    if (tempPayload) {
-      generarReporte(tempPayload);
+    if (tempPayload && prediction) {
+      const finalPayload: ValuacionPayload = {
+        ...tempPayload,
+        valorEstimado: prediction.precio_estimado
+      };
+      generarReporte(finalPayload);
       setModalOpen(false);
     }
   };
 
+
   return (
-      <div className="w-full max-w-md p-4 shadow-xl rounded-xl">
+      <div className="w-full max-w-xl p-4 shadow-xl rounded-xl">
         <div className="space-y-4">
           <div className="text-center justify-center">
             <h3 className="font-medium">Property Value Estimator</h3>
@@ -103,7 +126,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
             </div>
           </div>
 
-          <GroupDropdowns input={input} onChange={handleChange} />
+          <GroupDropdowns input={input} onChange={handleChange as never} />
 
           <SizeSlider value={input.metro_cuadrados} onChange={(val) => handleChange("metro_cuadrados", val)} />
 

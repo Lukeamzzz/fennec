@@ -18,7 +18,7 @@ const ReporteModal: React.FC<ReporteModalProps> = ({ open, onClose, prediction, 
     if (!open || !prediction) return null;
 
     return (
-        <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+        <div className="fixed inset-0 z-50 bg-black/30 flex items-center justify-center">
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-lg font-semibold mb-4">Resumen de la Predicción</h2>
                 <div className="space-y-2 text-sm text-gray-700">

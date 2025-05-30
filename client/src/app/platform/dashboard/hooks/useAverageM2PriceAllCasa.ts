@@ -13,7 +13,7 @@ export function useAverageM2AllCasa() {
             try {
                 const response = await api.post("/api/casa/m2_todas");
                 // Si el backend retorna un número directamente
-                setAveragePrice(response.data/10);
+                setAveragePrice(response.data);
             } catch (err) {
                 console.error("Error al obtener promedio:", err);
                 setError("No se pudo obtener el promedio");
