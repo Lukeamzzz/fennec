@@ -24,7 +24,7 @@ export interface PredictionResponse {
 }
 
 export function usePropertyEstimator() {
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState<boolean>(false);
     const [prediction, setPrediction] = useState<PredictionResponse | null>(null);
     const [error, setError] = useState<string | null>(null);
 
@@ -47,6 +47,8 @@ export function usePropertyEstimator() {
 
         try {
             const response = await api.post<PredictionResponse>(endpoint, body);
+            // Simulate a delay for loader demonstration purposes
+            await new Promise(resolve => setTimeout(resolve, 5000))
             setPrediction(response.data);
         } catch (err: any) {
             const status = err?.response?.status || 500;

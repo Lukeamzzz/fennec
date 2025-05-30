@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { ChevronDown, RotateCcw, Home, Building, Map } from 'lucide-react';
+import * as Slider from '@radix-ui/react-slider';
 
 interface SearchFiltersProps {
   onFiltersChange?: (filters: {
@@ -11,7 +12,18 @@ interface SearchFiltersProps {
     bedrooms: string;
     bathrooms: string;
     minSize: number;
+    maxSize: number;
   }) => void;
+  onSearch?: (filters: {
+    location: string;
+    propertyType: string;
+    priceRange: [number, number];
+    bedrooms: string;
+    bathrooms: string;
+    minSize: number;
+    maxSize: number;
+  }) => void;
+  onReset?: () => void;
 }
 
 interface Option {
@@ -20,90 +32,114 @@ interface Option {
   icon?: React.ReactNode;
 }
 
-const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
-  const [location, setLocation] = useState('La Condesa');
-  const [propertyType, setPropertyType] = useState('Apartment');
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 5000000]);
-  const [sliderValue, setSliderValue] = useState(0); // Start at 0 for full range
-  const [bedrooms, setBedrooms] = useState('Any');
-  const [bathrooms, setBathrooms] = useState('Any');
+const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch, onReset }) => {
+  const [location, setLocation] = useState('Benito Juárez');
+  const [propertyType, setPropertyType] = useState('Departamento');
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 150000000]);
+  const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100]);
+  const [bedrooms, setBedrooms] = useState('Cualquier');
+  const [bathrooms, setBathrooms] = useState('Cualquier');
   const [minSize, setMinSize] = useState(0);
+  const [sizeRange, setSizeRange] = useState<[number, number]>([0, 5000]);
+  const [sizeSliderValues, setSizeSliderValues] = useState<[number, number]>([0, 100]);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
   const [isPropertyTypeOpen, setIsPropertyTypeOpen] = useState(false);
   const [isBedroomsOpen, setIsBedroomsOpen] = useState(false);
   const [isBathroomsOpen, setIsBathroomsOpen] = useState(false);
 
   const locations: Option[] = [
-    { value: 'La Condesa', label: 'La Condesa' },
-    { value: 'Polanco', label: 'Polanco' },
-    { value: 'Roma Norte', label: 'Roma Norte' },
-    { value: 'Santa Fe', label: 'Santa Fe' }
+    { value: 'Álvaro Obregón', label: 'Álvaro Obregón' },
+    { value: 'Azcapotzalco', label: 'Azcapotzalco' },
+    { value: 'Benito Juárez', label: 'Benito Juárez' },
+    { value: 'Coyoacán', label: 'Coyoacán' },
+    { value: 'Cuajimalpa', label: 'Cuajimalpa de Morelos' },
+    { value: 'Cuauhtémoc', label: 'Cuauhtémoc' },
+    { value: 'Gustavo A. Madero', label: 'Gustavo A. Madero' },
+    { value: 'Iztacalco', label: 'Iztacalco' },
+    { value: 'Iztapalapa', label: 'Iztapalapa' },
+    { value: 'La Magdalena Contreras', label: 'La Magdalena Contreras' },
+    { value: 'Miguel Hidalgo', label: 'Miguel Hidalgo' },
+    { value: 'Milpa Alta', label: 'Milpa Alta' },
+    { value: 'Tláhuac', label: 'Tláhuac' },
+    { value: 'Tlalpan', label: 'Tlalpan' },
+    { value: 'Venustiano Carranza', label: 'Venustiano Carranza' },
+    { value: 'Xochimilco', label: 'Xochimilco' }
   ];
 
   const propertyTypes: Option[] = [
-    { value: 'Apartment', label: 'Apartment', icon: <Building className="w-4 h-4" /> },
-    { value: 'House', label: 'House', icon: <Home className="w-4 h-4" /> },
-    { value: 'Land', label: 'Land', icon: <Map className="w-4 h-4" /> }
+    { value: 'Departamento', label: 'Departamento', icon: <Building className="w-4 h-4" /> },
+    { value: 'Casa', label: 'Casa', icon: <Home className="w-4 h-4" /> },
+    { value: 'Terreno', label: 'Terreno', icon: <Map className="w-4 h-4" /> }
   ];
 
   const roomOptions: Option[] = [
-    { value: 'Any', label: 'Any' },
+    { value: 'Cualquier', label: 'Cualquier' },
     { value: '1', label: '1' },
     { value: '2', label: '2' },
     { value: '3', label: '3' },
-    { value: '4+', label: '4+' }
+    { value: '4', label: '4' },
+    { value: '5', label: '5' },
+    { value: '6', label: '6' },
+    { value: '7', label: '7' },
+    { value: '8+', label: '8+' }
   ];
 
-  useEffect(() => {
-    // Calculate price range based on slider value (percentage)
-    // Now 0 means full range (0-5M) and 100 means specific range (5M-5M)
-    const maxPrice = 5000000;
-    const minPrice = Math.floor((maxPrice * sliderValue) / 100);
-    const maxPriceAdjusted = maxPrice;
-    setPriceRange([minPrice, maxPriceAdjusted]);
+  const handlePriceRangeChange = (values: number[]) => {
+    const [min, max] = values;
+    const MAX_PRICE = 150000000;
+    const minPrice = Math.floor((MAX_PRICE * min) / 100);
+    const maxPrice = Math.floor((MAX_PRICE * max) / 100);
+    
+    setSliderValues([min, max]);
+    setPriceRange([minPrice, maxPrice]);
     
     onFiltersChange?.({
       location,
       propertyType,
-      priceRange: [minPrice, maxPriceAdjusted],
+      priceRange: [minPrice, maxPrice],
       bedrooms,
       bathrooms,
-      minSize
+      minSize: sizeRange[0],
+      maxSize: sizeRange[1]
     });
-  }, [sliderValue]);
-
-  const handlePriceRangeChange = (value: number) => {
-    setSliderValue(value);
   };
 
-  const handleMinSizeChange = (value: number) => {
-    setMinSize(value);
+  const handleSizeRangeChange = (values: number[]) => {
+    const [min, max] = values;
+    setSizeSliderValues([min, max]);
+    const minSizeValue = Math.floor((5000 * min) / 100);
+    const maxSizeValue = Math.floor((5000 * max) / 100);
+    setSizeRange([minSizeValue, maxSizeValue]);
+    
     onFiltersChange?.({
       location,
       propertyType,
       priceRange,
       bedrooms,
       bathrooms,
-      minSize: value
+      minSize: minSizeValue,
+      maxSize: maxSizeValue
     });
   };
 
   const resetFilters = () => {
-    setLocation('La Condesa');
-    setPropertyType('Apartment');
-    setSliderValue(0);
-    setPriceRange([0, 5000000]);
-    setBedrooms('Any');
-    setBathrooms('Any');
-    setMinSize(0);
-    onFiltersChange?.({
-      location: 'La Condesa',
-      propertyType: 'Apartment',
-      priceRange: [0, 5000000],
-      bedrooms: 'Any',
-      bathrooms: 'Any',
-      minSize: 0
-    });
+    setLocation('Benito Juárez');
+    setPropertyType('Departamento');
+    setPriceRange([0, 150000000]);
+    setSliderValues([0, 100]);
+    setBedrooms('Cualquier');
+    setBathrooms('Cualquier');
+    setSizeRange([0, 5000]);
+    setSizeSliderValues([0, 100]);
+    
+    // Cerrar todos los dropdowns
+    setIsLocationOpen(false);
+    setIsPropertyTypeOpen(false);
+    setIsBedroomsOpen(false);
+    setIsBathroomsOpen(false);
+    
+    // Llamar al callback de reset para mostrar el estado inicial
+    onReset?.();
   };
 
   const formatPrice = (price: number) => {
@@ -128,73 +164,145 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
     label: string,
     isOpen: boolean,
     setIsOpen: (isOpen: boolean) => void
-  }) => (
-    <div className="mb-6">
-      <label className="block text-sm font-medium text-gray-700 mb-2">
-        {label}
-      </label>
-      <div className="relative">
-        <button
-          type="button"
-          onClick={() => setIsOpen(!isOpen)}
-          className="w-full p-3 bg-white border border-gray-200 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-gray-50"
-        >
-          <div className="flex items-center gap-2">
-            {options.find(opt => opt.value === value)?.icon}
-            <span>{options.find(opt => opt.value === value)?.label}</span>
-          </div>
-          <ChevronDown
-            className={`text-gray-400 transition-transform duration-200 ${
-              isOpen ? 'transform rotate-180' : ''
-            }`}
-            size={20}
-          />
-        </button>
-        
-        {isOpen && (
-          <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
-            {options.map((option) => (
-              <button
-                key={option.value}
-                type="button"
-                className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-orange-50 ${
-                  value === option.value ? 'bg-orange-50 text-orange-600' : ''
-                }`}
-                onClick={() => {
-                  onChange(option.value);
-                  setIsOpen(false);
-                }}
-              >
-                {option.icon}
-                {option.label}
-              </button>
-            ))}
-          </div>
-        )}
+  }) => {
+    const handleOptionChange = (optionValue: string) => {
+      onChange(optionValue);
+      onFiltersChange?.({
+        location,
+        propertyType,
+        priceRange,
+        bedrooms,
+        bathrooms,
+        minSize: sizeRange[0],
+        maxSize: sizeRange[1]
+      });
+    };
+
+    return (
+      <div className="mb-6">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          {label}
+        </label>
+        <div className="relative">
+          <button
+            type="button"
+            onClick={() => setIsOpen(!isOpen)}
+            className="w-full p-3 bg-white border border-gray-200 rounded-lg text-left flex items-center justify-between focus:outline-none focus:ring-2 focus:ring-orange-500 hover:bg-gray-50"
+          >
+            <div className="flex items-center gap-2">
+              {options.find(opt => opt.value === value)?.icon}
+              <span>{options.find(opt => opt.value === value)?.label}</span>
+            </div>
+            <ChevronDown
+              className={`text-gray-400 transition-transform duration-200 ${
+                isOpen ? 'transform rotate-180' : ''
+              }`}
+              size={20}
+            />
+          </button>
+          
+          {isOpen && (
+            <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-60 overflow-y-auto">
+              {options.map((option) => (
+                <button
+                  key={option.value}
+                  type="button"
+                  className={`w-full px-4 py-2 text-left flex items-center gap-2 hover:bg-orange-50 ${
+                    value === option.value ? 'bg-orange-50 text-orange-600' : ''
+                  }`}
+                  onClick={() => {
+                    handleOptionChange(option.value);
+                    setIsOpen(false);
+                  }}
+                >
+                  {option.icon}
+                  {option.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  // Función para verificar si todos los campos están llenos
+  const areAllFieldsFilled = () => {
+    return (
+      location !== '' &&
+      propertyType !== '' &&
+      bedrooms !== '' &&
+      bathrooms !== '' &&
+      sizeRange[0] >= 0 &&
+      sizeRange[1] >= 0 &&
+      priceRange[0] >= 0 &&
+      priceRange[1] >= 0
+    );
+  };
+
+  // Actualizar todas las llamadas a onFiltersChange
+  const handleLocationChange = (value: string) => {
+    setLocation(value);
+    onFiltersChange?.({
+      location: value,
+      propertyType,
+      priceRange,
+      bedrooms,
+      bathrooms,
+      minSize: sizeRange[0],
+      maxSize: sizeRange[1]
+    });
+  };
+
+  const handlePropertyTypeChange = (value: string) => {
+    setPropertyType(value);
+    onFiltersChange?.({
+      location,
+      propertyType: value,
+      priceRange,
+      bedrooms,
+      bathrooms,
+      minSize: sizeRange[0],
+      maxSize: sizeRange[1]
+    });
+  };
+
+  const handleBedroomsChange = (value: string) => {
+    setBedrooms(value);
+    onFiltersChange?.({
+      location,
+      propertyType,
+      priceRange,
+      bedrooms: value,
+      bathrooms,
+      minSize: sizeRange[0],
+      maxSize: sizeRange[1]
+    });
+  };
+
+  const handleBathroomsChange = (value: string) => {
+    setBathrooms(value);
+    onFiltersChange?.({
+      location,
+      propertyType,
+      priceRange,
+      bedrooms,
+      bathrooms: value,
+      minSize: sizeRange[0],
+      maxSize: sizeRange[1]
+    });
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-sm">
-      <h2 className="text-2xl font-bold mb-6">Search Filters</h2>
+      <h2 className="text-2xl font-bold mb-6">Filtros de Búsqueda</h2>
       
       {/* Location Dropdown */}
       <CustomDropdown
         options={locations}
         value={location}
-        onChange={(value) => {
-          setLocation(value);
-          onFiltersChange?.({
-            location: value,
-            propertyType,
-            priceRange,
-            bedrooms,
-            bathrooms,
-            minSize
-          });
-        }}
-        label="Location"
+        onChange={handleLocationChange}
+        label="Ubicación"
         isOpen={isLocationOpen}
         setIsOpen={setIsLocationOpen}
       />
@@ -203,18 +311,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
       <CustomDropdown
         options={propertyTypes}
         value={propertyType}
-        onChange={(value) => {
-          setPropertyType(value);
-          onFiltersChange?.({
-            location,
-            propertyType: value,
-            priceRange,
-            bedrooms,
-            bathrooms,
-            minSize
-          });
-        }}
-        label="Property Type"
+        onChange={handlePropertyTypeChange}
+        label="Tipo de Propiedad"
         isOpen={isPropertyTypeOpen}
         setIsOpen={setIsPropertyTypeOpen}
       />
@@ -222,50 +320,34 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
       {/* Price Range */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Price Range
+          Rango de Precio
         </label>
         <div className="space-y-2">
           <div className="flex justify-between text-sm text-gray-600">
             <span>{formatPrice(priceRange[0])}</span>
             <span>{formatPrice(priceRange[1])}</span>
           </div>
-          <div className="relative h-2">
-            <div 
-              className="absolute inset-0 bg-gray-200 rounded-full"
+          <Slider.Root
+            className="relative flex items-center select-none touch-none w-full h-5"
+            value={sliderValues}
+            min={0}
+            max={100}
+            step={1}
+            minStepsBetweenThumbs={1}
+            onValueChange={handlePriceRangeChange}
+          >
+            <Slider.Track className="bg-gray-200 relative grow rounded-full h-2">
+              <Slider.Range className="absolute bg-orange-500 rounded-full h-full" />
+            </Slider.Track>
+            <Slider.Thumb
+              className="block w-5 h-5 bg-white border-2 border-orange-500 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              aria-label="Precio mínimo"
             />
-            <div 
-              className="absolute inset-y-0 right-0 bg-orange-500 rounded-full" 
-              style={{ 
-                width: `${100 - sliderValue}%`
-              }}
+            <Slider.Thumb
+              className="block w-5 h-5 bg-white border-2 border-orange-500 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              aria-label="Precio máximo"
             />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={sliderValue}
-              onChange={(e) => handlePriceRangeChange(Number(e.target.value))}
-              className="absolute inset-0 w-full appearance-none bg-transparent cursor-pointer
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:w-5
-                [&::-webkit-slider-thumb]:h-5
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-white
-                [&::-webkit-slider-thumb]:border-2
-                [&::-webkit-slider-thumb]:border-orange-500
-                [&::-webkit-slider-thumb]:cursor-pointer
-                [&::-webkit-slider-thumb]:translate-y-[1px]
-                [&::-moz-range-thumb]:appearance-none
-                [&::-moz-range-thumb]:w-5
-                [&::-moz-range-thumb]:h-5
-                [&::-moz-range-thumb]:rounded-full
-                [&::-moz-range-thumb]:bg-white
-                [&::-moz-range-thumb]:border-2
-                [&::-moz-range-thumb]:border-orange-500
-                [&::-moz-range-thumb]:cursor-pointer
-                [&::-moz-range-thumb]:translate-y-[1px]"
-            />
-          </div>
+          </Slider.Root>
         </div>
       </div>
 
@@ -273,18 +355,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
       <CustomDropdown
         options={roomOptions}
         value={bedrooms}
-        onChange={(value) => {
-          setBedrooms(value);
-          onFiltersChange?.({
-            location,
-            propertyType,
-            priceRange,
-            bedrooms: value,
-            bathrooms,
-            minSize
-          });
-        }}
-        label="Bedrooms"
+        onChange={handleBedroomsChange}
+        label="Habitaciones"
         isOpen={isBedroomsOpen}
         setIsOpen={setIsBedroomsOpen}
       />
@@ -293,80 +365,74 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange }) => {
       <CustomDropdown
         options={roomOptions}
         value={bathrooms}
-        onChange={(value) => {
-          setBathrooms(value);
-          onFiltersChange?.({
-            location,
-            propertyType,
-            priceRange,
-            bedrooms,
-            bathrooms: value,
-            minSize
-          });
-        }}
-        label="Bathrooms"
+        onChange={handleBathroomsChange}
+        label="Baños"
         isOpen={isBathroomsOpen}
         setIsOpen={setIsBathroomsOpen}
       />
 
-      {/* Min Size */}
+      {/* Size Range */}
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Min Size (m²)
+          Dimensiones (m²)
         </label>
-        <div className="space-y-8">
-          <div className="relative h-2">
-            <div 
-              className="absolute inset-0 bg-gray-200 rounded-full"
-            />
-            <div 
-              className="absolute inset-y-0 left-0 bg-orange-500 rounded-full" 
-              style={{ 
-                width: `${(minSize / 500) * 100}%`
-              }}
-            />
-            <input
-              type="range"
-              min="0"
-              max="500"
-              value={minSize}
-              onChange={(e) => handleMinSizeChange(Number(e.target.value))}
-              className="absolute inset-0 w-full appearance-none bg-transparent cursor-pointer
-                [&::-webkit-slider-thumb]:appearance-none
-                [&::-webkit-slider-thumb]:w-5
-                [&::-webkit-slider-thumb]:h-5
-                [&::-webkit-slider-thumb]:rounded-full
-                [&::-webkit-slider-thumb]:bg-white
-                [&::-webkit-slider-thumb]:border-2
-                [&::-webkit-slider-thumb]:border-orange-500
-                [&::-webkit-slider-thumb]:cursor-pointer
-                [&::-webkit-slider-thumb]:translate-y-[1px]
-                [&::-moz-range-thumb]:appearance-none
-                [&::-moz-range-thumb]:w-5
-                [&::-moz-range-thumb]:h-5
-                [&::-moz-range-thumb]:rounded-full
-                [&::-moz-range-thumb]:bg-white
-                [&::-moz-range-thumb]:border-2
-                [&::-moz-range-thumb]:border-orange-500
-                [&::-moz-range-thumb]:cursor-pointer
-                [&::-moz-range-thumb]:translate-y-[1px]"
-            />
+        <div className="space-y-2">
+          <div className="flex justify-between text-sm text-gray-600">
+            <span>{sizeRange[0]} m²</span>
+            <span>{sizeRange[1]} m²</span>
           </div>
-          <div className="flex justify-between">
-            <span className="text-sm text-gray-600">0 m²</span>
-            <span className="text-sm text-gray-600">{minSize} m²</span>
-          </div>
+          <Slider.Root
+            className="relative flex items-center select-none touch-none w-full h-5"
+            value={sizeSliderValues}
+            min={0}
+            max={100}
+            step={1}
+            minStepsBetweenThumbs={1}
+            onValueChange={handleSizeRangeChange}
+          >
+            <Slider.Track className="bg-gray-200 relative grow rounded-full h-2">
+              <Slider.Range className="absolute bg-orange-500 rounded-full h-full" />
+            </Slider.Track>
+            <Slider.Thumb
+              className="block w-5 h-5 bg-white border-2 border-orange-500 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              aria-label="Tamaño mínimo"
+            />
+            <Slider.Thumb
+              className="block w-5 h-5 bg-white border-2 border-orange-500 rounded-full hover:bg-orange-50 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
+              aria-label="Tamaño máximo"
+            />
+          </Slider.Root>
         </div>
       </div>
 
-      {/* Reset Filters Button */}
-      <button
-        onClick={resetFilters}
-        className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-white border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-      >
-        <RotateCcw size={18} />
-        <span>Reset Filters</span>
-      </button>
+      <div className="space-y-4">
+        {/* Reset Filters Button */}
+        <button
+          className="w-full flex items-center justify-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
+          onClick={resetFilters}
+        >
+          <RotateCcw className="h-4 w-4 mr-2" />
+          Reestablecer Filtros
+        </button>
+
+        {/* Search Button */}
+        {areAllFieldsFilled() && (
+          <button
+            className="w-full flex items-center justify-center px-4 py-3 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 transition-colors"
+            onClick={() => onSearch?.({
+              location,
+              propertyType,
+              priceRange,
+              bedrooms,
+              bathrooms,
+              minSize: sizeRange[0],
+              maxSize: sizeRange[1]
+            })}
+          >
+            Buscar
+          </button>
+        )}
+      </div>
     </div>
   );
 };

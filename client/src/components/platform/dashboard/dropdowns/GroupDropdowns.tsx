@@ -5,7 +5,7 @@ interface Props {
         banos: number;
         estacionamientos: number;
     };
-    onChange: (key: string, value: any) => void;
+    onChange: (key: string, value: string | number) => void;
 }
 
 const GroupDropdowns = ({ input, onChange }: Props) => {

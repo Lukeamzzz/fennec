@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { MapPin, Bed, Bath, Calendar, Maximize } from 'lucide-react';
+import { motion } from 'framer-motion';
 import PropertyLocation from '@/components/property-search/property-card-details/PropertyLocation';
 import ImageGallery from '@/components/property-search/property-card-details/ImageGallery';
 import PriceCard from '@/components/property-search/property-card-details/PriceCard';
@@ -87,9 +88,13 @@ interface PropertyDetailsProps {
    */
   onClose?: () => void;
   /**
-   * Optional map URL for the location
+   * Latitude of the property
    */
-  mapUrl?: string;
+  latitude?: number;
+  /**
+   * Longitude of the property
+   */
+  longitude?: number;
 }
 
 /**
@@ -114,7 +119,8 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
   images = [],
   initialImageIndex = 0,
   onClose,
-  mapUrl
+  latitude,
+  longitude
 }) => {
   // Estado local para el índice de imagen actual
   const [currentImageIndex, setCurrentImageIndex] = useState(initialImageIndex);
@@ -162,71 +168,134 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
     });
   }
 
+  const containerAnimation = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1
+      }
+    }
+  };
+
+  const itemAnimation = {
+    hidden: { opacity: 0, y: 20 },
+    show: { 
+      opacity: 1, 
+      y: 0,
+      transition: {
+        type: "spring",
+        stiffness: 300,
+        damping: 30
+      }
+    }
+  };
+
   return (
     <div className="flex flex-col w-full max-w-5xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-      <ImageGallery 
-        images={images}
-        currentImageIndex={currentImageIndex}
-        totalImages={totalImages}
-        onPrevImage={handlePrevImage}
-        onNextImage={handleNextImage}
-        goToImage={goToImage}
-        title={title}
-      />
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.3 }}
+      >
+        <ImageGallery 
+          images={images}
+          currentImageIndex={currentImageIndex}
+          totalImages={totalImages}
+          onPrevImage={handlePrevImage}
+          onNextImage={handleNextImage}
+          goToImage={goToImage}
+          title={title}
+        />
+      </motion.div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 p-6">
-        <div className="md:col-span-2">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+      <motion.div 
+        className="grid grid-cols-1 md:grid-cols-3 gap-8 p-6"
+        variants={containerAnimation}
+        initial="hidden"
+        animate="show"
+      >
+        <motion.div className="md:col-span-2" variants={containerAnimation}>
+          <motion.div variants={itemAnimation}>
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">{title}</h1>
+            
+            <div className="flex items-center text-gray-600 mb-4">
+              <MapPin size={16} className="mr-1" />
+              <p>{address}</p>
+            </div>
+          </motion.div>
           
-          <div className="flex items-center text-gray-600 mb-4">
-            <MapPin size={16} className="mr-1" />
-            <p>{address}</p>
-          </div>
+          <motion.div variants={itemAnimation}>
+            <h2 className="text-xl font-semibold mb-3">Descripción</h2>
+            <p className="text-gray-600 mb-6 leading-relaxed">{description}</p>
+          </motion.div>
           
-          <h2 className="text-xl font-semibold mb-3">Descripción</h2>
-          <p className="text-gray-600 mb-6 leading-relaxed">{description}</p>
-          
-          <h2 className="text-xl font-semibold mb-4">Características</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
-            {features.map((feature, index) => (
-              <div key={index} className="flex flex-col items-center text-center p-3 border rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors">
-                {feature.icon}
-                <span className="mt-2 text-gray-700">{feature.label}</span>
-              </div>
-            ))}
-          </div>
+          <motion.div variants={itemAnimation}>
+            <h2 className="text-xl font-semibold mb-4">Características</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
+              {features.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemAnimation}
+                  className="flex flex-col items-center text-center p-3 border rounded-lg hover:border-orange-300 hover:bg-orange-50 transition-colors"
+                >
+                  {feature.icon}
+                  <span className="mt-2 text-gray-700">{feature.label}</span>
+                </motion.div>
+              ))}
+            </div>
+          </motion.div>
           
           {amenities.length > 0 && (
-            <>
+            <motion.div variants={itemAnimation}>
               <h2 className="text-xl font-semibold mb-3">Amenidades</h2>
               <div className="flex flex-wrap gap-2 mb-6">
                 {amenities.map((amenity, index) => (
-                  <span key={index} className="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-orange-100 hover:text-orange-700 transition-colors">
+                  <motion.span
+                    key={index}
+                    variants={itemAnimation}
+                    className="px-3 py-1 bg-gray-100 rounded-full text-sm hover:bg-orange-100 hover:text-orange-700 transition-colors"
+                  >
                     {amenity.name}
-                  </span>
+                  </motion.span>
                 ))}
               </div>
-            </>
+            </motion.div>
           )}
           
-          <PropertyLocation 
-            address={address}
-            mapUrl={mapUrl}
+          <motion.div 
+            variants={itemAnimation}
             className="mt-6"
-          />
-        </div>
+          >
+            <PropertyLocation 
+              address={address}
+              latitude={latitude}
+              longitude={longitude}
+            />
+          </motion.div>
+        </motion.div>
         
-        <PriceCard 
-          price={price}
-          onCallAgent={onCallAgent}
-          onEmailAgent={onEmailAgent}
-          onSave={onSave}
-          onShare={onShare}
-          isSaved={isSaved}
-        />
-      </div>
+        <motion.div 
+          variants={itemAnimation}
+          className="h-fit"
+        >
+          <PriceCard 
+            price={price}
+            onCallAgent={onCallAgent}
+            onEmailAgent={onEmailAgent}
+            onSave={onSave}
+            onShare={onShare}
+            isSaved={isSaved}
+          />
+        </motion.div>
+      </motion.div>
       
-      <div className="border-t p-4 flex justify-between">
+      <motion.div 
+        className="border-t p-4 flex justify-between"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+      >
         <button 
           className="px-4 py-2 border border-gray-300 rounded hover:bg-orange-50 hover:border-orange-300 hover:text-orange-600 transition-colors"
           onClick={onClose}
@@ -240,7 +309,7 @@ const PropertyDetails: React.FC<PropertyDetailsProps> = ({
         >
           Contactar Agente
         </button>
-      </div>
+      </motion.div>
     </div>
   );
 };

@@ -164,7 +164,7 @@ const MarketTrendsChart = () => {
             className="flex items-center gap-2 px-3 py-1.5 text-xs border rounded-lg hover:bg-gray-50 bg-white text-gray-600"
           >
             {selectedPeriod}
-            <ChevronDownIcon className="h-3 w-3" />
+            <ChevronDownIcon className="size-3" />
           </button>
           {isDropdownOpen && (
             <div className="absolute right-0 mt-2 w-40 py-1 bg-white rounded-lg shadow-lg border z-10">

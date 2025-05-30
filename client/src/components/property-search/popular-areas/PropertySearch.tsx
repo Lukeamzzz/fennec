@@ -2,57 +2,92 @@ import React from 'react';
 import AreaCard from './AreaCard';
 import PropertyTypeCard from './PropertyTypeCard';
 
+interface PropertySearchProps {
+  onSearch: (filters: {
+    location: string;
+    propertyType: string;
+    priceRange: [number, number];
+    bedrooms: string;
+    bathrooms: string;
+    minSize: number;
+    maxSize: number;
+  }) => void;
+}
+
 /**
- * PropertySearch component that displays both popular areas and property types
+ * PropertySearch component that displays both alcaldías and property types
  */
-const PropertySearch: React.FC = () => {
-  // Popular areas data
-  const popularAreas = [
-    'Polanco',
-    'Condesa',
-    'Roma Norte'
+const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
+  // Alcaldías data
+  const alcaldias = [
+    'Miguel Hidalgo',
+    'Benito Juárez',
+    'Cuauhtémoc',
+    'Álvaro Obregón',
+    'Coyoacán',
+    'Tlalpan'
   ];
 
   // Property types data
   const propertyTypes = [
     'Departamentos',
     'Casas',
-    'Terreno',
+    'Terrenos'
   ];
 
   // Click handlers
   const handleAreaClick = (area: string) => {
-    console.log(`Zona seleccionada: ${area}`);
+    onSearch({
+      location: area,
+      propertyType: 'Cualquier',
+      priceRange: [0, 150000000],
+      bedrooms: 'Cualquier',
+      bathrooms: 'Cualquier',
+      minSize: 0,
+      maxSize: 5000
+    });
   };
 
   const handlePropertyTypeClick = (type: string) => {
-    console.log(`Tipo de propiedad seleccionado: ${type}`);
+    onSearch({
+      location: 'Cualquier',
+      propertyType: type.slice(0, -1), // Removemos la 's' final para que coincida con el formato esperado
+      priceRange: [0, 150000000],
+      bedrooms: 'Cualquier',
+      bathrooms: 'Cualquier',
+      minSize: 0,
+      maxSize: 5000
+    });
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Popular Areas Section */}
-      <h2 className="text-3xl font-bold text-center mb-8">Zonas Populares</h2>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-        {popularAreas.map((area) => (
-          <AreaCard 
-            key={area}
-            areaName={area}
-            onClick={() => handleAreaClick(area)}
-          />
-        ))}
+    <div>
+      {/* Alcaldías Section */}
+      <div className="mb-12">
+        <h2 className="text-2xl font-bold mb-6">Alcaldías</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {alcaldias.map((alcaldia) => (
+            <AreaCard 
+              key={alcaldia}
+              areaName={alcaldia}
+              onClick={() => handleAreaClick(alcaldia)}
+            />
+          ))}
+        </div>
       </div>
 
       {/* Property Types Section */}
-      <h2 className="text-3xl font-bold text-center mb-8">Tipos de Propiedades</h2>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-        {propertyTypes.map((type) => (
-          <PropertyTypeCard 
-            key={type}
-            type={type}
-            onClick={() => handlePropertyTypeClick(type)}
-          />
-        ))}
+      <div>
+        <h2 className="text-2xl font-bold mb-6">Tipos de Inmuebles</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          {propertyTypes.map((type) => (
+            <PropertyTypeCard 
+              key={type}
+              type={type}
+              onClick={() => handlePropertyTypeClick(type)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

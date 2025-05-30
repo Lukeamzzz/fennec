@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
 
 export interface PropertyFormData {
-  type: "Departamento" | "Terreno" | "Casa";
+  type: "Departamento" | "Casa";
   name: string;
   propertyPrice: string;
   investmentAmount: string;
@@ -11,9 +11,9 @@ export interface PropertyFormData {
   address: string;
   squareMeters: string;
   date: string;
-  bathrooms?: string;
-  parkingSpots?: string;
-  bedrooms?: string;
+  bathrooms: string;
+  parkingSpots: string;
+  bedrooms: string;
 }
 
 interface PropertyFormProps {
@@ -47,29 +47,11 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
 
     // Validar campos requeridos
     Object.entries(formData).forEach(([key, value]) => {
-      if (key !== "bathrooms" && key !== "parkingSpots" && key !== "bedrooms") {
-        if (!value || value.trim() === "") {
-          newErrors[key as keyof PropertyFormData] = "Este campo es requerido";
-          isValid = false;
-        }
+      if (!value || value.trim() === "") {
+        newErrors[key as keyof PropertyFormData] = "Este campo es requerido";
+        isValid = false;
       }
     });
-
-    // Validar campos específicos para propiedades que no son terreno
-    if (formData.type !== "Terreno") {
-      if (!formData.bathrooms || formData.bathrooms.trim() === "") {
-        newErrors.bathrooms = "Este campo es requerido";
-        isValid = false;
-      }
-      if (!formData.parkingSpots || formData.parkingSpots.trim() === "") {
-        newErrors.parkingSpots = "Este campo es requerido";
-        isValid = false;
-      }
-      if (!formData.bedrooms || formData.bedrooms.trim() === "") {
-        newErrors.bedrooms = "Este campo es requerido";
-        isValid = false;
-      }
-    }
 
     setErrors(newErrors);
     return isValid;
@@ -122,7 +104,6 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               required
             >
               <option value="Departamento">Departamento</option>
-              <option value="Terreno">Terreno</option>
               <option value="Casa">Casa</option>
             </select>
             {errors.type && (
@@ -315,74 +296,70 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
           </div>
         </div>
 
-        {formData.type !== "Terreno" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Baños
-              </label>
-              <input
-                type="number"
-                name="bathrooms"
-                value={formData.bathrooms}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 bg-gray-50 border ${
-                  errors.bathrooms ? "border-red-500" : "border-gray-200"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                placeholder="2"
-                min="0"
-                required
-              />
-              {errors.bathrooms && (
-                <p className="mt-1 text-sm text-red-500">{errors.bathrooms}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Estacionamientos
-              </label>
-              <input
-                type="number"
-                name="parkingSpots"
-                value={formData.parkingSpots}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 bg-gray-50 border ${
-                  errors.parkingSpots ? "border-red-500" : "border-gray-200"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                placeholder="1"
-                min="0"
-                required
-              />
-              {errors.parkingSpots && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.parkingSpots}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Recámaras
-              </label>
-              <input
-                type="number"
-                name="bedrooms"
-                value={formData.bedrooms}
-                onChange={handleInputChange}
-                className={`w-full px-4 py-3 bg-gray-50 border ${
-                  errors.bedrooms ? "border-red-500" : "border-gray-200"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
-                placeholder="3"
-                min="0"
-                required
-              />
-              {errors.bedrooms && (
-                <p className="mt-1 text-sm text-red-500">{errors.bedrooms}</p>
-              )}
-            </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Baños
+            </label>
+            <input
+              type="number"
+              name="bathrooms"
+              value={formData.bathrooms}
+              onChange={handleInputChange}
+              className={`w-full px-4 py-3 bg-gray-50 border ${
+                errors.bathrooms ? "border-red-500" : "border-gray-200"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              placeholder="2"
+              min="0"
+              required
+            />
+            {errors.bathrooms && (
+              <p className="mt-1 text-sm text-red-500">{errors.bathrooms}</p>
+            )}
           </div>
-        )}
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Estacionamientos
+            </label>
+            <input
+              type="number"
+              name="parkingSpots"
+              value={formData.parkingSpots}
+              onChange={handleInputChange}
+              className={`w-full px-4 py-3 bg-gray-50 border ${
+                errors.parkingSpots ? "border-red-500" : "border-gray-200"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              placeholder="1"
+              min="0"
+              required
+            />
+            {errors.parkingSpots && (
+              <p className="mt-1 text-sm text-red-500">{errors.parkingSpots}</p>
+            )}
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Recámaras
+            </label>
+            <input
+              type="number"
+              name="bedrooms"
+              value={formData.bedrooms}
+              onChange={handleInputChange}
+              className={`w-full px-4 py-3 bg-gray-50 border ${
+                errors.bedrooms ? "border-red-500" : "border-gray-200"
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              placeholder="3"
+              min="0"
+              required
+            />
+            {errors.bedrooms && (
+              <p className="mt-1 text-sm text-red-500">{errors.bedrooms}</p>
+            )}
+          </div>
+        </div>
 
         <div className="flex justify-end space-x-4 pt-4">
           <button

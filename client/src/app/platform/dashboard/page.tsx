@@ -7,45 +7,121 @@ import CardProperties from "@/components/platform/dashboard/CardProperties";
 import CardMarketGrowth from "@/components/platform/dashboard/CardMarketGrowth";
 import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator";
 import DashboardMarketTrendsChart from "@/components/platform/dashboard/DashboardMarketTrendsChart";
-
-import { useAuth } from "@/providers/AuthProvider";
-import { useAverageCasaPrice } from "@/components/platform/dashboard/hooks/useAverageCasaPrice"; // Asegúrate que esté implementado
+import CdmxMap from "@/components/platform/dashboard/map-component/CdmxMap";
+import { useAverageCasaPrice } from "@/app/platform/dashboard/hooks/useAverageCasaPrice";
+import { useCasaCount } from "@/app/platform/dashboard/hooks/useCasaCount";
+import { useAverageM2Price } from "@/app/platform/dashboard/hooks/useAverageM2Price";
+import { useAverageAllCasa } from "@/app/platform/dashboard/hooks/useAverageAllCasa";
+import { useAverageM2AllCasa } from "@/app/platform/dashboard/hooks/useAverageM2PriceAllCasa";
+import { useUserProfile } from "@/app/platform/dashboard/hooks/useUserProfile";
 
 function DashboardPage() {
-  const { idToken } = useAuth();
-
-  const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("");
-  const { promedio, loading, error } = useAverageCasaPrice(selectedAlcaldia);
+  const [selectedAlcaldia, setSelectedAlcaldia] =
+    useState<string>("Álvaro Obregón");
+  const { averagePriceCasa, loading, errorAvg } =
+    useAverageCasaPrice(selectedAlcaldia);
+  const {
+    cantidad,
+    loading: loadingCasas,
+    error: errorCasas,
+  } = useCasaCount(selectedAlcaldia);
+  const {
+    cantidad_m2,
+    loading: loadingM2,
+    error: errorM2,
+  } = useAverageM2Price(selectedAlcaldia);
+  const {
+    averagePrice,
+    loading: loadingAllAvg,
+    error: errorAllAvg,
+  } = useAverageAllCasa();
+  const {
+    averageM2Price,
+    loading: loadingM2AllAvg,
+    error: errorM2AllAvg,
+  } = useAverageM2AllCasa();
 
   const handleAlcaldiaChange = (newAlcaldia: string) => {
     setSelectedAlcaldia(newAlcaldia);
   };
 
+  const { profile } = useUserProfile();
+
   return (
     <div className="flex min-h-screen p-2">
-      <div className="flex-1 pt-5 ">
-        <div className="flex items-center justify-center pb-10 space-x-4">
+      <div className="flex-1 pt-5">
+        <header className="mb-8 ml-15">
+          <div className="flex justify-between items-center mb-2">
+            <h1 className="text-3xl font-bold text-gray-800 capitalize">
+              Bienvenido{profile?.fullName ? `, ${profile.fullName}` : ""}
+            </h1>
+          </div>
+          <p className="text-gray-600">
+            Accede al análisis y estimación del mercado inmobiliario de la CDMX
+          </p>
+        </header>
+        <div className="flex items-center justify-center pb-10 space-x-4 border-b border-gray-300 w-full">
           <CardValuationData
             title={"Precio Promedio"}
-            amount={promedio ?? 0}
-            change={-1.2}
+            amount={
+              averagePriceCasa !== undefined && averagePriceCasa !== null
+                ? averagePriceCasa
+                : NaN
+            }
+            change={
+              averagePrice && averagePriceCasa
+                ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
+                : 0
+            }
           />
 
           <CardProperties
-            title={"Listed Properties"}
-            amount={1245}
-            change={-3.2}
+            title={"Propiedades Listadas"}
+            amount={cantidad}
+            error={errorCasas}
           />
+
           <CardMarketGrowth
-            title={"Market Growth"}
-            amount={-7.8}
-            change={-0.5}
+            title={"Precio por m2"}
+            amount={cantidad_m2}
+            error={errorM2}
+            change={((cantidad_m2 - averageM2Price!) / averageM2Price!) * 100}
           />
         </div>
 
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm flex items-center justify-center space-x-20 pb-10">
-          <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange} />
-          <DashboardMarketTrendsChart />
+        <div className="flex flex-col gap-6 p-10 ">
+          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
+            <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
+              <div className="w-full">
+                <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange} />
+              </div>
+            </div>
+
+            {/* Tendencias del Mercado */}
+            <div className="bg-white rounded-2xlp-6 flex flex-col items-center text-center">
+              <div className="w-full max-w-md">
+                <DashboardMarketTrendsChart />
+              </div>
+            </div>
+          </div>
+
+          {/* Mapa de la CDMX */}
+          <div className="bg-white rounded-2xl shadow-md p-6">
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+              Mapa de la Ciudad de México
+            </h2>
+            <p className="text-sm text-gray-500 text-center mb-6">
+              Visualiza información geográfica de mercado por alcaldía
+            </p>
+            <div className="h-[600px] w-full">
+              <CdmxMap
+                initialZoom={10}
+                initialCenter={[-99.133209, 19.432608]}
+                dataEndpoint="/api/alcaldias-data"
+                className="w-full h-full"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>

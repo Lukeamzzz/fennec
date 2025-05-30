@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
 import { useAuth } from "@/providers/AuthProvider";
 import { useRouter } from "next/navigation";
@@ -15,6 +15,7 @@ function ProfileInfoSection() {
   const [profileData, setProfileData] = useState({
     fullName: "",
     email: "",
+    telefono: ""
   });
 
   useEffect(() => {
@@ -25,6 +26,7 @@ function ProfileInfoSection() {
         setIsLoading(true);
         const response = await api.get("/api/profile");
         setProfileData(response.data);
+        console.log(response);
       } 
       catch (error: any) {
         if (error?.response?.status === 401) {
@@ -57,16 +59,6 @@ function ProfileInfoSection() {
       </div>
     );
   }
-
-  const handleChange = (
-      e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setProfileData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -102,31 +94,25 @@ function ProfileInfoSection() {
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
               Nombre completo
             </label>
-            <input
-                type="text"
-                id="fullName"
-                name="fullName"
-                value={profileData.fullName}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+            <h1  className={"bar_409d0f"}>{profileData.fullName}</h1>
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+            <h1 className="block text-sm font-medium text-gray-700 mb-1">
               Correo electrónico
-            </label>
-            <input
-                type="email"
-                id="email"
-                name="email"
-                value={profileData.email}
-                onChange={handleChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            />
+            </h1>
+            <h1>{profileData.email}</h1>
+
           </div>
 
-          <div className="flex justify-between items-center mt-6">
+          <div>
+            <h1 className="block text-sm font-medium text-gray-700 mb-1">
+              Teléfono
+            </h1>
+            <h1>{profileData.telefono}</h1>
+          </div>
+
+          <div className="flex items-center justify-end mt-6">
             <button
                 type="button"
                 onClick={handleLogout}
@@ -134,13 +120,8 @@ function ProfileInfoSection() {
             >
               Cerrar sesión
             </button>
-            <button
-                type="submit"
-                className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
-            >
-              Guardar cambios
-            </button>
           </div>
+
         </form>
       </div>
   );

@@ -27,13 +27,12 @@ interface Props {
 function AlcaldiaDropdown({ value, onChange }: Props) {
   return (
     <div>
-      <h3>Alcaldía</h3>
+      <h3 className="block text-sm font-medium text-gray-700">Alcaldía</h3>
       <select
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
       >
-        <option value="">Selecciona una alcaldía</option>
         {alcaldias.map((alc) => (
           <option key={alc} value={alc}>
             {alc}

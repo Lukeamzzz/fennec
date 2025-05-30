@@ -1,47 +1,119 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
 import ButtonPropertyEstimator from "@/components/platform/dashboard/ButtonPropertyEstimator";
+import { Quantum } from "ldrs/react";
+import "ldrs/react/Quantum.css";
 import {
-  usePropertyEstimator,
   PredictionInput,
-} from "@/components/platform/dashboard/hooks/usePropertyEstimator";
+  usePropertyEstimator,
+} from "@/app/platform/dashboard/hooks/usePropertyEstimator";
+import { useReporteGenerator } from "@/app/platform/dashboard/hooks/useReporteGenerator";
+import ReporteModal from "@/components/platform/dashboard/ReporteModal";
 
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
+}
+
+interface ValuacionPayload {
+  direccion: string;
+  colonia: string;
+  alcaldia: string;
+  codigoPostal: string;
+  tipoPropiedad: string;
+  recamaras: number;
+  banos: number;
+  estacionamientos: number;
+  dimensionesM2: number;
+  antiguedadAnos: number;
+  condicionesPropiedad: string;
+  anotacionesExtra: string;
+  valorEstimado: number;
+  anotacionesValuacion: string;
 }
 
 const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
   onAlcaldiaChange,
 }) => {
   const [input, setInput] = useState<PredictionInput>({
-    tipo: "Departamento",
-    alcaldia: "",
-    metro_cuadrados: 50,
+    tipo: "Casa",
+    alcaldia: "Álvaro Obregón",
+    metro_cuadrados: 150,
     recamaras: 1,
     banos: 1,
     estacionamientos: 1,
   });
 
+  useEffect(() => {
+    if (onAlcaldiaChange && input.alcaldia) {
+      onAlcaldiaChange(input.alcaldia);
+    }
+  }, []);
+
   const { submitPrediction, prediction, loading, error } =
     usePropertyEstimator();
+  const { generarReporte } = useReporteGenerator();
 
-  const handleChange = (key: keyof PredictionInput, value: any) => {
-    const newInput = { ...input, [key]: value };
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tempPayload, setTempPayload] = useState<ValuacionPayload | null>(null);
+
+  const handleChange = (key: keyof PredictionInput, value: string | number) => {
+    const newInput = { ...input, [key]: value } as PredictionInput;
     setInput(newInput);
 
-    if (key === "alcaldia" && onAlcaldiaChange) {
+    if (key === "alcaldia" && typeof value === "string" && onAlcaldiaChange) {
       onAlcaldiaChange(value);
     }
   };
 
   const handleEstimate = () => {
     submitPrediction(input);
+
+    const direccion =
+      (document.getElementById("street") as HTMLInputElement)?.value || "";
+    const codigoPostal =
+      (document.getElementById("zip") as HTMLInputElement)?.value || "";
+    const condicion =
+      (document.getElementById("condicion") as HTMLSelectElement)?.value || "";
+    const anotacionesExtra =
+      (document.getElementById("anotacionesExtras") as HTMLTextAreaElement)
+        ?.value || "";
+
+    const payload: ValuacionPayload = {
+      direccion,
+      colonia: input.alcaldia,
+      alcaldia: input.alcaldia,
+      codigoPostal,
+      tipoPropiedad: input.tipo,
+      recamaras: input.recamaras,
+      banos: input.banos,
+      estacionamientos: input.estacionamientos,
+      dimensionesM2: input.metro_cuadrados,
+      antiguedadAnos: 5,
+      condicionesPropiedad: condicion,
+      anotacionesExtra,
+      valorEstimado: 0, // se actualiza en el siguiente paso
+      anotacionesValuacion: "Estimación generada automáticamente...",
+    };
+
+    setTempPayload(payload);
+    setModalOpen(true);
+  };
+
+  const handleGenerarReporte = () => {
+    if (tempPayload && prediction) {
+      const finalPayload: ValuacionPayload = {
+        ...tempPayload,
+        valorEstimado: prediction.precio_estimado,
+      };
+      generarReporte(finalPayload);
+      setModalOpen(false);
+    }
   };
 
   return (
-    <div className="w-full max-w-md p-4 shadow-xl rounded-xl">
+    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl">
       <div className="space-y-4">
         <div className="text-center justify-center">
           <h3 className="font-medium">Property Value Estimator</h3>
@@ -57,7 +129,10 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
 
         <div className="flex items-center space-x-4">
           <div className="flex-1">
-            <label htmlFor="street" className="block mb-1">
+            <label
+              htmlFor="street"
+              className="block text-sm font-medium text-gray-700"
+            >
               Dirección
             </label>
             <input
@@ -67,7 +142,10 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             />
           </div>
           <div className="flex-1">
-            <label htmlFor="zip" className="block mb-1">
+            <label
+              htmlFor="zip"
+              className="block text-sm font-medium text-gray-700"
+            >
               Código Postal
             </label>
             <input
@@ -78,7 +156,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
           </div>
         </div>
 
-        <GroupDropdowns input={input} onChange={handleChange} />
+        <GroupDropdowns input={input} onChange={handleChange as never} />
 
         <SizeSlider
           value={input.metro_cuadrados}
@@ -86,7 +164,10 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
         />
 
         <div>
-          <label htmlFor="condicion" className="block mb-1">
+          <label
+            htmlFor="condicion"
+            className="block text-sm font-medium text-gray-700"
+          >
             Condición
           </label>
           <select
@@ -104,7 +185,10 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
         </div>
 
         <div>
-          <label htmlFor="anotacionesExtras" className="block mb-1">
+          <label
+            htmlFor="anotacionesExtras"
+            className="block text-sm font-medium text-gray-700"
+          >
             Anotaciones Adicionales
           </label>
           <textarea
@@ -117,24 +201,18 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
 
         <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
 
-        {prediction && (
-          <div className="mt-4 p-4 bg-green-50 border border-green-300 rounded-md text-sm">
-            <p>
-              <strong>Estimado:</strong> $
-              {prediction.precio_estimado.toFixed(2)}
-            </p>
-            <p>
-              <strong>Tipo:</strong> {prediction.tipo_propiedad}
-            </p>
-            <p>
-              <strong>Alcaldía:</strong> {prediction.alcaldia}
-            </p>
-            <p>
-              <strong>Fecha:</strong>{" "}
-              {new Date(prediction.fecha_prediccion).toLocaleString()}
-            </p>
+        {loading && (
+          <div className="my-4 flex justify-center items-center">
+            <Quantum size="100" speed="1.75" color="#F56C12" />
           </div>
         )}
+
+        <ReporteModal
+          open={modalOpen}
+          onClose={() => setModalOpen(true)}
+          prediction={prediction}
+          onSubmit={handleGenerarReporte}
+        />
 
         {error && (
           <div className="mt-4 p-4 bg-red-50 border border-red-400 rounded-md text-red-700 text-sm">
