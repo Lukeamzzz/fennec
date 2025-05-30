@@ -8,7 +8,6 @@ import CardMarketGrowth from "@/components/platform/dashboard/CardMarketGrowth";
 import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator";
 import DashboardMarketTrendsChart from "@/components/platform/dashboard/DashboardMarketTrendsChart";
 import CdmxMap from "@/components/platform/dashboard/map-component/CdmxMap";
-
 import {useAverageCasaPrice} from "@/app/platform/dashboard/hooks/useAverageCasaPrice";
 import {useCasaCount} from "@/app/platform/dashboard/hooks/useCasaCount";
 import {useAverageM2Price} from "@/app/platform/dashboard/hooks/useAverageM2Price";
@@ -17,8 +16,8 @@ import {useAverageM2AllCasa} from "@/app/platform/dashboard/hooks/useAverageM2Pr
 import {useUserProfile} from "@/app/platform/dashboard/hooks/useUserProfile";
 
 function DashboardPage() {
-  const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("");
-  const { averagePriceCasa, loading, error } = useAverageCasaPrice(selectedAlcaldia);
+  const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("Álvaro Obregón");
+  const { averagePriceCasa, loading, errorAvg } = useAverageCasaPrice(selectedAlcaldia);
   const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
   const { cantidad_m2, loading: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
   const { averagePrice, loading: loadingAllAvg, error: errorAllAvg } = useAverageAllCasa();
@@ -58,30 +57,21 @@ function DashboardPage() {
           <CardProperties
               title={"Propiedades Listadas"}
               amount={cantidad}
-              loading={loadingCasas}
               error={errorCasas}
           />
 
           <CardMarketGrowth
               title={"Precio por m2"}
               amount={cantidad_m2}
-              loading={loadingCasas}
-              error={errorCasas}
+              error={errorM2}
               change={((cantidad_m2 - averageM2Price!) / averageM2Price!) * 100}
           />
         </div>
 
-
         <div className="flex flex-col gap-6 p-10 ">
-
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
 
-
             <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Estimador de Valor</h2>
-              <p className="text-sm text-gray-500 pb-4">
-                Ingresa las características para obtener una valuación automática.
-              </p>
               <div className="w-full">
                 <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange}/>
               </div>
@@ -89,10 +79,6 @@ function DashboardPage() {
 
             {/* Tendencias del Mercado */}
             <div className="bg-white rounded-2xlp-6 flex flex-col items-center text-center">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">Tendencias del Mercado</h2>
-              <p className="text-sm text-gray-500 mb-4">
-                Evolución de precios por zona de la CDMX.
-              </p>
               <div className="w-full max-w-md">
                 <DashboardMarketTrendsChart/>
               </div>

@@ -26,7 +26,11 @@ const CardMarketGrowth = ({ title, amount, change, loading = false, error = null
                     ) : error ? (
                         <span className="text-red-600 text-sm">Error</span>
                     ) : (
-                        amount.toLocaleString("en-US")
+                        amount.toLocaleString('en-US', {
+                            style: 'currency',
+                            currency: 'MXN',
+                            maximumFractionDigits: 0
+                        })
                     )}
                 </div>
                 <div

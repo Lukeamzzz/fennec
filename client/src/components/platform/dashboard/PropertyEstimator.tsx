@@ -1,6 +1,6 @@
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
@@ -35,13 +35,19 @@ interface ValuacionPayload {
 
 const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange }) => {
   const [input, setInput] = useState<PredictionInput>({
-    tipo: "Departamento",
-    alcaldia: "",
+    tipo: "Casa",
+    alcaldia: "Álvaro Obregón",
     metro_cuadrados: 150,
     recamaras: 1,
     banos: 1,
     estacionamientos: 1,
   });
+
+   useEffect(() => {
+    if (onAlcaldiaChange && input.alcaldia) {
+      onAlcaldiaChange(input.alcaldia);
+    }
+  }, []);
 
   const { submitPrediction, prediction, loading, error } = usePropertyEstimator();
   const { generarReporte } = useReporteGenerator();
@@ -57,7 +63,6 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
       onAlcaldiaChange(value);
     }
   };
-
 
   const handleEstimate = () => {
     submitPrediction(input);
@@ -117,11 +122,11 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
           <div className="flex items-center space-x-4">
             <div className="flex-1">
-              <label htmlFor="street" className="block mb-1">Dirección</label>
+              <label htmlFor="street" className="block text-sm font-medium text-gray-700">Dirección</label>
               <input id="street" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md" />
             </div>
             <div className="flex-1">
-              <label htmlFor="zip" className="block mb-1">Código Postal</label>
+              <label htmlFor="zip" className="block text-sm font-medium text-gray-700">Código Postal</label>
               <input id="zip" type="text" className="w-full px-3 py-2 border border-gray-300 rounded-md" />
             </div>
           </div>
@@ -131,7 +136,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
           <SizeSlider value={input.metro_cuadrados} onChange={(val) => handleChange("metro_cuadrados", val)} />
 
           <div>
-            <label htmlFor="condicion" className="block mb-1">Condición</label>
+            <label htmlFor="condicion" className="block text-sm font-medium text-gray-700">Condición</label>
             <select id="condicion" className="w-full px-3 py-2 border border-gray-300 rounded-md" defaultValue="">
               <option value="">Selecciona una condición</option>
               <option value="Excelente">Excelente</option>
@@ -143,7 +148,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
           </div>
 
           <div>
-            <label htmlFor="anotacionesExtras" className="block mb-1">Anotaciones Adicionales</label>
+            <label htmlFor="anotacionesExtras" className="block text-sm font-medium text-gray-700">Anotaciones Adicionales</label>
             <textarea
                 id="anotacionesExtras"
                 rows={3}

@@ -1,14 +1,12 @@
-import { ArrowUpRight, ArrowDownRight, LandPlot } from 'lucide-react';
-import clsx from 'clsx';
+import { LandPlot } from 'lucide-react';
 
 interface CardPropertiesProps {
     title: string;
     amount: number;
-    loading?: boolean;
     error?: string | null;
 }
 
-const CardProperties = ({ title, amount ,loading = false, error = null,}: CardPropertiesProps) => {
+const CardProperties = ({ title, amount , error = null,}: CardPropertiesProps) => {
 
     return(
         <div  className="rounded-md border-none text-center shadow-md m-5 p-2">
@@ -18,9 +16,7 @@ const CardProperties = ({ title, amount ,loading = false, error = null,}: CardPr
                     <LandPlot className="size-4 text-orange-500"/>
                 </div>
                 <div className="text-3xl font-bold text-neutral-900">
-                    {loading ? (
-                        <p>loading</p>
-                    ) : error ? (
+                    {error ? (
                         <span className="text-red-600 text-sm">Error</span>
                     ) : (
                         amount.toLocaleString("en-US")
