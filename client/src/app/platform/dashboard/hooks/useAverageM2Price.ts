@@ -15,7 +15,7 @@ export function useAverageM2Price(alcaldia: string) {
         api
             .post("/api/casa/m2_promedio", { alcaldia })
             .then((res) => {
-                setCantidad(res.data/10);
+                setCantidad(res.data);
             })
             .catch((err) => {
                 console.error("Error al obtener cantidad de casas", err);
