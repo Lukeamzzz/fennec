@@ -76,7 +76,7 @@ function DashboardPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
 
-            {/* Estimador de Valor */}
+
             <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
               <h2 className="text-2xl font-bold text-gray-800 mb-2">Estimador de Valor</h2>
               <p className="text-sm text-gray-500 pb-4">
