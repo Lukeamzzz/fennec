@@ -99,6 +99,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
 
       const ctx = chartRef.current.getContext("2d");
       const chartData = processInvestmentsData();
+      const isSingle = chartData.length === 1;
 
       if (ctx) {
         chartInstance.current = new Chart(ctx, {
@@ -110,7 +111,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                 data: chartData.map((item) => item.value),
                 backgroundColor: chartData.map((item) => item.color),
                 borderColor: "white",
-                borderWidth: 2,
+                borderWidth: isSingle ? 0 : 2,
               },
             ],
           },
