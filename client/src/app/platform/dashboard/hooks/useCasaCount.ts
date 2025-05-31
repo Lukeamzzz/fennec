@@ -6,7 +6,7 @@ export function useCasaCount(alcaldia: string) {
   const [cantidad, setCantidad] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const { loading: authLoading, idToken } = useAuth(); // Get auth state
+  const { loading: authLoading, idToken } = useAuth();
 
   useEffect(() => {
     // Don't make request if auth is still loading or no alcaldia

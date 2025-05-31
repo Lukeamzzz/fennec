@@ -121,7 +121,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             Enter property details to get an estimated market value
           </p>
         </div>
-
+         
         <AlcaldiaDropdown
           value={input.alcaldia}
           onChange={(val) => handleChange("alcaldia", val)}
@@ -140,6 +140,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md"
             />
+          
           </div>
           <div className="flex-1">
             <label
