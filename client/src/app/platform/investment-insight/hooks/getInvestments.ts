@@ -1,4 +1,5 @@
 import api from "@/services/api";
+
 export interface Investment {
   monto_invertido: number;
   precio_propiedad: number;
@@ -8,20 +9,17 @@ export interface Investment {
   alcaldia: string;
   colonia: string;
   dimensiones_m2: number;
-  fecha_inversion: string; // ISO format
+  fecha_inversion: string;
   banos: number;
   recamaras: number;
   estacionamientos: number;
+  id_usuario: string;
 }
 
-export async function createInvestment(
-  investment: Investment
-): Promise<Investment> {
-  const response = await api.post("api/investment", investment);
-
+export async function getInvestments(): Promise<Investment[]> {
+  const response = await api.get("/api/investment/list-investments");
   if (response.status >= 400) {
-    throw new Error(`Error al crear inversión: ${response.data}`);
+    throw new Error(`Error al obtener inversiones: ${response.data}`);
   }
-
   return response.data;
 }

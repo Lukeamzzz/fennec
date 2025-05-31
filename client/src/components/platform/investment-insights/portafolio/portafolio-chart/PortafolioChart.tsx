@@ -5,6 +5,10 @@ import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 import styles from "./PortafolioChart.module.css";
 import PropertyForm, { PropertyFormData } from "./PropertyForm";
 import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
+import {
+  getInvestments,
+  Investment,
+} from "@/app/platform/investment-insight/hooks/getInvestments";
 import { showCustomToast } from "@/lib/showCustomToast";
 
 interface Property {
@@ -17,37 +21,76 @@ interface Property {
 interface PortafolioChartProps {
   title?: string;
   subtitle?: string;
-  distributionData?: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
-  properties?: Property[];
 }
 
 const PortafolioChart: React.FC<PortafolioChartProps> = ({
   title = "Portafolio de Inversión",
   subtitle = "Distribución actual de inversiones inmobiliarias",
-  distributionData = [
-    { name: "Residencial CDMX", value: 40, color: "#FF7043" },
-    { name: "Comercial CDMX", value: 25, color: "#0D47A1" },
-    { name: "Residencial Guadalajara", value: 15, color: "#FFC107" },
-    { name: "Comercial Monterrey", value: 12, color: "#E53935" },
-    { name: "Desarrollos Mixtos", value: 8, color: "#26A69A" },
-  ],
-  properties = [
-    { type: "Apartamentos", units: 12, value: 24.5, percentYield: 7.8 },
-    { type: "Casas", units: 4, value: 18.2, percentYield: 6.5 },
-    { type: "Locales Comerciales", units: 8, value: 12.7, percentYield: 9.2 },
-    { type: "Terrenos", units: 2, value: 5.3, percentYield: 4.8 },
-  ],
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
+  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [loading, setLoading] = useState(true);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
 
+  // Fetch investments
   useEffect(() => {
-    if (chartRef.current && !isFlipped) {
+    const fetchInvestments = async () => {
+      try {
+        const data = await getInvestments();
+        setInvestments(data);
+      } catch (err) {
+        showCustomToast({
+          message:
+            err instanceof Error
+              ? err.message
+              : "Error al cargar las inversiones",
+          type: "error",
+          duration: 3000,
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchInvestments();
+  }, []);
+
+  // Process investments data for the chart
+  const processInvestmentsData = () => {
+    const colors = [
+      "#FF7043",
+      "#0D47A1",
+      "#FFC107",
+      "#E53935",
+      "#26A69A",
+      "#9C27B0",
+      "#3F51B5",
+      "#009688",
+    ];
+    return investments.map((inv, index) => ({
+      name: inv.descripcion || `Propiedad ${index + 1}`,
+      value: inv.monto_invertido,
+      color: colors[index % colors.length],
+      address: inv.direccion,
+      colonia: inv.colonia,
+    }));
+  };
+
+  // Calculate properties summary
+  const getPropertiesSummary = (): Property[] => {
+    return investments.map((inv) => ({
+      type: inv.descripcion || "Sin nombre",
+      units: 1,
+      value: inv.precio_propiedad / 1_000_000, // Convert to millions
+      percentYield: Number(
+        ((inv.monto_invertido / inv.precio_propiedad) * 100).toFixed(1)
+      ),
+    }));
+  };
+
+  useEffect(() => {
+    if (chartRef.current && !isFlipped && !loading) {
       Chart.register(PieController, ArcElement, Tooltip, Legend);
 
       if (chartInstance.current) {
@@ -55,16 +98,17 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
       }
 
       const ctx = chartRef.current.getContext("2d");
+      const chartData = processInvestmentsData();
 
       if (ctx) {
         chartInstance.current = new Chart(ctx, {
           type: "pie",
           data: {
-            labels: distributionData.map((item) => item.name),
+            labels: chartData.map((item) => item.name),
             datasets: [
               {
-                data: distributionData.map((item) => item.value),
-                backgroundColor: distributionData.map((item) => item.color),
+                data: chartData.map((item) => item.value),
+                backgroundColor: chartData.map((item) => item.color),
                 borderColor: "white",
                 borderWidth: 2,
               },
@@ -81,8 +125,8 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                 callbacks: {
                   label: function (context) {
                     const label = context.label || "";
-                    const value = context.raw || 0;
-                    return `${label}: ${value}%`;
+                    const value = context.raw as number;
+                    return `${label}: $${value.toLocaleString("en-US")}`;
                   },
                 },
                 backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -105,7 +149,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         chartInstance.current.destroy();
       }
     };
-  }, [distributionData, isFlipped]);
+  }, [investments, isFlipped, loading]);
 
   const handleSubmit = async (formData: PropertyFormData) => {
     try {
@@ -124,10 +168,13 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         estacionamientos: formData.parkingSpots
           ? Number(formData.parkingSpots)
           : 0,
-        id_usuario: "1", // TODO: Get this from auth context
       };
 
       await createInvestment(investmentData);
+      // Refresh investments after creating a new one
+      const newInvestments = await getInvestments();
+      setInvestments(newInvestments);
+
       showCustomToast({
         message: "Inversión creada exitosamente",
         type: "success",
@@ -145,6 +192,12 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
       });
     }
   };
+
+  const properties = getPropertiesSummary();
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
@@ -179,18 +232,20 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                   <div>
                     <span className="font-medium">{property.type}</span>
                     <span className="text-gray-500 ml-2 text-sm">
-                      {property.units} unidades
+                      {property.units === 1
+                        ? `${property.units} unidad`
+                        : `${property.units} unidades`}
                     </span>
                   </div>
                   <div className="flex items-center">
                     <span className="font-semibold mr-4">
-                      ${(property.value * 1_000_000).toLocaleString("en-US")}
+                      ${property.value.toLocaleString("en-US")}M
                     </span>
                     <span
                       className={`px-2 py-1 rounded text-xs ${
-                        property.percentYield >= 7
+                        Number(property.percentYield) >= 7
                           ? "bg-green-100 text-green-800"
-                          : property.percentYield >= 6
+                          : Number(property.percentYield) >= 6
                           ? "bg-blue-100 text-blue-800"
                           : "bg-gray-100 text-gray-800"
                       }`}
