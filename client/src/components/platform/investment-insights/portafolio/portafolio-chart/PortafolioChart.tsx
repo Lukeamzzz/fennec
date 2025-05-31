@@ -5,10 +5,7 @@ import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 import styles from "./PortafolioChart.module.css";
 import PropertyForm, { PropertyFormData } from "./PropertyForm";
 import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
-import {
-  getInvestments,
-  Investment,
-} from "@/app/platform/investment-insight/hooks/getInvestments";
+import { Investment } from "@/app/platform/investment-insight/hooks/getInvestments";
 import { showCustomToast } from "@/lib/showCustomToast";
 import AllInvestmentsSheet from "./AllInvestmentsSheet";
 import EmptyPortfolioInvite from "./EmptyPortfolioInvite";
@@ -25,42 +22,22 @@ interface Property {
 interface PortafolioChartProps {
   title?: string;
   subtitle?: string;
+  investments: Investment[];
+  loading: boolean;
+  refreshInvestments: () => Promise<void>;
 }
 
 const PortafolioChart: React.FC<PortafolioChartProps> = ({
   title = "Portafolio de Inversión",
   subtitle = "Distribución actual de inversiones inmobiliarias",
+  investments,
+  loading,
+  refreshInvestments,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
-  const [investments, setInvestments] = useState<Investment[]>([]);
-  const [loading, setLoading] = useState(true);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
   const [showAllInvestments, setShowAllInvestments] = useState(false);
-
-  // Fetch investments
-  useEffect(() => {
-    const fetchInvestments = async () => {
-      try {
-        const data = await getInvestments();
-        setInvestments(data);
-      } catch (err) {
-        showCustomToast({
-          message:
-            err instanceof Error
-              ? err.message
-              : "Error al cargar las inversiones",
-          type: "error",
-          duration: 3000,
-        });
-        setInvestments([]); // Asegura que investments esté vacío si falla
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchInvestments();
-  }, []);
 
   // Process investments data for the chart
   const processInvestmentsData = () => {
@@ -195,8 +172,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
 
       await createInvestment(investmentData);
       // Refresh investments after creating a new one
-      const newInvestments = await getInvestments();
-      setInvestments(newInvestments);
+      await refreshInvestments();
 
       showCustomToast({
         message: "Inversión creada exitosamente",

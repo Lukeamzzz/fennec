@@ -4,17 +4,22 @@ import {
   REITData,
 } from "@/app/platform/investment-insight/hooks/getREIT";
 import { showCustomToast } from "@/lib/showCustomToast";
-import {
-  getInvestments,
-  Investment,
-} from "@/app/platform/investment-insight/hooks/getInvestments";
+import { Investment } from "@/app/platform/investment-insight/hooks/getInvestments";
 
 // Skeleton component for loading state
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
 );
 
-const InvestmentOverview: React.FC = () => {
+interface InvestmentOverviewProps {
+  investments: Investment[];
+  loadingInvestments: boolean;
+}
+
+const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
+  investments,
+  loadingInvestments,
+}) => {
   const [activeTab, setActiveTab] = useState<"portafolio" | "mercado">(
     "portafolio"
   ); // Sets portafolio as default tab
@@ -28,10 +33,6 @@ const InvestmentOverview: React.FC = () => {
     fmty: null,
   });
   const [loading, setLoading] = useState(true);
-
-  // NUEVO: Estado para inversiones
-  const [investments, setInvestments] = useState<Investment[]>([]);
-  const [loadingInvestments, setLoadingInvestments] = useState(true);
 
   useEffect(() => {
     const fetchREITData = async () => {
@@ -60,26 +61,6 @@ const InvestmentOverview: React.FC = () => {
     };
 
     fetchREITData();
-  }, []);
-
-  // NUEVO: Obtener inversiones reales
-  useEffect(() => {
-    const fetchInvestments = async () => {
-      try {
-        setLoadingInvestments(true);
-        const data = await getInvestments();
-        setInvestments(data);
-      } catch (error) {
-        showCustomToast({
-          message: "Error al obtener inversiones",
-          type: "error",
-          duration: 3000,
-        });
-      } finally {
-        setLoadingInvestments(false);
-      }
-    };
-    fetchInvestments();
   }, []);
 
   // Calcula los valores reales
