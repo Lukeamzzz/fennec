@@ -5,49 +5,92 @@ import { Chart, PieController, ArcElement, Tooltip, Legend } from "chart.js";
 import styles from "./PortafolioChart.module.css";
 import PropertyForm, { PropertyFormData } from "./PropertyForm";
 import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
+import { Investment } from "@/app/platform/investment-insight/hooks/getInvestments";
 import { showCustomToast } from "@/lib/showCustomToast";
+import AllInvestmentsSheet from "./AllInvestmentsSheet";
+import EmptyPortfolioInvite from "./EmptyPortfolioInvite";
+import { HousePlus } from "lucide-react";
 
 interface Property {
   type: string;
   units: number;
   value: number;
   percentYield: number;
+  montoInvertido: number;
 }
 
 interface PortafolioChartProps {
   title?: string;
   subtitle?: string;
-  distributionData?: {
-    name: string;
-    value: number;
-    color: string;
-  }[];
-  properties?: Property[];
+  investments: Investment[];
+  loading: boolean;
+  refreshInvestments: () => Promise<void>;
 }
 
 const PortafolioChart: React.FC<PortafolioChartProps> = ({
   title = "Portafolio de Inversión",
   subtitle = "Distribución actual de inversiones inmobiliarias",
-  distributionData = [
-    { name: "Residencial CDMX", value: 40, color: "#FF7043" },
-    { name: "Comercial CDMX", value: 25, color: "#0D47A1" },
-    { name: "Residencial Guadalajara", value: 15, color: "#FFC107" },
-    { name: "Comercial Monterrey", value: 12, color: "#E53935" },
-    { name: "Desarrollos Mixtos", value: 8, color: "#26A69A" },
-  ],
-  properties = [
-    { type: "Apartamentos", units: 12, value: 24.5, percentYield: 7.8 },
-    { type: "Casas", units: 4, value: 18.2, percentYield: 6.5 },
-    { type: "Locales Comerciales", units: 8, value: 12.7, percentYield: 9.2 },
-    { type: "Terrenos", units: 2, value: 5.3, percentYield: 4.8 },
-  ],
+  investments,
+  loading,
+  refreshInvestments,
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
   const chartRef = useRef<HTMLCanvasElement>(null);
   const chartInstance = useRef<Chart | null>(null);
+  const [showAllInvestments, setShowAllInvestments] = useState(false);
+
+  // Process investments data for the chart
+  const processInvestmentsData = () => {
+    const colors = [
+      "#FF7043",
+      "#0D47A1",
+      "#FFC107",
+      "#E53935",
+      "#26A69A",
+      "#9C27B0",
+      "#3F51B5",
+      "#009688",
+    ];
+
+    const sorted = [...investments].sort(
+      (a, b) => b.monto_invertido - a.monto_invertido
+    );
+    const top7 = sorted.slice(0, 7);
+    const rest = sorted.slice(7);
+    const chartData = top7.map((inv, index) => ({
+      name: inv.descripcion || `Propiedad ${index + 1}`,
+      value: inv.monto_invertido,
+      color: colors[index % colors.length],
+      address: inv.direccion,
+      colonia: inv.colonia,
+    }));
+    if (rest.length > 0) {
+      chartData.push({
+        name: "Otros",
+        value: rest.reduce((sum, inv) => sum + inv.monto_invertido, 0),
+        color: colors[7 % colors.length],
+        address: "",
+        colonia: "",
+      });
+    }
+    return chartData;
+  };
+
+  // Calculate properties summary
+  const getPropertiesSummary = (): Property[] => {
+    return investments.map((inv) => ({
+      type: inv.descripcion || "Sin nombre",
+      units: 1,
+      value: inv.precio_propiedad / 1_000_000, // Convert to millions
+      percentYield: Number(
+        ((inv.monto_invertido / inv.precio_propiedad) * 100).toFixed(1)
+      ),
+      montoInvertido: inv.monto_invertido,
+    }));
+  };
 
   useEffect(() => {
-    if (chartRef.current && !isFlipped) {
+    if (chartRef.current && !isFlipped && !loading) {
       Chart.register(PieController, ArcElement, Tooltip, Legend);
 
       if (chartInstance.current) {
@@ -55,18 +98,20 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
       }
 
       const ctx = chartRef.current.getContext("2d");
+      const chartData = processInvestmentsData();
+      const isSingle = chartData.length === 1;
 
       if (ctx) {
         chartInstance.current = new Chart(ctx, {
           type: "pie",
           data: {
-            labels: distributionData.map((item) => item.name),
+            labels: chartData.map((item) => item.name),
             datasets: [
               {
-                data: distributionData.map((item) => item.value),
-                backgroundColor: distributionData.map((item) => item.color),
+                data: chartData.map((item) => item.value),
+                backgroundColor: chartData.map((item) => item.color),
                 borderColor: "white",
-                borderWidth: 2,
+                borderWidth: isSingle ? 0 : 2,
               },
             ],
           },
@@ -81,8 +126,8 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                 callbacks: {
                   label: function (context) {
                     const label = context.label || "";
-                    const value = context.raw || 0;
-                    return `${label}: ${value}%`;
+                    const value = context.raw as number;
+                    return `${label}: $${value.toLocaleString("en-US")}`;
                   },
                 },
                 backgroundColor: "rgba(255, 255, 255, 0.9)",
@@ -105,7 +150,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         chartInstance.current.destroy();
       }
     };
-  }, [distributionData, isFlipped]);
+  }, [investments, isFlipped, loading]);
 
   const handleSubmit = async (formData: PropertyFormData) => {
     try {
@@ -124,10 +169,12 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         estacionamientos: formData.parkingSpots
           ? Number(formData.parkingSpots)
           : 0,
-        id_usuario: "1", // TODO: Get this from auth context
       };
 
       await createInvestment(investmentData);
+      // Refresh investments after creating a new one
+      await refreshInvestments();
+
       showCustomToast({
         message: "Inversión creada exitosamente",
         type: "success",
@@ -146,6 +193,17 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
     }
   };
 
+  const properties = getPropertiesSummary()
+    .sort((a, b) => b.montoInvertido - a.montoInvertido)
+    .slice(0, 4);
+  const allProperties = getPropertiesSummary().sort(
+    (a, b) => b.montoInvertido - a.montoInvertido
+  );
+
+  if (loading) {
+    return <div>Cargando...</div>;
+  }
+
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm">
       <div className={styles.flipContainer}>
@@ -154,71 +212,81 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
             isFlipped ? styles.flipInnerFlipped : ""
           }`}
         >
-          {/* Front side - Chart */}
+          {/* Front side - Chart o Invitación */}
           <div
             className={`${styles.flipSide} ${
               isFlipped ? styles.flipSideHidden : styles.flipSideVisible
             }`}
           >
-            <div className="mb-6">
-              <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
-              <p className="text-gray-600 text-sm">{subtitle}</p>
-            </div>
-            <div className="relative max-w-80 mx-auto">
-              <canvas ref={chartRef} height="250" className="mb-6"></canvas>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-800 mb-4">
-                Resumen por Tipo de Propiedad
-              </h3>
-              {properties.map((property, index) => (
-                <div
-                  key={index}
-                  className="flex justify-between items-center mb-3"
-                >
-                  <div>
-                    <span className="font-medium">{property.type}</span>
-                    <span className="text-gray-500 ml-2 text-sm">
-                      {property.units} unidades
-                    </span>
-                  </div>
-                  <div className="flex items-center">
-                    <span className="font-semibold mr-4">
-                      ${(property.value * 1_000_000).toLocaleString("en-US")}
-                    </span>
-                    <span
-                      className={`px-2 py-1 rounded text-xs ${
-                        property.percentYield >= 7
-                          ? "bg-green-100 text-green-800"
-                          : property.percentYield >= 6
-                          ? "bg-blue-100 text-blue-800"
-                          : "bg-gray-100 text-gray-800"
-                      }`}
-                    >
-                      {property.percentYield}%
-                    </span>
-                  </div>
+            {investments.length === 0 ? (
+              <EmptyPortfolioInvite onAddProperty={() => setIsFlipped(true)} />
+            ) : (
+              <>
+                <div className="mb-6">
+                  <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+                  <p className="text-gray-600 text-sm">{subtitle}</p>
                 </div>
-              ))}
-            </div>
-            <button
-              onClick={() => setIsFlipped(true)}
-              className="mt-6 w-full flex items-center justify-center text-gray-600 border border-gray-300 rounded-lg py-2 hover:bg-gray-50 transition-colors"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 mr-2"
-                viewBox="0 0 20 20"
-                fill="currentColor"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
-                  clipRule="evenodd"
+                <div className="relative max-w-80 mx-auto">
+                  <canvas ref={chartRef} height="250" className="mb-6"></canvas>
+                </div>
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-800 mb-4">
+                    Resumen por Tipo de Propiedad
+                  </h3>
+                  {properties.map((property, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center mb-3"
+                    >
+                      <div>
+                        <span className="font-medium">{property.type}</span>
+                        <span className="text-gray-500 ml-2 text-sm">
+                          {property.units === 1
+                            ? `${property.units} unidad`
+                            : `${property.units} unidades`}
+                        </span>
+                      </div>
+                      <div className="flex items-center">
+                        <span className="font-semibold mr-4">
+                          ${property.value.toLocaleString("en-US")}M
+                        </span>
+                        <span
+                          className={`px-2 py-1 rounded text-xs ${
+                            Number(property.percentYield) >= 7
+                              ? "bg-green-100 text-green-800"
+                              : Number(property.percentYield) >= 6
+                              ? "bg-blue-100 text-blue-800"
+                              : "bg-gray-100 text-gray-800"
+                          }`}
+                        >
+                          {property.percentYield}%
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() => setIsFlipped(true)}
+                    className="mt-6 w-full flex items-center justify-center text-orange-600 border border-orange-300 rounded-lg py-2 hover:bg-orange-50 transition-colors"
+                  >
+                    <HousePlus size={20} className="mr-2" strokeWidth={2} />
+                    Añadir Propiedad
+                  </button>
+                  {allProperties.length > 4 && (
+                    <button
+                      onClick={() => setShowAllInvestments(true)}
+                      className="mt-2 w-full flex items-center justify-center text-orange-600 border border-orange-200 rounded-lg py-2 hover:bg-orange-50 transition-colors"
+                    >
+                      Ver todas las inversiones
+                    </button>
+                  )}
+                </div>
+                <AllInvestmentsSheet
+                  open={showAllInvestments}
+                  onClose={() => setShowAllInvestments(false)}
+                  investments={allProperties}
                 />
-              </svg>
-              Añadir Propiedad
-            </button>
+              </>
+            )}
           </div>
 
           {/* Back side - Form */}
