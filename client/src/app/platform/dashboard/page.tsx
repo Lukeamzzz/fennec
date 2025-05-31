@@ -15,21 +15,22 @@ import { useAverageAllCasa } from "@/app/platform/dashboard/hooks/useAverageAllC
 import { useAverageM2AllCasa } from "@/app/platform/dashboard/hooks/useAverageM2PriceAllCasa";
 import { useUserProfile } from "@/app/platform/dashboard/hooks/useUserProfile";
 
-function DashboardPage() {
-  const [selectedAlcaldia, setSelectedAlcaldia] =
-    useState<string>("Álvaro Obregón");
+export default function DashboardPage() {
+  const [selectedAlcaldia, setSelectedAlcaldia] = useState("Álvaro Obregón");
+  const [selectedTipo, setSelectedTipo] = useState("Casa");
+
   const { averagePriceCasa, loading, errorAvg } =
-    useAverageCasaPrice(selectedAlcaldia);
+    useAverageCasaPrice(selectedAlcaldia, selectedTipo);
   const {
     cantidad,
     loading: loadingCasas,
     error: errorCasas,
-  } = useCasaCount(selectedAlcaldia);
+  } = useCasaCount(selectedAlcaldia, selectedTipo);
   const {
     cantidad_m2,
     loading: loadingM2,
     error: errorM2,
-  } = useAverageM2Price(selectedAlcaldia);
+  } = useAverageM2Price(selectedAlcaldia, selectedTipo);
   const {
     averagePrice,
     loading: loadingAllAvg,
@@ -127,5 +128,3 @@ function DashboardPage() {
     </div>
   );
 }
-
-export default DashboardPage;

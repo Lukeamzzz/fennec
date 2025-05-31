@@ -20,23 +20,33 @@ function LoginPage() {
     setError("");
     
     try {
-      // First Firebase authentication
-      const result = await signInWithEmailAndPassword(auth, email, password);
-      
-      // Then validate with backend
-      try {
-        await api.post('/auth/signup', { 
-          firebaseId: result.user.uid,
-          email: result.user.email 
-        });
-        router.push("/platform/dashboard");
-      } catch (backendErr) {
-        // If backend validation fails, sign out from Firebase
-        await auth.signOut();
-        setError("Account not found in the system. Please sign up first.");
-      }
+        console.log("=== FRONTEND LOGIN DEBUG ===");
+        console.log("Email:", email);
+        
+        // First Firebase authentication
+        const result = await signInWithEmailAndPassword(auth, email, password);
+        console.log("Firebase UID:", result.user.uid);
+        console.log("Firebase Email:", result.user.email);
+        
+        // Then validate with backend
+        const loginData = {
+            firebaseId: result.user.uid,
+            email: result.user.email
+        };
+        console.log("Sending to backend:", loginData);
+        
+        try {
+            const response = await api.post('/auth/login', loginData);
+            console.log("Backend response:", response.data);
+            router.push("/platform/dashboard");
+        } catch (backendErr) {
+            console.error("Backend error:", backendErr);
+            await auth.signOut();
+            setError("Account not found in the system. Please sign up first.");
+        }
     } catch (err) {
-      setError("Invalid credentials. Please try again.");
+        console.error("Firebase error:", err);
+        setError("Invalid credentials. Please try again.");
     }
   };
 

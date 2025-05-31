@@ -14,6 +14,7 @@ import ReporteModal from "@/components/platform/dashboard/ReporteModal";
 
 interface PropertyEstimatorProps {
   onAlcaldiaChange?: (alcaldia: string) => void;
+  onTipoChange?: (tipo: string) => void;
 }
 
 interface ValuacionPayload {
@@ -35,6 +36,7 @@ interface ValuacionPayload {
 
 const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
   onAlcaldiaChange,
+  onTipoChange,
 }) => {
   const [input, setInput] = useState<PredictionInput>({
     tipo: "Casa",
@@ -64,6 +66,9 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
 
     if (key === "alcaldia" && typeof value === "string" && onAlcaldiaChange) {
       onAlcaldiaChange(value);
+    }
+    if (key === "tipo" && typeof value === "string" && onTipoChange) {
+      onTipoChange(value);
     }
   };
 
