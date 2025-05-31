@@ -17,12 +17,30 @@ import {useUserProfile} from "@/app/platform/dashboard/hooks/useUserProfile";
 import { Info } from "lucide-react";
 
 function DashboardPage() {
-  const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("Álvaro Obregón");
-  const { averagePriceCasa, loading, errorAvg } = useAverageCasaPrice(selectedAlcaldia);
-  const { cantidad, loading: loadingCasas, error: errorCasas } = useCasaCount(selectedAlcaldia);
-  const { cantidad_m2, loading: loadingM2, error: errorM2 } = useAverageM2Price(selectedAlcaldia);
-  const { averagePrice, loading: loadingAllAvg, error: errorAllAvg } = useAverageAllCasa();
-  const { averageM2Price, loading: loadingM2AllAvg, error: errorM2AllAvg } = useAverageM2AllCasa();
+  const [selectedAlcaldia, setSelectedAlcaldia] =
+    useState<string>("Álvaro Obregón");
+  const { averagePriceCasa, loading, errorAvg } =
+    useAverageCasaPrice(selectedAlcaldia);
+  const {
+    cantidad,
+    loading: loadingCasas,
+    error: errorCasas,
+  } = useCasaCount(selectedAlcaldia);
+  const {
+    cantidad_m2,
+    loading: loadingM2,
+    error: errorM2,
+  } = useAverageM2Price(selectedAlcaldia);
+  const {
+    averagePrice,
+    loading: loadingAllAvg,
+    error: errorAllAvg,
+  } = useAverageAllCasa();
+  const {
+    averageM2Price,
+    loading: loadingM2AllAvg,
+    error: errorM2AllAvg,
+  } = useAverageM2AllCasa();
 
   const handleAlcaldiaChange = (newAlcaldia: string) => {
     setSelectedAlcaldia(newAlcaldia);
@@ -38,7 +56,6 @@ function DashboardPage() {
             <h1 className="text-3xl font-bold text-gray-800 capitalize">
               Bienvenido{profile?.fullName ? `, ${profile.fullName}` : ""}
             </h1>
-
           </div>
           <p className="text-gray-600">
             Accede al análisis y estimación del mercado inmobiliario de la Ciudad de México
@@ -47,19 +64,23 @@ function DashboardPage() {
 
         <div className="flex items-center justify-center space-x-4 border-gray-300">
           <CardValuationData
-              title={"Precio Promedio"}
-              amount={averagePriceCasa !== undefined && averagePriceCasa !== null ? averagePriceCasa : NaN}
-              change={
-                averagePrice && averagePriceCasa
-                    ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
-                    : 0
-              }
+            title={"Precio Promedio"}
+            amount={
+              averagePriceCasa !== undefined && averagePriceCasa !== null
+                ? averagePriceCasa
+                : NaN
+            }
+            change={
+              averagePrice && averagePriceCasa
+                ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
+                : 0
+            }
           />
 
           <CardProperties
-              title={"Propiedades Listadas"}
-              amount={cantidad}
-              error={errorCasas}
+            title={"Propiedades Listadas"}
+            amount={cantidad}
+            error={errorCasas}
           />
 
           <CardMarketGrowth
@@ -80,17 +101,16 @@ function DashboardPage() {
 
         <div className="flex flex-col gap-6 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
-
             <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
               <div className="w-full">
-                <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange}/>
+                <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange} />
               </div>
             </div>
 
             {/* Tendencias del Mercado */}
             <div className="bg-white rounded-2xlp-6 flex flex-col items-center text-center">
               <div className="w-full max-w-md">
-                <DashboardMarketTrendsChart/>
+                <DashboardMarketTrendsChart />
               </div>
             </div>
           </div>
@@ -105,16 +125,14 @@ function DashboardPage() {
             </p>
             <div className="h-[600px] w-full">
               <CdmxMap
-                  initialZoom={10}
-                  initialCenter={[-99.133209, 19.432608]}
-                  dataEndpoint="/api/alcaldias-data"
-                  className="w-full h-full"
+                initialZoom={10}
+                initialCenter={[-99.133209, 19.432608]}
+                dataEndpoint="/api/alcaldias-data"
+                className="w-full h-full"
               />
             </div>
           </div>
         </div>
-
-
       </div>
     </div>
   );
