@@ -62,8 +62,8 @@ const InvestmentOverview: React.FC = () => {
         setLoading(true);
         const [funoData, fibraplData, fmtyData] = await Promise.all([
           getREIT({ reit: "FUNO" }),
-          getREIT({ reit: "FMTY" }),
           getREIT({ reit: "FIBRAPL" }),
+          getREIT({ reit: "FMTY" }),
         ]);
 
         setReitData({
