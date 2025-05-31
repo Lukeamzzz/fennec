@@ -14,6 +14,7 @@ import {useAverageM2Price} from "@/app/platform/dashboard/hooks/useAverageM2Pric
 import {useAverageAllCasa} from "@/app/platform/dashboard/hooks/useAverageAllCasa";
 import {useAverageM2AllCasa} from "@/app/platform/dashboard/hooks/useAverageM2PriceAllCasa";
 import {useUserProfile} from "@/app/platform/dashboard/hooks/useUserProfile";
+import { Info } from "lucide-react";
 
 function DashboardPage() {
   const [selectedAlcaldia, setSelectedAlcaldia] = useState<string>("Álvaro Obregón");
@@ -30,7 +31,7 @@ function DashboardPage() {
   const { profile } = useUserProfile();
 
   return (
-    <div className="flex min-h-screen p-2">
+    <div className="flex min-h-screen">
       <div className="flex-1 pt-5">
         <header className="mb-8 ml-15">
           <div className="flex justify-between items-center mb-2">
@@ -40,10 +41,11 @@ function DashboardPage() {
 
           </div>
           <p className="text-gray-600">
-            Accede al análisis y estimación del mercado inmobiliario de la CDMX
+            Accede al análisis y estimación del mercado inmobiliario de la Ciudad de México
           </p>
         </header>
-        <div className="flex items-center justify-center pb-10 space-x-4 border-b border-gray-300 w-full">
+
+        <div className="flex items-center justify-center space-x-4 border-gray-300">
           <CardValuationData
               title={"Precio Promedio"}
               amount={averagePriceCasa !== undefined && averagePriceCasa !== null ? averagePriceCasa : NaN}
@@ -61,14 +63,22 @@ function DashboardPage() {
           />
 
           <CardMarketGrowth
-              title={"Precio por m2"}
+              title={"Precio promedio por m2"}
               amount={cantidad_m2}
               error={errorM2}
               change={((cantidad_m2 - averageM2Price!) / averageM2Price!) * 100}
           />
         </div>
 
-        <div className="flex flex-col gap-6 p-10 ">
+        <div className="flex border-orange-500 p-4 space-x-3 mx-auto w-5/7">
+          <Info className="w-6 h-6 text-orange-500" />
+            <p className="text-sm">
+              Los datos presentados en esta sección se basan en tus selecciones dentro del <strong className="font-bold">Property Value Predictor</strong>.
+              Para obtener información de tu interés, asegúrate de elegir una <strong className="font-bold">alcaldía</strong> y un <strong className="font-bold">tipo de propiedad</strong>.
+            </p>
+        </div>
+
+        <div className="flex flex-col gap-6 p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
 
             <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">

@@ -137,7 +137,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({ onAlcaldiaChange 
 
           <div>
             <label htmlFor="condicion" className="block text-sm font-medium text-gray-700">Condición</label>
-            <select id="condicion" className="w-full px-3 py-2 border border-gray-300 rounded-md" defaultValue="">
+            <select id="condicion" className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm" defaultValue="">
               <option value="">Selecciona una condición</option>
               <option value="Excelente">Excelente</option>
               <option value="Muy Buena">Muy Buena</option>
