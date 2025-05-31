@@ -70,6 +70,14 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
   );
   const totalProperties = investments.length;
 
+  // Calcular número de departamentos y casas
+  const numDepartamentos = investments.filter(
+    (inv) => inv.tipo_propiedad?.toLowerCase() === "departamento"
+  ).length;
+  const numCasas = investments.filter(
+    (inv) => inv.tipo_propiedad?.toLowerCase() === "casa"
+  ).length;
+
   const portfolioStats = [
     {
       label: "Valor Total",
@@ -78,16 +86,7 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
       ) : (
         `$${totalInvested.toLocaleString("en-US")}`
       ),
-      change: "+12.3%", // Puedes calcular cambios reales si tienes históricos
-      changeType: "up",
       subLabel: "Últimos 12 meses",
-    },
-    {
-      label: "Rendimiento Anual",
-      value: "9.1%",
-      change: "+1.2%",
-      changeType: "up",
-      subLabel: "Superando el mercado",
     },
     {
       label: "Propiedades",
@@ -96,16 +95,22 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
       ) : (
         totalProperties
       ),
-      change: "+2", // Puedes calcular cambios reales si tienes históricos
-      changeType: "up",
-      subLabel: "Nuevas adquisiciones",
+      subLabel: "Total de propiedades en portafolio",
     },
     {
-      label: "Ocupación",
-      value: "95%",
-      change: "+5%",
-      changeType: "up",
-      subLabel: "Promedio anual",
+      label: "Departamentos",
+      value: loadingInvestments ? (
+        <Skeleton className="h-8 w-8" />
+      ) : (
+        numDepartamentos
+      ),
+      subLabel: "Total de departamentos en portafolio",
+    },
+
+    {
+      label: "Casas",
+      value: loadingInvestments ? <Skeleton className="h-8 w-8" /> : numCasas,
+      subLabel: "Total de casas en portafolio",
     },
   ];
 
