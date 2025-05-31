@@ -23,7 +23,8 @@ const EmptyPortfolioInvite: React.FC<EmptyPortfolioInviteProps> = ({
     </p>
     <button
       onClick={onAddProperty}
-      className="flex items-center justify-center px-6 py-2.5 bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-lg shadow transition-colors mx-auto"
+      //add button click cursor
+      className="flex items-center justify-center px-6 py-2.5 bg-orange-500  hover:bg-orange-600  text-white font-semibold rounded-lg shadow transition-colors mx-auto cursor-pointer"
     >
       <HousePlus size={20} className="mr-2" strokeWidth={2} />
       Añadir Propiedad

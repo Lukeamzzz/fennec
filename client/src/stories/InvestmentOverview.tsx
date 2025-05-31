@@ -4,42 +4,15 @@ import {
   REITData,
 } from "@/app/platform/investment-insight/hooks/getREIT";
 import { showCustomToast } from "@/lib/showCustomToast";
+import {
+  getInvestments,
+  Investment,
+} from "@/app/platform/investment-insight/hooks/getInvestments";
 
 // Skeleton component for loading state
 const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
 );
-
-const portfolioStats = [
-  {
-    label: "Valor Total",
-    value: "$2,450,000",
-    change: "+12.3%",
-    changeType: "up",
-    subLabel: "Últimos 12 meses",
-  },
-  {
-    label: "Rendimiento Anual",
-    value: "9.1%",
-    change: "+1.2%",
-    changeType: "up",
-    subLabel: "Superando el mercado",
-  },
-  {
-    label: "Propiedades",
-    value: "8",
-    change: "+2",
-    changeType: "up",
-    subLabel: "Nuevas adquisiciones",
-  },
-  {
-    label: "Ocupación",
-    value: "95%",
-    change: "+5%",
-    changeType: "up",
-    subLabel: "Promedio anual",
-  },
-];
 
 const InvestmentOverview: React.FC = () => {
   const [activeTab, setActiveTab] = useState<"portafolio" | "mercado">(
@@ -56,6 +29,10 @@ const InvestmentOverview: React.FC = () => {
   });
   const [loading, setLoading] = useState(true);
 
+  // NUEVO: Estado para inversiones
+  const [investments, setInvestments] = useState<Investment[]>([]);
+  const [loadingInvestments, setLoadingInvestments] = useState(true);
+
   useEffect(() => {
     const fetchREITData = async () => {
       try {
@@ -71,13 +48,12 @@ const InvestmentOverview: React.FC = () => {
           fibrapl: fibraplData,
           fmty: fmtyData,
         });
-      } catch (error) {
+      } catch {
         showCustomToast({
           message: `Error al obtener datos de los REITs`,
           type: "error",
           duration: 3000,
         });
-        console.error("Error fetching REIT data:", error);
       } finally {
         setLoading(false);
       }
@@ -85,6 +61,72 @@ const InvestmentOverview: React.FC = () => {
 
     fetchREITData();
   }, []);
+
+  // NUEVO: Obtener inversiones reales
+  useEffect(() => {
+    const fetchInvestments = async () => {
+      try {
+        setLoadingInvestments(true);
+        const data = await getInvestments();
+        setInvestments(data);
+      } catch (error) {
+        showCustomToast({
+          message: "Error al obtener inversiones",
+          type: "error",
+          duration: 3000,
+        });
+      } finally {
+        setLoadingInvestments(false);
+      }
+    };
+    fetchInvestments();
+  }, []);
+
+  // Calcula los valores reales
+  const totalInvested = investments.reduce(
+    (sum, inv) => sum + inv.monto_invertido,
+    0
+  );
+  const totalProperties = investments.length;
+
+  const portfolioStats = [
+    {
+      label: "Valor Total",
+      value: loadingInvestments ? (
+        <Skeleton className="h-8 w-20" />
+      ) : (
+        `$${totalInvested.toLocaleString("en-US")}`
+      ),
+      change: "+12.3%", // Puedes calcular cambios reales si tienes históricos
+      changeType: "up",
+      subLabel: "Últimos 12 meses",
+    },
+    {
+      label: "Rendimiento Anual",
+      value: "9.1%",
+      change: "+1.2%",
+      changeType: "up",
+      subLabel: "Superando el mercado",
+    },
+    {
+      label: "Propiedades",
+      value: loadingInvestments ? (
+        <Skeleton className="h-8 w-8" />
+      ) : (
+        totalProperties
+      ),
+      change: "+2", // Puedes calcular cambios reales si tienes históricos
+      changeType: "up",
+      subLabel: "Nuevas adquisiciones",
+    },
+    {
+      label: "Ocupación",
+      value: "95%",
+      change: "+5%",
+      changeType: "up",
+      subLabel: "Promedio anual",
+    },
+  ];
 
   const marketStats = [
     {

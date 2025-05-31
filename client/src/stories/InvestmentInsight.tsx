@@ -165,7 +165,7 @@ const InvestmentInsight: React.FC<InvestmentInsightProps> = ({
       {/* Action Button */}
       <button
         onClick={onDetailsClick}
-        className="w-full py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm"
+        className="w-full py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm cursor-pointer"
       >
         Ver Detalles
       </button>
