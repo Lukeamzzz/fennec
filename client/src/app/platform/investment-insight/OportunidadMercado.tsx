@@ -19,6 +19,7 @@ const OportunidadMercado = () => {
       const data = await getInvestments();
       setInvestments(data);
     } catch (error) {
+      console.error(error);
       showCustomToast({
         message: "Error al obtener inversiones",
         type: "error",
