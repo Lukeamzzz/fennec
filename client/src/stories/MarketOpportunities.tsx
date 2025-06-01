@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import InvestmentInsight from "@/stories/InvestmentInsight";
 import { getHouses, House } from "@/lib/getHouses";
 import { getApartments, Apartment } from "@/lib/getApartments";
+import OpportunitySkeleton from "./OpportunitySkeleton";
 
 const categories = ["Todos", "Casas", "Departamentos"];
 
@@ -22,7 +23,6 @@ function mapToInvestmentInsight(item: OpportunityItem) {
   const maxDesc = 120;
   let desc = item.descripcion;
   if (desc.length > maxDesc) {
-    // Truncar sin cortar palabras
     desc = desc.slice(0, maxDesc);
     const lastSpace = desc.lastIndexOf(" ");
     if (lastSpace > 0) desc = desc.slice(0, lastSpace);
@@ -44,8 +44,8 @@ function mapToInvestmentInsight(item: OpportunityItem) {
       `${item.banos} baños`,
       `${item.estacionamientos} estacionamientos`,
       `${item.dimensionesM2} m²`,
-    ],
-    tags: [item.colonia, item.alcaldia],
+    ].slice(0, 3),
+    tags: [item.colonia, item.alcaldia].slice(0, 2),
     onDetailsClick: () => {},
   };
 }
@@ -112,22 +112,35 @@ const MarketOpportunities: React.FC = () => {
           ))}
         </div>
         {loading ? (
-          <div className="text-center py-10 text-gray-400">
-            Cargando oportunidades...
+          <div className="w-full max-w-5xl mx-auto">
+            <div
+              className="flex flex-row gap-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-thin scrollbar-thumb-gray-200"
+              style={{ scrollSnapType: "x mandatory" }}
+            >
+              {[...Array(3)].map((_, idx) => (
+                <OpportunitySkeleton key={idx} />
+              ))}
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[440px]">
-            {currentList.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-[#FFF9F6] rounded-xl flex flex-col justify-between h-full min-h-[440px] max-h-[440px]"
-              >
-                <InvestmentInsight
-                  {...mapToInvestmentInsight(item)}
-                  className="h-full flex flex-col"
-                />
-              </div>
-            ))}
+          <div className="w-full max-w-5xl mx-auto">
+            <div
+              className="flex flex-row gap-4 overflow-x-auto overflow-y-hidden pb-4 scrollbar-thin scrollbar-thumb-gray-200"
+              style={{ scrollSnapType: "x mandatory" }}
+            >
+              {currentList.map((item, idx) => (
+                <div
+                  key={idx}
+                  className="bg-[#FFF9F6] rounded-xl flex flex-col h-[480px] w-[340px] flex-shrink-0"
+                  style={{ scrollSnapAlign: "start" }}
+                >
+                  <InvestmentInsight
+                    {...mapToInvestmentInsight(item)}
+                    className="h-full flex flex-col"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
         )}
       </section>
