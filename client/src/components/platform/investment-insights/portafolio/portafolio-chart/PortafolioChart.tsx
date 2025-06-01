@@ -10,6 +10,7 @@ import { showCustomToast } from "@/lib/showCustomToast";
 import AllInvestmentsSheet from "./AllInvestmentsSheet";
 import EmptyPortfolioInvite from "./EmptyPortfolioInvite";
 import { HousePlus } from "lucide-react";
+import PortafolioChartSkeleton from "./PortafolioChartSkeleton";
 
 interface Property {
   type: string;
@@ -201,7 +202,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
   );
 
   if (loading) {
-    return <div>Cargando...</div>;
+    return <PortafolioChartSkeleton />;
   }
 
   return (
