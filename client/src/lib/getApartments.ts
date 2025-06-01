@@ -16,6 +16,6 @@ export interface Apartment {
 }
 
 export const getApartments = async (): Promise<Apartment[]> => {
-  const response = await api.get("/departamento/list-departamentos");
+  const response = await api.get("api/departamento/list-departamentos");
   return response.data;
 };

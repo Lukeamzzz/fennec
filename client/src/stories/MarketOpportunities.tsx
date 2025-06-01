@@ -1,80 +1,87 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import InvestmentInsight from "@/stories/InvestmentInsight";
+import { getHouses, House } from "@/lib/getHouses";
+import { getApartments, Apartment } from "@/lib/getApartments";
 
-const categories = [
-  "Todos",
-  "Residencial",
-  "Comercial",
-  "Desarrollo",
-  "Industrial",
-];
+const categories = ["Todos", "Casas", "Departamentos"];
 
-const opportunities = [
-  {
-    title: "Desarrollo Vertical Cuauhtémoc",
-    badgeText: "Desarrollo",
-    location: "Cuauhtémoc, CDMX",
-    description:
-      "Proyecto de desarrollo de torre de uso mixto en una de las zonas con mayor potencial de crecimiento en la Ciudad de México.",
-    investmentRequired: "$75-120M",
-    projectedRoi: "14.2%",
-    estimatedTerm: "36-48 meses",
-    riskLevel: "Medio",
+type OpportunityItem =
+  | (House & { _type: "Casa" })
+  | (Apartment & { _type: "Departamento" });
+
+function getRandomItems<T>(arr: T[], n: number): T[] {
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result.slice(0, n);
+}
+
+function mapToInvestmentInsight(item: OpportunityItem) {
+  const maxDesc = 120;
+  let desc = item.descripcion;
+  if (desc.length > maxDesc) {
+    // Truncar sin cortar palabras
+    desc = desc.slice(0, maxDesc);
+    const lastSpace = desc.lastIndexOf(" ");
+    if (lastSpace > 0) desc = desc.slice(0, lastSpace);
+    desc += "...";
+  }
+  return {
+    title: `${item._type} en ${item.colonia}`,
+    badgeText: item._type,
+    location: `${item.direccion}, ${item.alcaldia}`,
+    description: desc,
+    investmentRequired: `$${item.precio.toLocaleString()}`,
+    projectedRoi: `${(Math.random() * 10 + 5).toFixed(1)}%`,
+    estimatedTerm: `${Math.floor(Math.random() * 36 + 12)}-${Math.floor(
+      Math.random() * 24 + 36
+    )} meses`, // Simulado
+    riskLevel: ["Bajo", "Medio", "Alto"][Math.floor(Math.random() * 3)],
     highlights: [
-      "50+ unidades residenciales",
-      "Amenidades de lujo",
-      "Planta baja comercial",
-      "Certificación LEED",
+      `${item.recamaras} recámaras`,
+      `${item.banos} baños`,
+      `${item.estacionamientos} estacionamientos`,
+      `${item.dimensionesM2} m²`,
     ],
-    tags: ["Alta Demanda", "Zona Premium"],
-    category: "Desarrollo",
-  },
-  {
-    title: "Hub Tecnológico Valle de México",
-    badgeText: "Comercial",
-    location: "Interlomas, Estado de México",
-    description:
-      "Espacio comercial orientado a empresas tecnológicas en zona de rápido crecimiento, con infraestructura adaptada para necesidades tech.",
-    investmentRequired: "$45-60M",
-    projectedRoi: "12.8%",
-    estimatedTerm: "24-30 meses",
-    riskLevel: "Medio-Bajo",
-    highlights: [
-      "Coworking integrado",
-      "Sistemas inteligentes",
-      "Fibra óptica dedicada",
-      "Áreas colaborativas",
-    ],
-    tags: ["Tech Hub", "Alta Plusvalía"],
-    category: "Comercial",
-  },
-  {
-    title: "Centro de Salud en Tlalpan",
-    badgeText: "Desarrollo",
-    location: "Tlalpan, CDMX",
-    description:
-      "Proyecto de desarrollo de centro de salud en zona de alta demanda, con servicios médicos y hospitalarios modernos.",
-    investmentRequired: "$30-45M",
-    projectedRoi: "11.5%",
-    estimatedTerm: "24-30 meses",
-    riskLevel: "Medio-Bajo",
-    highlights: [
-      "Servicios médicos modernos",
-      "Áreas de atención especializada",
-      "Infraestructura hospitalaria",
-    ],
-    tags: ["Salud", "Zona Premium"],
-    category: "Residencial",
-  },
-];
+    tags: [item.colonia, item.alcaldia],
+    onDetailsClick: () => {},
+  };
+}
 
 const MarketOpportunities: React.FC = () => {
-  const [selected, setSelected] = useState("Todos");
+  const [selected, setSelected] = useState<string>("Todos");
+  const [casas, setCasas] = useState<House[]>([]);
+  const [departamentos, setDepartamentos] = useState<Apartment[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered =
-    selected === "Todos"
-      ? opportunities
-      : opportunities.filter((o) => o.category === selected);
+  useEffect(() => {
+    setLoading(true);
+    Promise.all([getHouses(), getApartments()])
+      .then(([casasData, deptosData]) => {
+        setCasas(getRandomItems(casasData, 5));
+        setDepartamentos(getRandomItems(deptosData, 5));
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  const currentList = useMemo(() => {
+    if (selected === "Todos") {
+      return [
+        ...casas.map((c) => ({ ...c, _type: "Casa" as const })),
+        ...departamentos.map((d) => ({ ...d, _type: "Departamento" as const })),
+      ];
+    }
+    if (selected === "Casas")
+      return casas.map((c) => ({ ...c, _type: "Casa" as const }));
+    if (selected === "Departamentos")
+      return departamentos.map((d) => ({
+        ...d,
+        _type: "Departamento" as const,
+      }));
+    return [];
+  }, [selected, casas, departamentos]);
 
   return (
     <div className="flex flex-col gap-4 p-10 drop-shadow-xl">
@@ -104,28 +111,25 @@ const MarketOpportunities: React.FC = () => {
             </button>
           ))}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {filtered.map((op) => (
-            <div
-              key={op.title}
-              className="bg-[#FFF9F6] rounded-xl  flex flex-col justify-between min-h-[420px]"
-            >
-              <InvestmentInsight
-                title={op.title}
-                badgeText={op.badgeText}
-                location={op.location}
-                description={op.description}
-                investmentRequired={op.investmentRequired}
-                projectedRoi={op.projectedRoi}
-                estimatedTerm={op.estimatedTerm}
-                riskLevel={op.riskLevel}
-                highlights={op.highlights}
-                tags={op.tags}
-                onDetailsClick={() => {}}
-              />
-            </div>
-          ))}
-        </div>
+        {loading ? (
+          <div className="text-center py-10 text-gray-400">
+            Cargando oportunidades...
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 auto-rows-[440px]">
+            {currentList.map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-[#FFF9F6] rounded-xl flex flex-col justify-between h-full min-h-[440px] max-h-[440px]"
+              >
+                <InvestmentInsight
+                  {...mapToInvestmentInsight(item)}
+                  className="h-full flex flex-col"
+                />
+              </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

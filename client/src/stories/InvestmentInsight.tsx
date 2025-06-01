@@ -69,7 +69,7 @@ const InvestmentInsight: React.FC<InvestmentInsightProps> = ({
 }) => {
   return (
     <div
-      className={`bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow p-3 font-sans ${className}`}
+      className={`bg-white rounded-2xl shadow-sm hover:shadow-lg transition-shadow p-3 font-sans flex flex-col h-full ${className}`}
     >
       {/* Header Section */}
       <div className="flex justify-between items-start mb-1">
@@ -86,7 +86,7 @@ const InvestmentInsight: React.FC<InvestmentInsightProps> = ({
       </div>
 
       {/* Description */}
-      <p className="text-sm text-gray-600 mb-4 leading-snug py-3">
+      <p className="text-sm text-gray-600 mb-4 leading-snug py-3 overflow-hidden">
         {description}
       </p>
 
@@ -165,7 +165,7 @@ const InvestmentInsight: React.FC<InvestmentInsightProps> = ({
       {/* Action Button */}
       <button
         onClick={onDetailsClick}
-        className="w-full py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm cursor-pointer"
+        className="w-full py-2 bg-white border border-gray-200 rounded-xl text-gray-700 font-medium hover:bg-gray-50 transition-colors text-sm cursor-pointer mt-auto"
       >
         Ver Detalles
       </button>

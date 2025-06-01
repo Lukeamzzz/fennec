@@ -15,6 +15,6 @@ export interface House {
 }
 
 export const getHouses = async (): Promise<House[]> => {
-  const response = await api.get("/casa/list-casas");
+  const response = await api.get("api/casa/list-casas");
   return response.data;
 };
