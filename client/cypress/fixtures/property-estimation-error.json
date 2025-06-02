@@ -1,0 +1,6 @@
+{
+  "error": "Error interno del servidor",
+  "codigo": "EST_ERROR_500",
+  "mensaje": "No se pudo procesar la estimación. Intente nuevamente.",
+  "timestamp": "2025-06-02T10:30:00Z"
+}
