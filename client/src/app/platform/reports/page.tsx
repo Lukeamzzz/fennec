@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getReports } from "./hooks/getReports";
 
 interface ValuationReport {
   id: string;
@@ -32,59 +33,45 @@ export default function Reports() {
   useEffect(() => {
     const fetchReports = async () => {
       try {
-        // Aquí harías la llamada real a tu API
-        // const response = await fetch('/api/valuation-reports');
-        // const data = await response.json();
-
-        // Datos de ejemplo para mostrar la interfaz
-        const mockData: ValuationReport[] = [
-          {
-            id: "1",
-            direccion: "Av. Insurgentes Sur 1234",
-            codigoPostal: "03100",
-            tipoPropiedad: "Departamento",
-            valorEstimado: 3500000,
-            fechaCreacion: "2024-03-15T10:30:00Z",
-            habitaciones: 3,
-            bathrooms: 2,
-            tamanoPropiedad: 120,
-            condicion: "Buena",
+        const data = await getReports();
+        type ApiReport = {
+          idUsuario: string;
+          direccion: string;
+          colonia?: string;
+          alcaldia?: string;
+          codigoPostal: string;
+          tipoPropiedad: string;
+          valorEstimado: number;
+          fechaCreacion?: string | null;
+          fechaActualizacion?: string | null;
+          recamaras?: number;
+          banos?: number;
+          dimensionesM2: number;
+          condicionesPropiedad: string;
+          anotacionesValuacion?: string;
+          anotacionesExtra?: string;
+        };
+        const mappedReports: ValuationReport[] = (data as ApiReport[]).map(
+          (item) => ({
+            id: item.idUsuario || "",
+            direccion: item.direccion || "",
+            colonia: item.colonia,
+            alcaldia: item.alcaldia,
+            codigoPostal: item.codigoPostal,
+            tipoPropiedad: item.tipoPropiedad,
+            valorEstimado: Math.round(item.valorEstimado),
+            fechaCreacion: item.fechaCreacion || item.fechaActualizacion || "",
+            habitaciones: item.recamaras,
+            bathrooms: item.banos,
+            tamanoPropiedad: item.dimensionesM2,
+            condicion: item.condicionesPropiedad,
             anotaciones_valuacion:
-              "Departamento en excelente ubicación con vista panorámica. Cuenta con acabados de primera calidad, cocina integral, closets empotrados y balcón amplio. Edificio con amenidades: gimnasio, roof garden y seguridad 24 horas. Estacionamiento techado incluido.",
-          },
-          {
-            id: "2",
-            direccion: "Calle Roma Norte 456",
-            codigoPostal: "06700",
-            tipoPropiedad: "Casa",
-            valorEstimado: 8750000,
-            fechaCreacion: "2024-03-12T14:20:00Z",
-            habitaciones: 4,
-            bathrooms: 3,
-            tamanoPropiedad: 250,
-            condicion: "Excelente",
-            anotaciones_valuacion:
-              "Casa completamente remodelada con diseño contemporáneo. Pisos de madera en planta alta, cocina italiana con isla central, jardín privado con asador. Sistema de calefacción, paneles solares y cisterna de 10,000 litros. Zona muy cotizada de la Roma Norte.",
-          },
-          {
-            id: "3",
-            direccion: "Polanco Reforma 789",
-            codigoPostal: "11560",
-            tipoPropiedad: "Departamento",
-            valorEstimado: 6200000,
-            fechaCreacion: "2024-03-10T09:15:00Z",
-            habitaciones: 2,
-            bathrooms: 2,
-            tamanoPropiedad: 95,
-            condicion: "Muy Buena",
-            anotaciones_valuacion:
-              "Departamento de lujo en Polanco con vista al Parque Lincoln. Acabados premium, mármol en baños, cocina con electrodomésticos europeos. Building de gran prestigio con conserje, valet parking y spa. Ubicación privilegiada a 2 cuadras de Presidente Masaryk.",
-          },
-        ];
-
-        setReports(mockData);
+              item.anotacionesValuacion || item.anotacionesExtra || "",
+          })
+        );
+        setReports(mappedReports);
         setLoading(false);
-      } catch (err) {
+      } catch {
         setError("Error al cargar los reportes");
         setLoading(false);
       }
@@ -104,6 +91,7 @@ export default function Reports() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
+    if (!dateString || isNaN(date.getTime())) return "Fecha inválida";
     return new Intl.DateTimeFormat("es-MX", {
       year: "numeric",
       month: "long",
@@ -306,7 +294,7 @@ export default function Reports() {
                       {report.tipoPropiedad}
                     </span>
                     <span className="text-xs text-gray-500">
-                      {formatDate(report.fechaCreacion)}
+                      {report.fechaCreacion}
                     </span>
                   </div>
 
