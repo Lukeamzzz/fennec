@@ -100,7 +100,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.type ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               required
             >
               <option value="Departamento">Departamento</option>
@@ -122,7 +122,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.name ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="Ej: Casa en Polanco"
               required
             />
@@ -149,7 +149,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
                 onChange={handleInputChange}
                 className={`w-full pl-8 pr-4 py-3 bg-gray-50 border ${
                   errors.propertyPrice ? "border-red-500" : "border-gray-200"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
                 placeholder="2,500,000"
                 min="0"
                 required
@@ -178,7 +178,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
                 onChange={handleInputChange}
                 className={`w-full pl-8 pr-4 py-3 bg-gray-50 border ${
                   errors.investmentAmount ? "border-red-500" : "border-gray-200"
-                } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+                } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
                 placeholder="1,500,000"
                 min="0"
                 required
@@ -204,7 +204,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.alcaldia ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="Ej: Miguel Hidalgo"
               required
             />
@@ -224,7 +224,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.colonia ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="Ej: Polanco"
               required
             />
@@ -245,7 +245,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
             onChange={handleInputChange}
             className={`w-full px-4 py-3 bg-gray-50 border ${
               errors.address ? "border-red-500" : "border-gray-200"
-            } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+            } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
             placeholder="Ej: Av. Presidente Masaryk 123"
             required
           />
@@ -266,7 +266,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.squareMeters ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="150"
               min="0"
               required
@@ -287,7 +287,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.date ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               required
             />
             {errors.date && (
@@ -308,7 +308,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.bathrooms ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="2"
               min="0"
               required
@@ -329,7 +329,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.parkingSpots ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="1"
               min="0"
               required
@@ -350,7 +350,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
               onChange={handleInputChange}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.bedrooms ? "border-red-500" : "border-gray-200"
-              } rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all`}
+              } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
               placeholder="3"
               min="0"
               required
@@ -371,7 +371,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
           </button>
           <button
             type="submit"
-            className="px-6 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="px-6 py-2 text-sm font-medium text-white bg-orange-600 hover:bg-orange-700 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-orange-500"
           >
             Guardar
           </button>
