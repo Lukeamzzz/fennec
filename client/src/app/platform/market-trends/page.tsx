@@ -108,7 +108,7 @@ export default function MarketTrends() {
             Mapa Interactivo de Ciudad de México
           </h2>
           <p className="text-sm text-gray-500">
-            Exploración detallada de precios y tendencias inmobiliarias segmentado por alcaldía.
+            Exploración detallada de precios y tendencias inmobiliarias segmentado por alcaldías.
           </p>
           <MexicoCityMap />
         </div>
