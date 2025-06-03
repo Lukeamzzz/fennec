@@ -131,7 +131,7 @@ const MarketOpportunities: React.FC = () => {
               {currentList.map((item, idx) => (
                 <div
                   key={idx}
-                  className="bg-[#FFF9F6] rounded-xl flex flex-col h-[480px] w-[340px] flex-shrink-0"
+                  className="bg-[#FFF9F6] rounded-xl flex flex-col min-h-80 w-[400px] flex-shrink-0"
                   style={{ scrollSnapAlign: "start" }}
                 >
                   <InvestmentInsight

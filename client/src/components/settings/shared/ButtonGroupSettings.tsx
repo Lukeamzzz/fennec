@@ -8,7 +8,6 @@ interface TabButtonGroupProps {
 function TabButtonGroup({ activeTab, onTabChange }: TabButtonGroupProps) {
     const tabs = [
         { id: 'profile', label: 'Perfil' },
-        { id: 'security', label: 'Seguridad' },
         { id: 'notifications', label: 'Notificaciones' },
         { id: 'account', label: 'Cuenta' },
     ];
