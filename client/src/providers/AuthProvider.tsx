@@ -28,6 +28,27 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
+    // 🧪 BYPASS PARA CYPRESS - Agregar esto al inicio
+    if (typeof window !== 'undefined' && (window as any).__FIREBASE_AUTH_MOCK__) {
+      console.log('🧪 Cypress: Using Firebase Auth Mock');
+      const mockAuth = (window as any).__FIREBASE_AUTH_MOCK__;
+      mockAuth.onAuthStateChanged((mockUser: any) => {
+        setUser(mockUser);
+        if (mockUser) {
+          setIdToken('fake-token-cypress');
+          setRole('usuario');
+          api.defaults.headers.common["Authorization"] = `Bearer fake-token-cypress`;
+        } else {
+          setIdToken(null);
+          setRole(null);
+          delete api.defaults.headers.common["Authorization"];
+        }
+        setLoading(false);
+      });
+      return; // Salir sin ejecutar Firebase real
+    }
+
+    // 🔥 TU CÓDIGO ORIGINAL DE FIREBASE
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
 
@@ -43,6 +64,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
           if (providerId === "google.com") {
             await api.post("/auth/google");
             setRole("premium");
+          } else {
+            setRole("usuario");
           }
 
         } catch (err) {
