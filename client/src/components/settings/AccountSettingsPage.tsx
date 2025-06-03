@@ -4,7 +4,6 @@ import { useState } from "react";
 import ProfileSection from "@/components/settings/profile/ProfileSection";
 import Header_settings from "@/components/settings/shared/HeaderSettings";
 import ButtonGroupSettings from "@/components/settings/shared/ButtonGroupSettings";
-import SecurityPasswordSection from "@/components/settings/security/SecurityPasswordSection";
 import NotificationSection from "@/components/settings/notifications/NotificationSection";
 import AccountSection from "@/components/settings/account/AccountSection";
 
@@ -15,8 +14,6 @@ function AccountSettingsPage() {
     switch (activeTab) {
       case "profile":
         return <ProfileSection />;
-      case "security":
-        return <SecurityPasswordSection />;
       case "notifications":
         return <NotificationSection />;
       case "account":
