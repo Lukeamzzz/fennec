@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 
 const api = axios.create({
-  baseURL: "http://localhost:8000",
+  baseURL: "https://fennec-prediccion.onrender.com",
   timeout: 5000,
 });
 

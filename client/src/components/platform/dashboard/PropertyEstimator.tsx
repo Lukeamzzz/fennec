@@ -69,6 +69,25 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
     }
     if (key === "tipo" && typeof value === "string" && onTipoChange) {
       onTipoChange(value);
+      // Trigger API call when tipo changes
+      handleTipoChange(value);
+    }
+  };
+
+  // New function to handle tipo change and make API call
+  const handleTipoChange = async (newTipo: string) => {
+    try {
+      const endpoint = newTipo === "Casa" 
+        ? "/api/casa/data" 
+        : "/api/departamento/data";
+      
+      // You can make your API call here
+      // const response = await api.post(endpoint, { alcaldia: input.alcaldia });
+      // Handle the response as needed
+      
+      console.log(`Making API call to ${endpoint} for tipo: ${newTipo}`);
+    } catch (error) {
+      console.error("Error making API call for tipo change:", error);
     }
   };
 
@@ -215,7 +234,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
 
         <ReporteModal
           open={modalOpen}
-          onClose={() => setModalOpen(true)}
+          onClose={() => setModalOpen(false)} // Fixed: was setModalOpen(true)
           prediction={prediction}
           onSubmit={handleGenerarReporte}
         />
