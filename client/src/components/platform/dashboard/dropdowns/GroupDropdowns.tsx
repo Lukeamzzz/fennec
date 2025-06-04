@@ -10,9 +10,6 @@ interface Props {
 
 const GroupDropdowns = ({ input, onChange }: Props) => {
     const tiposPropiedad = ["Casa", "Departamento"];
-    const habitaciones = ["1", "2", "3", "4"];
-    const bathrooms = ["1", "2", "3", "4"];
-    const parking = ["1", "2", "3", "4"];
 
     return (
         <div className="space-y-4">
@@ -36,47 +33,35 @@ const GroupDropdowns = ({ input, onChange }: Props) => {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Habitaciones</label>
-                    <select
+                    <input
+                        type="number"
+                        min="1"
                         value={input.recamaras}
-                        onChange={(e) => onChange("recamaras", parseInt(e.target.value))}
+                        onChange={(e) => onChange("recamaras", parseInt(e.target.value) || 1)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-                    >
-                        {habitaciones.map((h) => (
-                            <option key={h} value={h}>
-                                {h}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Baños</label>
-                    <select
+                    <input
+                        type="number"
+                        min="1"
                         value={input.banos}
-                        onChange={(e) => onChange("banos", parseInt(e.target.value))}
+                        onChange={(e) => onChange("banos", parseInt(e.target.value) || 1)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-                    >
-                        {bathrooms.map((b) => (
-                            <option key={b} value={b}>
-                                {b}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Estacionamientos</label>
-                    <select
+                    <input
+                        type="number"
+                        min="1"
                         value={input.estacionamientos}
-                        onChange={(e) => onChange("estacionamientos", parseInt(e.target.value))}
+                        onChange={(e) => onChange("estacionamientos", parseInt(e.target.value) || 1)}
                         className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"
-                    >
-                        {parking.map((p) => (
-                            <option key={p} value={p}>
-                                {p}
-                            </option>
-                        ))}
-                    </select>
+                    />
                 </div>
             </div>
         </div>

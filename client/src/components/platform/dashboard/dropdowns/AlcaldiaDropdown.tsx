@@ -12,7 +12,6 @@ const alcaldias = [
   "Iztapalapa",
   "La Magdalena Contreras",
   "Miguel Hidalgo",
-  "Milpa Alta",
   "Tláhuac",
   "Tlalpan",
   "Venustiano Carranza",

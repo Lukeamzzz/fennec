@@ -47,6 +47,13 @@ export default function DashboardPage() {
     setSelectedAlcaldia(newAlcaldia);
   };
 
+  // New handler for tipo changes
+  const handleTipoChange = (newTipo: string) => {
+    setSelectedTipo(newTipo);
+    console.log(`Tipo changed to: ${newTipo}`);
+    // Here you can add any additional logic when tipo changes
+  };
+
   const { profile } = useUserProfile();
 
   return (
@@ -104,12 +111,15 @@ export default function DashboardPage() {
           <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
             <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
               <div className="w-full">
-                <PropertyEstimator onAlcaldiaChange={handleAlcaldiaChange} />
+                <PropertyEstimator 
+                  onAlcaldiaChange={handleAlcaldiaChange}
+                  onTipoChange={handleTipoChange}
+                />
               </div>
             </div>
 
             {/* Tendencias del Mercado */}
-            <div className="bg-white rounded-2xlp-6 flex flex-col items-center text-center">
+            <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
               <div className="w-full max-w-md">
                 <DashboardMarketTrendsChart />
               </div>

@@ -1,0 +1,22 @@
+{
+  "precio_estimado": 4500000,
+  "rango_minimo": 4200000,
+  "rango_maximo": 4800000,
+  "confianza": 0.85,
+  "factores_considerados": {
+    "ubicacion": "Álvaro Obregón",
+    "tipo": "Casa",
+    "metros_cuadrados": 200,
+    "recamaras": 3,
+    "banos": 2,
+    "estacionamientos": 2
+  },
+  "comparables": [
+    {
+      "direccion": "Propiedades similares en la zona",
+      "precio": 4400000,
+      "metros": 190
+    }
+  ],
+  "timestamp": "2025-06-02T10:30:00Z"
+}
