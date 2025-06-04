@@ -29,7 +29,6 @@ export default function Reports() {
   );
   const [showModal, setShowModal] = useState(false);
 
-  // Simular datos de ejemplo (reemplazar con llamada real a API)
   useEffect(() => {
     const fetchReports = async () => {
       try {
