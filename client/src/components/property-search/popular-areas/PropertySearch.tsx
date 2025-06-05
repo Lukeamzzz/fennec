@@ -12,12 +12,13 @@ interface PropertySearchProps {
     minSize: number;
     maxSize: number;
   }) => void;
+  onSearchByArea?: (alcaldia: string) => void;
 }
 
 /**
  * PropertySearch component that displays both alcaldías and property types
  */
-const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
+const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByArea }) => {
   // Alcaldías data
   const alcaldias = [
     'Miguel Hidalgo',
@@ -37,15 +38,20 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
 
   // Click handlers
   const handleAreaClick = (area: string) => {
-    onSearch({
-      location: area,
-      propertyType: 'Cualquier',
-      priceRange: [0, 150000000],
-      bedrooms: 'Cualquier',
-      bathrooms: 'Cualquier',
-      minSize: 0,
-      maxSize: 5000
-    });
+    // Si existe onSearchByArea, usarla; si no, usar onSearch con filtros completos
+    if (onSearchByArea) {
+      onSearchByArea(area);
+    } else {
+      onSearch({
+        location: area,
+        propertyType: 'Cualquier',
+        priceRange: [0, 150000000],
+        bedrooms: 'Cualquier',
+        bathrooms: 'Cualquier',
+        minSize: 0,
+        maxSize: 5000
+      });
+    }
   };
 
   const handlePropertyTypeClick = (type: string) => {
