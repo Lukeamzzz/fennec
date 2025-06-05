@@ -29,11 +29,10 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByAre
     'Tlalpan'
   ];
 
-  // Property types data
+  // Property types data - Eliminamos "Terrenos"
   const propertyTypes = [
     'Departamentos',
-    'Casas',
-    'Terrenos'
+    'Casas'
   ];
 
   // Click handlers
@@ -44,7 +43,7 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByAre
     } else {
       onSearch({
         location: area,
-        propertyType: 'Cualquier',
+        propertyType: '',
         priceRange: [0, 150000000],
         bedrooms: 'Cualquier',
         bathrooms: 'Cualquier',
@@ -55,9 +54,12 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByAre
   };
 
   const handlePropertyTypeClick = (type: string) => {
+    // Convertir "Departamentos" -> "Departamento" y "Casas" -> "Casa"
+    const propertyType = type === 'Departamentos' ? 'Departamento' : 'Casa';
+    
     onSearch({
-      location: 'Cualquier',
-      propertyType: type.slice(0, -1), // Removemos la 's' final para que coincida con el formato esperado
+      location: '', // Ubicación vacía para buscar en todas las ubicaciones
+      propertyType: propertyType,
       priceRange: [0, 150000000],
       bedrooms: 'Cualquier',
       bathrooms: 'Cualquier',
@@ -85,7 +87,7 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByAre
       {/* Property Types Section */}
       <div>
         <h2 className="text-2xl font-bold mb-6">Tipos de Inmuebles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {propertyTypes.map((type) => (
             <PropertyTypeCard 
               key={type}
