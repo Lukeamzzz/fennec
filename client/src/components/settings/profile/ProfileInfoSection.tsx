@@ -24,11 +24,7 @@ function ProfileInfoSection() {
 
       try {
         setIsLoading(true);
-        const response = await api.get("/api/profile", {
-          headers: {
-            Authorization: `Bearer ${idToken}`,
-          },
-        });
+        const response = await api.get("/api/profile");
         setProfileData(response.data);
       } catch (error: any) {
         if (error?.response?.status === 401) {
@@ -102,7 +98,7 @@ function ProfileInfoSection() {
           Esta información se mostrará públicamente.
         </p>
 
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} >
           <div className="mb-4">
             <label htmlFor="fullName" className="block text-sm font-medium text-gray-700 mb-1">
               Nombre completo

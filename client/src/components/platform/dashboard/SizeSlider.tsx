@@ -9,7 +9,7 @@ interface Props {
 function SizeSlider({ value, onChange }: Props) {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newVal = Number(e.target.value);
-        if (!isNaN(newVal) && newVal >= 0 && newVal <= 5000) {
+        if (!isNaN(newVal) && newVal >= 20 && newVal <= 2000) {
             onChange(newVal);
         }
     };
@@ -26,7 +26,7 @@ function SizeSlider({ value, onChange }: Props) {
                     value={value}
                     onChange={handleInputChange}
                     className="w-24 px-2 py-1 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                    min={0}
+                    min={20}
                     max={2000}
                 />
                 <span className="text-sm text-gray-500">m²</span>
