@@ -198,15 +198,15 @@ const MarketTrendsChart = () => {
 
   if (error) {
     return (
-      <div className="w-full max-w-xl p-4 shadow-xl rounded-xl">
+      <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="market-trends-error">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2 mb-2">
             <BarChart3 className="h-5 w-5 text-red-500" />
-            <h3 className="font-medium text-red-700">Error en Comparativa de Alcaldías</h3>
+            <h3 className="font-medium text-red-700" data-testid="error-title">Error en Comparativa de Alcaldías</h3>
           </div>
           
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
-            <p className="text-red-700 text-sm mb-3">{error}</p>
+            <p className="text-red-700 text-sm mb-3" data-testid="error-message">{error}</p>
             
             <div className="space-y-2 text-xs text-red-600">
               <p><strong>Posibles soluciones:</strong></p>
@@ -221,6 +221,7 @@ const MarketTrendsChart = () => {
           
           <button
             onClick={handleRetry}
+            data-testid="btn-reintentar"
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
           >
             🔄 Reintentar {retryCount > 0 && `(${retryCount})`}
@@ -235,12 +236,12 @@ const MarketTrendsChart = () => {
   }
 
   return (
-    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl">
+    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="market-trends-chart">
       {/* Header */}
       <div className="text-center justify-center mb-4">
         <div className="flex items-center justify-center gap-2 mb-2">
           <BarChart3 className="h-5 w-5 text-orange-500" />
-          <h3 className="font-medium">Comparativa de Alcaldías</h3>
+          <h3 className="font-medium" data-testid="chart-title">Comparativa de Alcaldías</h3>
         </div>
         <p className="text-sm text-muted-foreground">
           {loading ? "Cargando datos..." : "Precios promedio CDMX"}
@@ -254,9 +255,10 @@ const MarketTrendsChart = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tipo de Propiedad
           </label>
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-gray-100 rounded-lg p-1" data-testid="property-type-controls">
             <button
               onClick={() => setTipoPropiedad('casa')}
+              data-testid="btn-tipo-casa"
               className={`flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors flex-1 justify-center ${
                 tipoPropiedad === 'casa' 
                   ? 'bg-white text-orange-600 shadow-sm' 
@@ -268,6 +270,7 @@ const MarketTrendsChart = () => {
             </button>
             <button
               onClick={() => setTipoPropiedad('departamento')}
+              data-testid="btn-tipo-departamento"
               className={`flex items-center gap-1 px-3 py-2 text-sm rounded-md transition-colors flex-1 justify-center ${
                 tipoPropiedad === 'departamento' 
                   ? 'bg-white text-orange-600 shadow-sm' 
@@ -285,9 +288,10 @@ const MarketTrendsChart = () => {
           <label className="block text-sm font-medium text-gray-700 mb-2">
             Tipo de Comparación
           </label>
-          <div className="flex bg-gray-100 rounded-lg p-1">
+          <div className="flex bg-gray-100 rounded-lg p-1" data-testid="comparison-type-controls">
             <button
               onClick={() => setTipoComparacion('precio')}
+              data-testid="btn-comparacion-precio"
               className={`px-3 py-2 text-sm rounded-md transition-colors flex-1 ${
                 tipoComparacion === 'precio' 
                   ? 'bg-white text-orange-600 shadow-sm' 
@@ -298,6 +302,7 @@ const MarketTrendsChart = () => {
             </button>
             <button
               onClick={() => setTipoComparacion('m2')}
+              data-testid="btn-comparacion-m2"
               className={`px-3 py-2 text-sm rounded-md transition-colors flex-1 ${
                 tipoComparacion === 'm2' 
                   ? 'bg-white text-orange-600 shadow-sm' 
@@ -337,10 +342,11 @@ const MarketTrendsChart = () => {
 
           {/* Alcaldías seleccionadas */}
           <div className="mb-2">
-            <div className="flex flex-wrap gap-2">
+            <div className="flex flex-wrap gap-2" data-testid="alcaldias-seleccionadas">
               {alcaldiasSeleccionadas.map((alcaldia, index) => (
                 <div
                   key={alcaldia}
+                  data-testid={`alcaldia-selected-${index}`}
                   className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs ${
                     index === 0 
                       ? 'bg-orange-100 text-orange-700 border border-orange-200' 
@@ -369,6 +375,7 @@ const MarketTrendsChart = () => {
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              data-testid="btn-dropdown-alcaldias"
               className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-50 bg-white text-gray-600 flex items-center justify-between"
             >
               <span>
@@ -380,7 +387,7 @@ const MarketTrendsChart = () => {
               <ChevronDownIcon className="h-4 w-4" />
             </button>
             {isDropdownOpen && (
-              <div className="absolute top-full left-0 right-0 mt-1 py-1 bg-white rounded-lg shadow-lg border z-20 max-h-48 overflow-y-auto">
+              <div className="absolute top-full left-0 right-0 mt-1 py-1 bg-white rounded-lg shadow-lg border z-20 max-h-48 overflow-y-auto" data-testid="dropdown-alcaldias-list">
                 {alcaldiasDisponibles.map((alcaldia) => {
                   const isSelected = alcaldiasSeleccionadas.includes(alcaldia);
                   const canSelect = !isSelected && alcaldiasSeleccionadas.length < 3;
@@ -391,6 +398,7 @@ const MarketTrendsChart = () => {
                   return (
                     <div
                       key={alcaldia}
+                      data-testid={`dropdown-item-${alcaldia.replace(/\s+/g, '-').toLowerCase()}`}
                       className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center justify-between ${
                         isSelected
                           ? isBase 
@@ -436,22 +444,22 @@ const MarketTrendsChart = () => {
       </div>
 
       {/* Gráfico */}
-      <div className="h-48 mb-4">
+      <div className="h-48 mb-4" data-testid="chart-container">
         {loading ? (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full" data-testid="loading-state">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto"></div>
-              <p className="text-sm text-gray-500 mt-2">Cargando datos...</p>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto" data-testid="loading-spinner"></div>
+              <p className="text-sm text-gray-500 mt-2" data-testid="loading-text">Cargando datos...</p>
             </div>
           </div>
         ) : (
-          <Bar data={chartData} options={chartOptions} />
+          <Bar data={chartData} options={chartOptions} data-testid="chart-bars" />
         )}
       </div>
 
       {/* Tabla comparativa */}
-      <div className="border-t border-gray-100 pt-4">
-        <h4 className="text-sm font-medium text-gray-700 mb-3">Comparación Detallada</h4>
+      <div className="border-t border-gray-100 pt-4" data-testid="tabla-comparativa">
+        <h4 className="text-sm font-medium text-gray-700 mb-3" data-testid="tabla-titulo">Comparación Detallada</h4>
         <div className="grid grid-cols-4 gap-2 text-xs">
           <div className="font-medium text-gray-700">Alcaldía</div>
           <div className="font-medium text-gray-700 text-center">Precio Total</div>
@@ -459,7 +467,7 @@ const MarketTrendsChart = () => {
           <div className="font-medium text-gray-700 text-center">Diferencia</div>
           
           {loading ? (
-            <div className="col-span-4 text-center py-4 text-gray-500">
+            <div className="col-span-4 text-center py-4 text-gray-500" data-testid="tabla-loading">
               Cargando datos de comparación...
             </div>
           ) : (
@@ -483,17 +491,17 @@ const MarketTrendsChart = () => {
               
               return (
                 <React.Fragment key={alcaldia}>
-                  <div className="py-2 flex items-center gap-1">
+                  <div className="py-2 flex items-center gap-1" data-testid={`tabla-alcaldia-${index}`}>
                     <MapPin className="h-3 w-3 text-gray-400" />
                     <span className="text-gray-900 font-medium">{alcaldia}</span>
                   </div>
-                  <div className="py-2 text-center text-gray-700">
+                  <div className="py-2 text-center text-gray-700" data-testid={`tabla-precio-total-${index}`}>
                     ${precioTotal > 0 ? (precioTotal / 1000000).toFixed(1) : '0.0'}M
                   </div>
-                  <div className="py-2 text-center text-gray-700">
+                  <div className="py-2 text-center text-gray-700" data-testid={`tabla-precio-m2-${index}`}>
                     ${precioM2 > 0 ? (precioM2 / 1000).toFixed(0) : '0'}k
                   </div>
-                  <div className="py-2 text-center">
+                  <div className="py-2 text-center" data-testid={`tabla-diferencia-${index}`}>
                     {index === 0 ? (
                       <span className="text-gray-500">Base</span>
                     ) : (
