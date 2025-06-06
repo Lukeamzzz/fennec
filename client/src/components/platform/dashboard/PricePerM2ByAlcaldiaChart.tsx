@@ -46,12 +46,6 @@ const SkeletonLoader = () => (
         <div className="w-24 h-4 bg-gray-300 rounded"></div>
       </div>
     ))}
-    <div className="text-center text-sm text-gray-500 mt-4">
-      <div className="flex items-center justify-center space-x-2">
-        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
-        <span>Cargando datos de precios...</span>
-      </div>
-    </div>
   </div>
 );
 
