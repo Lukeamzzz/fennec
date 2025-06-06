@@ -18,7 +18,7 @@ interface ApiFilters {
   precioMax: number;
   dimensionesMin: number;
   dimensionesMax: number;
-  alcaldia: string;
+  alcaldia?: string;
   habitaciones?: number;
   banos?: number;
 }
@@ -103,7 +103,7 @@ const generateMockProperties = (alcaldia: string, page: number, itemsPerPage: nu
       area: 120 + Math.floor(Math.random() * 180),
       year: 2015 + Math.floor(Math.random() * 9),
       amenities: [
-        { name: 'Jardín', icon: '🌳' },
+        { name: 'Jardín', icon: '��' },
         { name: 'Garage', icon: '🚗' },
         { name: 'Terraza', icon: '🏡' }
       ],
@@ -196,9 +196,13 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
       precioMin: filters.priceRange[0],
       precioMax: filters.priceRange[1],
       dimensionesMin: filters.minSize,
-      dimensionesMax: filters.maxSize,
-      alcaldia: filters.location
+      dimensionesMax: filters.maxSize
     };
+
+    // Solo incluir alcaldía si está especificada
+    if (filters.location && filters.location.trim() !== '') {
+      apiFilters.alcaldia = filters.location;
+    }
 
     // Solo incluir habitaciones si no es "Cualquier"
     if (filters.bedrooms !== 'Cualquier') {
@@ -305,47 +309,86 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
       console.log('Buscando por alcaldía:', alcaldia);
       console.log('Página solicitada:', page);
       
-      const requestBody = { 
-        tipoPropiedad: 'casa',
-        alcaldia: alcaldia,
-        pagina: page,
-        limite: itemsPerPage
-      };
-      console.log('Enviando a API:', requestBody);
-      
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
       
-      const response = await fetch('http://localhost:8080/propiedades/filtrar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(requestBody),
-        signal: controller.signal
-      });
+      // Buscar casas
+      const casasRequestBody = { 
+        tipoPropiedad: 'casa',
+        alcaldia: alcaldia,
+        pagina: page,
+        limite: Math.ceil(itemsPerPage / 2) // Dividir el límite entre casas y departamentos
+      };
+      
+      // Buscar departamentos
+      const departamentosRequestBody = { 
+        tipoPropiedad: 'departamento',
+        alcaldia: alcaldia,
+        pagina: page,
+        limite: Math.ceil(itemsPerPage / 2)
+      };
+      
+      console.log('Enviando búsqueda de casas:', casasRequestBody);
+      console.log('Enviando búsqueda de departamentos:', departamentosRequestBody);
+      
+      // Hacer ambas búsquedas en paralelo
+      const [casasResponse, departamentosResponse] = await Promise.all([
+        fetch('http://localhost:8080/propiedades/filtrar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(casasRequestBody),
+          signal: controller.signal
+        }),
+        fetch('http://localhost:8080/propiedades/filtrar', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(departamentosRequestBody),
+          signal: controller.signal
+        })
+      ]);
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      if (!casasResponse.ok || !departamentosResponse.ok) {
+        throw new Error(`Error en la búsqueda: ${casasResponse.status} / ${departamentosResponse.status}`);
       }
 
-      const data = await response.json();
-      console.log('Respuesta del API (por alcaldía):', data);
+      const [casasData, departamentosData] = await Promise.all([
+        casasResponse.json(),
+        departamentosResponse.json()
+      ]);
+      
+      console.log('Respuesta de casas:', casasData);
+      console.log('Respuesta de departamentos:', departamentosData);
 
-      const mappedProperties = Array.isArray(data.propiedades) 
-        ? data.propiedades.map((item: any, index: number) => mapApiDataToProperty(item, (page - 1) * itemsPerPage + index))
-        : [];
+      // Combinar las propiedades de ambas búsquedas
+      const casasPropiedades = Array.isArray(casasData.propiedades) ? casasData.propiedades : [];
+      const departamentosPropiedades = Array.isArray(departamentosData.propiedades) ? departamentosData.propiedades : [];
+      
+      const todasLasPropiedades = [...casasPropiedades, ...departamentosPropiedades];
+      
+      // Limitar al número de elementos por página
+      const propiedadesLimitadas = todasLasPropiedades.slice(0, itemsPerPage);
 
-      console.log('Propiedades mapeadas (por alcaldía):', mappedProperties);
+      const mappedProperties = propiedadesLimitadas.map((item: any, index: number) => 
+        mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
+      );
+
+      console.log('Propiedades combinadas y mapeadas:', mappedProperties);
+
+      // Calcular totales combinados
+      const totalCasas = casasData.totalResultados || 0;
+      const totalDepartamentos = departamentosData.totalResultados || 0;
+      const totalCombinado = totalCasas + totalDepartamentos;
 
       setSearchResults(mappedProperties);
-      setCurrentPage(data.paginaActual || page);
-      
-      setTotalResults(data.totalResultados || mappedProperties.length);
-      setTotalPages(data.totalPaginas || Math.ceil((data.totalResultados || mappedProperties.length) / itemsPerPage));
-      
+      setCurrentPage(page);
+      setTotalResults(totalCombinado);
+      setTotalPages(Math.ceil(totalCombinado / itemsPerPage));
       setHasSearched(true);
     } catch (err) {
       console.error('Error en la búsqueda por alcaldía:', err);
