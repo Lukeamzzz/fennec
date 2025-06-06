@@ -1,21 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import RegionalAnalysisSection from "@/components/platform/dashboard/RegionalAnalysisSection";
+import PricePerM2ByAlcaldiaChart from "@/components/platform/dashboard/PricePerM2ByAlcaldiaChart";
 import { SimpleStatCard } from "@/components/platform/dashboard/StatCard";
-import { LandPlot } from "lucide-react";
+import { LandPlot, House, Building } from "lucide-react";
 import MexicoCityMap from "@/components/platform/dashboard/mexico-city-map/MexicoCityMap";
 import { getNumApartments } from "./hooks/getNumApartments";
 import { getNumHouses } from "./hooks/getNumHouses";
-// Placeholder data for stats cards - replace with actual data fetching
+
 const tabs = [
-  { name: "Precios de Casas" },
-  { name: "Precios de Departamentos" },
+  { name: "Precios de Casas por Alcaldia por m2" },
+  { name: "Precios de Departamentos por Alcaldia por m2" },
   { name: "Mercado Inmobiliario en Ciudad de México" },
 ];
 
 export default function MarketTrends() {
-  const [activeTab, setActiveTab] = useState("Precios de Casas");
+  const [activeTab, setActiveTab] = useState(
+    "Precios de Casas por Alcaldia por m2"
+  );
   const [numApartments, setNumApartments] = useState(0);
   const [numHouses, setNumHouses] = useState(0);
 
@@ -23,12 +25,10 @@ export default function MarketTrends() {
     getNumApartments().then((data) => {
       const value = data.num_apartments ?? data;
       setNumApartments(value);
-      console.log("Set numApartments:", value);
     });
     getNumHouses().then((data) => {
       const value = data.num_houses ?? data;
       setNumHouses(value);
-      console.log("Set numHouses:", value);
     });
   }, []);
   const handleTabClick = (tabName: string) => {
@@ -54,12 +54,12 @@ export default function MarketTrends() {
         <SimpleStatCard
           title="Numero de Casas"
           value={(numHouses ?? 0).toString()}
-          Icon={LandPlot}
+          Icon={House}
         />
         <SimpleStatCard
           title="Numero de Departamentos"
           value={(numApartments ?? 0).toString()}
-          Icon={LandPlot}
+          Icon={Building}
         />
         <SimpleStatCard
           title="Numero de Propiedades"
@@ -89,7 +89,12 @@ export default function MarketTrends() {
       </section>
 
       {/* Regional Analysis Section */}
-      {activeTab === "Precios de Casas" && <RegionalAnalysisSection />}
+      {activeTab === "Precios de Casas por Alcaldia por m2" && (
+        <PricePerM2ByAlcaldiaChart tipo="Casa" />
+      )}
+      {activeTab === "Precios de Departamentos por Alcaldia por m2" && (
+        <PricePerM2ByAlcaldiaChart tipo="Departamento" />
+      )}
       {activeTab === "Mercado Inmobiliario en Ciudad de México" && (
         <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-1">
