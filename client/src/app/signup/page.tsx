@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import api from "@/services/api";
 import { showCustomToast } from "@/lib/showCustomToast";
 import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
-import {useAuth} from "@/providers/AuthProvider";
-import {signInWithEmailAndPassword} from "firebase/auth";
-import {auth} from "@/lib/firebase";
+import { useAuth } from "@/providers/AuthProvider";
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/lib/firebase";
 
 function SignupPage() {
   const router = useRouter();
@@ -19,17 +19,12 @@ function SignupPage() {
     confirmPassword: '',
     telefono: ''
   });
-  const uid = user?.uid;
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
-
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,28 +55,14 @@ function SignupPage() {
         throw new Error('Registration failed');
       }
 
-      // Autenticar con Firebase para obtener uid
-      const fbUser = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+      await signInWithEmailAndPassword(auth, formData.email, formData.password);
 
-      // Firebase ya autenticó, ahora usamos el uid del contexto
-      if (!fbUser.user?.uid) throw new Error("UID no disponible");
-
-      const stripe_response = await api.post('/payments/checkout-subscription', {
-        customerEmail: formData.email,
-        uid: fbUser.user?.uid,
+      showCustomToast({
+        message: "Account created successfully! Redirecting...",
+        type: "success",
       });
 
-      if (stripe_response.status === 200 && stripe_response.data.checkoutUrl) {
-        showCustomToast({
-          message: "Account created successfully! Redirecting to payment...",
-          type: "success",
-        });
-
-        window.location.href = stripe_response.data.checkoutUrl;
-      } else {
-        throw new Error('Failed to create Stripe checkout session');
-      }
-
+      router.push("/plans");
     } catch (error: any) {
       console.error("Signup error:", error);
       let errorMessage = "An error occurred during signup";
@@ -95,10 +76,7 @@ function SignupPage() {
       }
 
       setError(errorMessage);
-      showCustomToast({
-        message: errorMessage,
-        type: "error",
-      });
+      showCustomToast({ message: errorMessage, type: "error" });
     }
   };
 
