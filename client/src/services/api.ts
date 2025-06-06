@@ -12,7 +12,6 @@ api.interceptors.request.use(
         // Skip token for auth endpoints
         const skipTokenUrls = ['/auth/signup', '/auth/login'];
         const shouldSkipToken = skipTokenUrls.some(url => config.url?.includes(url));
-        
         if (!shouldSkipToken) {
             const auth = getAuth();
             const user = auth.currentUser;
@@ -21,7 +20,6 @@ api.interceptors.request.use(
                 config.headers.Authorization = `Bearer ${token}`;
             }
         }
-        
         config.headers.accept = "application/json";
         console.log("Making request to: ", config.url);
         return config;

@@ -4,34 +4,56 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import api from "@/services/api";
+import { useAuth } from "@/providers/AuthProvider";
 
 export default function SuccessPage() {
     const searchParams = useSearchParams();
     const sessionId = searchParams.get("session_id");
     const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
+    const { user } = useAuth();
 
     useEffect(() => {
-        const validatePayment = async () => {
+        const validatePaymentAndSendEmail = async () => {
             try {
-                if (sessionId) {
-                    const response = await api.post("/payments/payment-success", {
-                        sessionId: sessionId,
+                if (!sessionId || !user) {
+                    setStatus("error");
+                    return;
+                }
+
+                const token = await user.getIdToken();
+                const uid = user.uid;
+
+                // Validar el pago
+                const response = await api.post("/payments/payment-success", {
+                    sessionId: sessionId,
+                });
+
+                if (response.status === 200) {
+                    // Enviar correo
+                    await api.post("/api/email", {
+                        firebaseUID: uid,
+                        subject: "Gracias por suscribirte",
+                        message: `
+                                        <h1>¡Gracias por tu compra!</h1>
+                                        <p>Tu pago fue exitoso y tu cuenta ya está activa.</p>
+                                        <p>Accede a tu panel en <a href="https://fennec.mx/platform/dashboard">Fennec Dashboard</a></p>
+                                        `,
                     });
-                    if (response.status === 200) {
-                        setStatus("success");
-                    } else {
-                        setStatus("error");
-                    }
+
+
+                    setStatus("success");
                 } else {
                     setStatus("error");
                 }
             } catch (error) {
+                console.error("Error en validación o envío de correo:", error);
                 setStatus("error");
             }
         };
 
-        validatePayment();
-    }, [sessionId]);
+        validatePaymentAndSendEmail();
+    }, [sessionId, user]);
+
     return (
         <main className="min-h-screen flex items-center justify-center bg-white px-6">
             <div className="max-w-md w-full text-center">
@@ -60,10 +82,7 @@ export default function SuccessPage() {
                         <p className="text-gray-700 text-lg mb-6">
                             No pudimos validar tu transacción. Por favor contacta soporte.
                         </p>
-                        <Link
-                            href="/"
-                            className="text-red-600 hover:underline"
-                        >
+                        <Link href="/" className="text-red-600 hover:underline">
                             Volver al inicio
                         </Link>
                     </>
