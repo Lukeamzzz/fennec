@@ -6,7 +6,7 @@ import CardValuationData from "@/components/platform/dashboard/CardValuationData
 import CardProperties from "@/components/platform/dashboard/CardProperties";
 import CardMarketGrowth from "@/components/platform/dashboard/CardMarketGrowth";
 import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator";
-import DashboardMarketTrendsChart from "@/components/platform/dashboard/DashboardMarketTrendsChart";
+import MarketTrendsChart from "@/components/platform/dashboard/MarketTrendsChart";
 import CdmxMap from "@/components/platform/dashboard/map-component/CdmxMap";
 import {useAverageCasaPrice} from "@/app/platform/dashboard/hooks/useAverageCasaPrice";
 import {useCasaCount} from "@/app/platform/dashboard/hooks/useCasaCount";
@@ -133,9 +133,9 @@ export default function DashboardPage() {
         </div>
 
         <div className="flex flex-col gap-6 p-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 border-b border-gray-300 w-full">
-            <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
-              <div className="w-full">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 border-b border-gray-300 w-full max-w-6xl mx-auto">
+            <div className="bg-white rounded-2xl p-6 flex flex-col items-center justify-center">
+              <div className="w-full flex justify-center">
                 <PropertyEstimator 
                   onAlcaldiaChange={handleAlcaldiaChange}
                   onTipoChange={handleTipoChange}
@@ -144,9 +144,9 @@ export default function DashboardPage() {
             </div>
 
             {/* Tendencias del Mercado */}
-            <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center">
-              <div className="w-full max-w-md">
-                <DashboardMarketTrendsChart />
+            <div className="bg-white rounded-2xl p-6 flex flex-col items-center justify-center">
+              <div className="w-full flex justify-center">
+                <MarketTrendsChart />
               </div>
             </div>
           </div>
