@@ -162,7 +162,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             <input
               id="street"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           
           </div>
@@ -176,7 +176,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             <input
               id="zip"
               type="text"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
         </div>
@@ -232,12 +232,14 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
           </div>
         )}
 
-        <ReporteModal
-          open={modalOpen}
-          onClose={() => setModalOpen(false)} // Fixed: was setModalOpen(true)
-          prediction={prediction}
-          onSubmit={handleGenerarReporte}
-        />
+        { !loading && !error &&
+          <ReporteModal
+            open={modalOpen}
+            onClose={() => setModalOpen(false)}
+            prediction={prediction}
+            onSubmit={handleGenerarReporte}
+          />
+        }
 
         {error && (
           <div className="mt-4 p-4 bg-red-50 border border-red-400 rounded-md text-red-700 text-sm">

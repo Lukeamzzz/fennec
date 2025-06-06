@@ -25,10 +25,9 @@ function AccountSettingsPage() {
   };
 
   return (
-    <div className="flex min-h-screen  p-2">
+    <div className="flex min-h-screen p-2">
       <div className="flex-1 pt-5 pl-1">
-        <Header_settings />
-        <div className="bg-white rounded-lg overflow-hidden shadow-sm">
+        <div className="bg-white rounded-lg overflow-hidden shadow-lg">
           <ButtonGroupSettings
             activeTab={activeTab}
             onTabChange={setActiveTab}

@@ -33,8 +33,8 @@ interface Option {
 }
 
 const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch, onReset }) => {
-  const [location, setLocation] = useState('Benito Juárez');
-  const [propertyType, setPropertyType] = useState('Departamento');
+  const [location, setLocation] = useState('');
+  const [propertyType, setPropertyType] = useState('');
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 150000000]);
   const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100]);
   const [bedrooms, setBedrooms] = useState('Cualquier');
@@ -48,6 +48,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
   const [isBathroomsOpen, setIsBathroomsOpen] = useState(false);
 
   const locations: Option[] = [
+    { value: '', label: 'Todas las ubicaciones' },
     { value: 'Álvaro Obregón', label: 'Álvaro Obregón' },
     { value: 'Azcapotzalco', label: 'Azcapotzalco' },
     { value: 'Benito Juárez', label: 'Benito Juárez' },
@@ -68,8 +69,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
 
   const propertyTypes: Option[] = [
     { value: 'Departamento', label: 'Departamento', icon: <Building className="w-4 h-4" /> },
-    { value: 'Casa', label: 'Casa', icon: <Home className="w-4 h-4" /> },
-    { value: 'Terreno', label: 'Terreno', icon: <Map className="w-4 h-4" /> }
+    { value: 'Casa', label: 'Casa', icon: <Home className="w-4 h-4" /> }
   ];
 
   const roomOptions: Option[] = [
@@ -85,46 +85,48 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
   ];
 
   const handlePriceRangeChange = (values: number[]) => {
-    const [min, max] = values;
-    const MAX_PRICE = 150000000;
-    const minPrice = Math.floor((MAX_PRICE * min) / 100);
-    const maxPrice = Math.floor((MAX_PRICE * max) / 100);
+    const newPriceRange: [number, number] = [
+      Math.round(values[0] * 100000), // Convertir de 0-100 a 0-10M
+      Math.round(values[1] * 100000)
+    ];
+    setPriceRange(newPriceRange);
+    setSliderValues(values as [number, number]);
     
-    setSliderValues([min, max]);
-    setPriceRange([minPrice, maxPrice]);
-    
-    onFiltersChange?.({
+    const updatedFilters = {
       location,
       propertyType,
-      priceRange: [minPrice, maxPrice],
+      priceRange: newPriceRange,
       bedrooms,
       bathrooms,
       minSize: sizeRange[0],
       maxSize: sizeRange[1]
-    });
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   const handleSizeRangeChange = (values: number[]) => {
-    const [min, max] = values;
-    setSizeSliderValues([min, max]);
-    const minSizeValue = Math.floor((5000 * min) / 100);
-    const maxSizeValue = Math.floor((5000 * max) / 100);
-    setSizeRange([minSizeValue, maxSizeValue]);
+    const newSizeRange: [number, number] = [
+      Math.round(values[0] * 5), // Convertir de 0-100 a 0-500m²
+      Math.round(values[1] * 5)
+    ];
+    setSizeRange(newSizeRange);
+    setSizeSliderValues(values as [number, number]);
     
-    onFiltersChange?.({
+    const updatedFilters = {
       location,
       propertyType,
       priceRange,
       bedrooms,
       bathrooms,
-      minSize: minSizeValue,
-      maxSize: maxSizeValue
-    });
+      minSize: newSizeRange[0],
+      maxSize: newSizeRange[1]
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   const resetFilters = () => {
-    setLocation('Benito Juárez');
-    setPropertyType('Departamento');
+    setLocation('');
+    setPropertyType('');
     setPriceRange([0, 150000000]);
     setSliderValues([0, 100]);
     setBedrooms('Cualquier');
@@ -167,15 +169,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
   }) => {
     const handleOptionChange = (optionValue: string) => {
       onChange(optionValue);
-      onFiltersChange?.({
-        location,
-        propertyType,
-        priceRange,
-        bedrooms,
-        bathrooms,
-        minSize: sizeRange[0],
-        maxSize: sizeRange[1]
-      });
+      // Solo actualizar filtros, no ejecutar búsqueda automática
     };
 
     return (
@@ -226,24 +220,16 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
     );
   };
 
-  // Función para verificar si todos los campos están llenos
   const areAllFieldsFilled = () => {
     return (
-      location !== '' &&
-      propertyType !== '' &&
-      bedrooms !== '' &&
-      bathrooms !== '' &&
-      sizeRange[0] >= 0 &&
-      sizeRange[1] >= 0 &&
-      priceRange[0] >= 0 &&
-      priceRange[1] >= 0
+      propertyType !== ''
     );
   };
 
-  // Actualizar todas las llamadas a onFiltersChange
+  // Actualizar todas las llamadas a onFiltersChange (sin búsqueda automática)
   const handleLocationChange = (value: string) => {
     setLocation(value);
-    onFiltersChange?.({
+    const updatedFilters = {
       location: value,
       propertyType,
       priceRange,
@@ -251,12 +237,13 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
       bathrooms,
       minSize: sizeRange[0],
       maxSize: sizeRange[1]
-    });
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   const handlePropertyTypeChange = (value: string) => {
     setPropertyType(value);
-    onFiltersChange?.({
+    const updatedFilters = {
       location,
       propertyType: value,
       priceRange,
@@ -264,12 +251,13 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
       bathrooms,
       minSize: sizeRange[0],
       maxSize: sizeRange[1]
-    });
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   const handleBedroomsChange = (value: string) => {
     setBedrooms(value);
-    onFiltersChange?.({
+    const updatedFilters = {
       location,
       propertyType,
       priceRange,
@@ -277,12 +265,13 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
       bathrooms,
       minSize: sizeRange[0],
       maxSize: sizeRange[1]
-    });
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   const handleBathroomsChange = (value: string) => {
     setBathrooms(value);
-    onFiltersChange?.({
+    const updatedFilters = {
       location,
       propertyType,
       priceRange,
@@ -290,7 +279,8 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
       bathrooms: value,
       minSize: sizeRange[0],
       maxSize: sizeRange[1]
-    });
+    };
+    onFiltersChange?.(updatedFilters);
   };
 
   return (
@@ -429,8 +419,22 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
               maxSize: sizeRange[1]
             })}
           >
-            Buscar
+            🔍 Buscar Propiedades
           </button>
+        )}
+        
+        {/* Mensaje informativo */}
+        {!areAllFieldsFilled() && (
+          <div className="text-center text-sm text-gray-500 p-3 bg-gray-50 rounded-md">
+            🏠 Selecciona un tipo de propiedad para continuar
+          </div>
+        )}
+        
+        {/* Mensaje cuando los filtros están listos */}
+        {areAllFieldsFilled() && (
+          <div className="text-center text-xs text-gray-400 mt-2">
+            Ajusta los filtros adicionales y haz clic en "Buscar" para ver todas las {propertyType.toLowerCase()}s
+          </div>
         )}
       </div>
     </div>

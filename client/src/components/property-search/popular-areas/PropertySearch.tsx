@@ -12,12 +12,13 @@ interface PropertySearchProps {
     minSize: number;
     maxSize: number;
   }) => void;
+  onSearchByArea?: (alcaldia: string) => void;
 }
 
 /**
  * PropertySearch component that displays both alcaldías and property types
  */
-const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
+const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch, onSearchByArea }) => {
   // Alcaldías data
   const alcaldias = [
     'Miguel Hidalgo',
@@ -28,30 +29,37 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
     'Tlalpan'
   ];
 
-  // Property types data
+  // Property types data - Eliminamos "Terrenos"
   const propertyTypes = [
     'Departamentos',
-    'Casas',
-    'Terrenos'
+    'Casas'
   ];
 
   // Click handlers
   const handleAreaClick = (area: string) => {
-    onSearch({
-      location: area,
-      propertyType: 'Cualquier',
-      priceRange: [0, 150000000],
-      bedrooms: 'Cualquier',
-      bathrooms: 'Cualquier',
-      minSize: 0,
-      maxSize: 5000
-    });
+    // Si existe onSearchByArea, usarla; si no, usar onSearch con filtros completos
+    if (onSearchByArea) {
+      onSearchByArea(area);
+    } else {
+      onSearch({
+        location: area,
+        propertyType: '',
+        priceRange: [0, 150000000],
+        bedrooms: 'Cualquier',
+        bathrooms: 'Cualquier',
+        minSize: 0,
+        maxSize: 5000
+      });
+    }
   };
 
   const handlePropertyTypeClick = (type: string) => {
+    // Convertir "Departamentos" -> "Departamento" y "Casas" -> "Casa"
+    const propertyType = type === 'Departamentos' ? 'Departamento' : 'Casa';
+    
     onSearch({
-      location: 'Cualquier',
-      propertyType: type.slice(0, -1), // Removemos la 's' final para que coincida con el formato esperado
+      location: '', // Ubicación vacía para buscar en todas las ubicaciones
+      propertyType: propertyType,
       priceRange: [0, 150000000],
       bedrooms: 'Cualquier',
       bathrooms: 'Cualquier',
@@ -79,7 +87,7 @@ const PropertySearch: React.FC<PropertySearchProps> = ({ onSearch }) => {
       {/* Property Types Section */}
       <div>
         <h2 className="text-2xl font-bold mb-6">Tipos de Inmuebles</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {propertyTypes.map((type) => (
             <PropertyTypeCard 
               key={type}
