@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { getReports } from "./hooks/getReports";
+import {useSendReportEmail} from "@/app/platform/reports/hooks/modalEmail";
+import {useAuth} from "@/providers/AuthProvider";
 
 interface ValuationReport {
   id: string;
@@ -112,6 +114,23 @@ export default function Reports() {
     setShowModal(false);
     setSelectedReport(null);
   };
+
+  const { sendReport } = useSendReportEmail();
+  const { user } = useAuth();
+
+  const handleSendEmail = async () => {
+    if (!user || !selectedReport) return;
+    const uid = user.uid;
+
+
+    const res = await sendReport(uid, selectedReport);
+    if (res.success) {
+      alert("Reporte enviado al correo.");
+    } else {
+      alert("Hubo un error al enviar el correo.");
+    }
+  };
+
 
   if (loading) {
     return (
@@ -590,30 +609,39 @@ export default function Reports() {
 
                 {/* Botones de acción */}
                 <motion.div
-                  className="flex justify-end space-x-3"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.6, duration: 0.3 }}
+                    className="flex justify-end space-x-3"
+                    initial={{opacity: 0, y: 20}}
+                    animate={{opacity: 1, y: 0}}
+                    transition={{delay: 0.6, duration: 0.3}}
                 >
+
                   <motion.button
-                    onClick={closeModal}
-                    className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
+                      onClick={closeModal}
+                      className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+                      whileTap={{scale: 0.95}}
+                      transition={{duration: 0.2}}
                   >
                     Cerrar
                   </motion.button>
                   <motion.button
-                    onClick={() => window.print()}
-                    className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md"
-                    whileHover={{
-                      backgroundColor: "#ea580c",
-                      boxShadow:
-                        "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-                    }}
-                    transition={{ duration: 0.2 }}
+                      onClick={() => window.print()}
+                      className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md"
+                      whileHover={{
+                        backgroundColor: "#ea580c",
+                        boxShadow:
+                            "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
+                      }}
+                      transition={{duration: 0.2}}
                   >
                     Imprimir Reporte
+                  </motion.button>
+                  <motion.button
+                      onClick={handleSendEmail}
+                      className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-md"
+                      whileTap={{scale: 0.95}}
+                      transition={{duration: 0.2}}
+                  >
+                    Enviar por correo
                   </motion.button>
                 </motion.div>
               </div>
