@@ -8,7 +8,6 @@ import PropertyForm, { PropertyFormData } from "./PropertyForm";
 import { createInvestment } from "@/app/platform/investment-insight/hooks/createInvestment";
 import { Investment } from "@/app/platform/investment-insight/hooks/getInvestments";
 import { showCustomToast } from "@/lib/showCustomToast";
-import AllInvestmentsSheet from "./AllInvestmentsSheet";
 import EmptyPortfolioInvite from "./EmptyPortfolioInvite";
 import { HousePlus, X, MapPin, Calendar } from "lucide-react";
 import PortafolioChartSkeleton from "./PortafolioChartSkeleton";
@@ -215,32 +214,39 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
   );
 
   // Calculate summary stats for modal
-  const totalInvestment = investments.reduce((sum, inv) => sum + inv.monto_invertido, 0);
-  const totalValue = investments.reduce((sum, inv) => sum + inv.precio_propiedad, 0);
-  const averageYield = investments.length > 0 
-    ? ((totalInvestment / totalValue) * 100).toFixed(1)
-    : 0;
+  const totalInvestment = investments.reduce(
+    (sum, inv) => sum + inv.monto_invertido,
+    0
+  );
+  const totalValue = investments.reduce(
+    (sum, inv) => sum + inv.precio_propiedad,
+    0
+  );
+  const averageYield =
+    investments.length > 0
+      ? ((totalInvestment / totalValue) * 100).toFixed(1)
+      : 0;
 
   // Animation variants
   const modalVariants = {
     hidden: { opacity: 0, scale: 0.95, y: 30 },
-    visible: { 
-      opacity: 1, 
-      scale: 1, 
+    visible: {
+      opacity: 1,
+      scale: 1,
       y: 0,
       transition: {
         type: "spring",
         damping: 25,
-        stiffness: 300
-      }
+        stiffness: 300,
+      },
     },
-    exit: { opacity: 0, scale: 0.95, y: 30 }
+    exit: { opacity: 0, scale: 0.95, y: 30 },
   };
 
   const backdropVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1 },
-    exit: { opacity: 0 }
+    exit: { opacity: 0 },
   };
 
   if (loading) {
@@ -263,15 +269,23 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
               }`}
             >
               {investments.length === 0 ? (
-                <EmptyPortfolioInvite onAddProperty={() => setIsFlipped(true)} />
+                <EmptyPortfolioInvite
+                  onAddProperty={() => setIsFlipped(true)}
+                />
               ) : (
                 <>
                   <div className="mb-6">
-                    <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+                    <h2 className="text-2xl font-bold text-gray-800">
+                      {title}
+                    </h2>
                     <p className="text-gray-600 text-sm">{subtitle}</p>
                   </div>
                   <div className="relative max-w-80 mx-auto">
-                    <canvas ref={chartRef} height="250" className="mb-6"></canvas>
+                    <canvas
+                      ref={chartRef}
+                      height="250"
+                      className="mb-6"
+                    ></canvas>
                   </div>
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-4">
@@ -395,24 +409,36 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                 {/* Summary Stats */}
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                   <div className="bg-blue-50 p-4 rounded-xl">
-                    <div className="text-blue-600 text-sm font-medium">Total Invertido</div>
+                    <div className="text-blue-600 text-sm font-medium">
+                      Total Invertido
+                    </div>
                     <div className="text-2xl font-bold text-blue-700">
                       ${(totalInvestment / 1_000_000).toFixed(2)}M
                     </div>
                   </div>
                   <div className="bg-green-50 p-4 rounded-xl">
-                    <div className="text-green-600 text-sm font-medium">Valor Total</div>
+                    <div className="text-green-600 text-sm font-medium">
+                      Valor Total
+                    </div>
                     <div className="text-2xl font-bold text-green-700">
                       ${(totalValue / 1_000_000).toFixed(2)}M
                     </div>
                   </div>
                   <div className="bg-purple-50 p-4 rounded-xl">
-                    <div className="text-purple-600 text-sm font-medium">Propiedades</div>
-                    <div className="text-2xl font-bold text-purple-700">{investments.length}</div>
+                    <div className="text-purple-600 text-sm font-medium">
+                      Propiedades
+                    </div>
+                    <div className="text-2xl font-bold text-purple-700">
+                      {investments.length}
+                    </div>
                   </div>
                   <div className="bg-orange-50 p-4 rounded-xl">
-                    <div className="text-orange-600 text-sm font-medium">Rendimiento Prom.</div>
-                    <div className="text-2xl font-bold text-orange-700">{averageYield}%</div>
+                    <div className="text-orange-600 text-sm font-medium">
+                      Rendimiento Prom.
+                    </div>
+                    <div className="text-2xl font-bold text-orange-700">
+                      {averageYield}%
+                    </div>
                   </div>
                 </div>
 
@@ -428,51 +454,65 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                     >
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex-1">
-                          <h4 className="font-semibold text-gray-900 mb-1">{property.type}</h4>
+                          <h4 className="font-semibold text-gray-900 mb-1">
+                            {property.type}
+                          </h4>
                           <div className="flex items-center text-gray-500 text-sm mb-2">
                             <MapPin size={14} className="mr-1" />
                             <span className="truncate">{property.address}</span>
                           </div>
                           {property.colonia && (
-                            <div className="text-gray-400 text-xs">{property.colonia}</div>
+                            <div className="text-gray-400 text-xs">
+                              {property.colonia}
+                            </div>
                           )}
                         </div>
                         <div className="text-right ml-4">
                           <div className="text-lg font-bold text-gray-900">
                             ${property.value.toFixed(1)}M
                           </div>
-                          <div className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
-                            Number(property.percentYield) >= 7
-                              ? "bg-green-100 text-green-700"
-                              : Number(property.percentYield) >= 5
-                              ? "bg-blue-100 text-blue-700"
-                              : "bg-gray-100 text-gray-600"
-                          }`}>
+                          <div
+                            className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
+                              Number(property.percentYield) >= 7
+                                ? "bg-green-100 text-green-700"
+                                : Number(property.percentYield) >= 5
+                                ? "bg-blue-100 text-blue-700"
+                                : "bg-gray-100 text-gray-600"
+                            }`}
+                          >
                             {property.percentYield}%
                           </div>
                         </div>
                       </div>
-                      
+
                       <div className="grid grid-cols-2 gap-4 text-sm text-gray-600 mb-3">
                         <div>
                           <span className="text-gray-500">Invertido:</span>
-                          <div className="font-medium">${(property.montoInvertido / 1_000_000).toFixed(2)}M</div>
+                          <div className="font-medium">
+                            ${(property.montoInvertido / 1_000_000).toFixed(2)}M
+                          </div>
                         </div>
                         {property.squareMeters && (
                           <div>
                             <span className="text-gray-500">Área:</span>
-                            <div className="font-medium">{property.squareMeters}m²</div>
+                            <div className="font-medium">
+                              {property.squareMeters}m²
+                            </div>
                           </div>
                         )}
                       </div>
-                      
+
                       {(property.bedrooms || property.bathrooms) && (
                         <div className="flex gap-4 text-xs text-gray-500">
-                          {property.bedrooms && <div>🛏️ {property.bedrooms} rec.</div>}
-                          {property.bathrooms && <div>🚿 {property.bathrooms} baños</div>}
+                          {property.bedrooms && (
+                            <div>🛏️ {property.bedrooms} rec.</div>
+                          )}
+                          {property.bathrooms && (
+                            <div>🚿 {property.bathrooms} baños</div>
+                          )}
                         </div>
                       )}
-                      
+
                       {property.date && (
                         <div className="mt-2 flex items-center text-xs text-gray-400">
                           <Calendar size={12} className="mr-1" />

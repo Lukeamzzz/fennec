@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
+import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
 
 export interface PropertyFormData {
   type: "Departamento" | "Casa";
@@ -27,7 +28,7 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
     name: "",
     propertyPrice: "",
     investmentAmount: "",
-    alcaldia: "",
+    alcaldia: "Álvaro Obregón",
     colonia: "",
     address: "",
     squareMeters: "",
@@ -197,16 +198,16 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit, onCancel }) => {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Alcaldía
             </label>
-            <input
-              type="text"
-              name="alcaldia"
+            <AlcaldiaDropdown
               value={formData.alcaldia}
-              onChange={handleInputChange}
+              onChange={(value: string) =>
+                setFormData((prev) => ({ ...prev, alcaldia: value }))
+              }
+              showLabel={false}
+              enableMilpaAlta={true}
               className={`w-full px-4 py-3 bg-gray-50 border ${
                 errors.alcaldia ? "border-red-500" : "border-gray-200"
               } rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all`}
-              placeholder="Ej: Miguel Hidalgo"
-              required
             />
             {errors.alcaldia && (
               <p className="mt-1 text-sm text-red-500">{errors.alcaldia}</p>
