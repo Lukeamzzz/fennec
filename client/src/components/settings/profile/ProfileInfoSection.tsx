@@ -25,7 +25,11 @@ function ProfileInfoSection() {
       try {
         setIsLoading(true);
         const response = await api.get("/api/profile");
-        setProfileData(response.data);
+        // Ensure telefono is never null
+        setProfileData({
+          ...response.data,
+          telefono: response.data.telefono || ""
+        });
       } catch (error: any) {
         if (error?.response?.status === 401) {
           router.push("/login");
@@ -120,7 +124,7 @@ function ProfileInfoSection() {
             <input
                 type="text"
                 id="telefono"
-                value={profileData.telefono}
+                value={profileData.telefono || ""}
                 onChange={(e) =>
                     setProfileData({ ...profileData, telefono: e.target.value })
                 }

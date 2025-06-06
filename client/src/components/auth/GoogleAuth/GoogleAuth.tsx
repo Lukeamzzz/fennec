@@ -1,6 +1,6 @@
 "use client";
 import { auth } from "@/lib/firebase";
-import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import api from "../../../services/api";
@@ -12,108 +12,59 @@ interface GoogleAuthProps {
 
 const GoogleAuth = ({ mode }: GoogleAuthProps) => {
   const router = useRouter();
-  const [showNameForm, setShowNameForm] = useState<boolean>(false);
-  const [name, setName] = useState<string>("");
-  const [tempUserData, setTempUserData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleGoogleAuth = async () => {
+    setIsLoading(true);
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
 
-      if (!user.displayName && mode === "signup") {
-        setTempUserData(user);
-        setShowNameForm(true);
-        return;
-      }
-
-      if (mode === "signup") {
-        const userData = {
-          email: user.email,
-          name: user.displayName || name,
-          firebaseId: user.uid,
-          tipoRole: "USER",
-        };
-
-        const response = await api.post("/auth/signup", userData);
-
-        if (!response.data.message) {
-          throw new Error("Error en el registro");
+      // Handle backend registration/login based on mode
+      try {
+        if (mode === "signup") {
+          // For signup, use the /auth/google endpoint that creates the user
+          await api.post("/auth/google");
+        } else {
+          // For login, use the /auth/login endpoint to verify existing user
+          const loginData = {
+            firebaseId: user.uid
+          };
+          await api.post("/auth/login", loginData);
+        }
+      } catch (backendError: any) {
+        // Backend failed - sign out from Firebase to prevent redirect
+        await signOut(auth);
+        
+        // Handle specific error messages
+        if (backendError.response?.status === 401 && mode === "login") {
+          throw new Error("Account not found. Please sign up first.");
+        } else if (backendError.response?.status === 400 && mode === "signup") {
+          throw new Error("Account already exists. Please login instead.");
+        } else {
+          throw new Error("Backend server is not available. Please try again later.");
         }
       }
 
+      // Only redirect if everything succeeded
       router.push("/platform/dashboard");
     } catch (error) {
       console.error("Error de autenticación:", error);
       showCustomToast({
-        message: "Error Signing Up",
+        message: error instanceof Error ? error.message : "Authentication error",
         type: "error",
       });
+    } finally {
+      setIsLoading(false);
     }
   };
-
-  const handleNameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!name.trim()) return;
-
-    try {
-      const userData = {
-        email: tempUserData.email,
-        name: name,
-        firebaseId: tempUserData.uid,
-        tipoRole: "USER",
-      };
-
-      const response = await api.post("/auth/signup", userData);
-
-      if (!response.data.message) {
-        throw new Error("Error en el registro");
-      }
-
-      router.push("/platform/dashboard");
-    } catch (error) {
-      console.error("Error al registrar usuario:", error);
-      showCustomToast({
-        message: "Error Signing Up",
-        type: "error",
-      });
-    }
-  };
-
-  if (showNameForm) {
-    return (
-      <div className="mt-4">
-        <form onSubmit={handleNameSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="text-sm font-medium text-gray-700">
-              Please enter your name to continue
-            </label>
-            <input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:border-orange-500"
-              placeholder="Your name"
-              required
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full py-2 px-4 border border-transparent rounded-md shadow-sm font-medium text-white bg-orange-500 hover:bg-orange-600"
-          >
-            Complete Signup
-          </button>
-        </form>
-      </div>
-    );
-  }
 
   return (
     <button
       onClick={handleGoogleAuth}
-      className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50"
+      disabled={isLoading}
+      className="w-full flex items-center justify-center gap-2 py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <svg className="h-5 w-5" viewBox="0 0 24 24">
         <path

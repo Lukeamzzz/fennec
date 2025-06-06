@@ -175,7 +175,7 @@ function SignupPage() {
             </div>
 
             <div>
-              <GoogleAuth mode="login"/>
+              <GoogleAuth mode="signup"/>
             </div>
 
             <div className="text-center mt-4">

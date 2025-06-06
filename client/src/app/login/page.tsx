@@ -117,7 +117,7 @@ function LoginPage() {
           </div>
 
           <div>
-            <GoogleAuth mode="login"/>
+            <GoogleAuth mode="signup"/>
           </div>
 
           {/* Sign Up Link */}
