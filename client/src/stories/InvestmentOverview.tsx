@@ -41,7 +41,7 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
         const [funoData, fibraplData, fmtyData] = await Promise.all([
           getREIT({ reit: "FUNO" }),
           getREIT({ reit: "FIBRAPL" }),
-          getREIT({ reit: "FMTY" }),
+          getREIT({ reit: "FMTY" })
         ]);
 
         setReitData({

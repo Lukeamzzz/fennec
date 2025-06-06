@@ -1,4 +1,3 @@
-// cypress/e2e/reports-complete.cy.ts
 describe('Reports Component - Pruebas Completas', () => {
   beforeEach(() => {
     // Bypass login para todas las pruebas

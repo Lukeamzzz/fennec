@@ -15,6 +15,7 @@ import {useAverageAllCasa} from "@/app/platform/dashboard/hooks/useAverageAllCas
 import {useAverageM2AllCasa} from "@/app/platform/dashboard/hooks/useAverageM2PriceAllCasa";
 import {useUserProfile} from "@/app/platform/dashboard/hooks/useUserProfile";
 import { Info } from "lucide-react";
+import { useAverageAllDepartamento } from "./hooks/useAverageAllDepartamento";
 
 export default function DashboardPage() {
   const [selectedAlcaldia, setSelectedAlcaldia] = useState("Álvaro Obregón");
@@ -43,18 +44,45 @@ export default function DashboardPage() {
     error: errorM2AllAvg,
   } = useAverageM2AllCasa();
 
+  const {
+    averagePrice: averagePriceDepartamento,
+    loading: loadingDeptAvg,
+    error: errorDeptAvg,
+  } = useAverageAllDepartamento();
+
   const handleAlcaldiaChange = (newAlcaldia: string) => {
     setSelectedAlcaldia(newAlcaldia);
   };
 
-  // New handler for tipo changes
   const handleTipoChange = (newTipo: string) => {
     setSelectedTipo(newTipo);
     console.log(`Tipo changed to: ${newTipo}`);
-    // Here you can add any additional logic when tipo changes
   };
 
   const { profile } = useUserProfile();
+
+  // Calculate change based on selected property type
+  const calculateChange = () => {
+    if (selectedTipo === "Casa") {
+      return averagePrice && averagePriceCasa
+        ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
+        : 0;
+    } else {
+      // For departamentos
+      return averagePriceDepartamento && averagePriceCasa
+        ? ((averagePriceCasa - averagePriceDepartamento) / averagePriceDepartamento) * 100
+        : 0;
+    }
+  };
+
+  // Calculate M2 change based on selected property type
+  const calculateM2Change = () => {
+    // You might need a separate hook for departamento M2 average
+    // For now, using the existing logic but you should create useAverageM2AllDepartamento
+    return averageM2Price && cantidad_m2
+      ? ((cantidad_m2 - averageM2Price) / averageM2Price) * 100
+      : 0;
+  };
 
   return (
     <div className="flex min-h-screen">
@@ -78,11 +106,8 @@ export default function DashboardPage() {
                 ? averagePriceCasa
                 : NaN
             }
-            change={
-              averagePrice && averagePriceCasa
-                ? ((averagePriceCasa - averagePrice) / averagePrice) * 100
-                : 0
-            }
+            change={calculateChange()}
+            propertyType={selectedTipo}
           />
 
           <CardProperties
@@ -92,10 +117,10 @@ export default function DashboardPage() {
           />
 
           <CardMarketGrowth
-              title={"Precio promedio por m2"}
-              amount={cantidad_m2}
-              error={errorM2}
-              change={((cantidad_m2 - averageM2Price!) / averageM2Price!) * 100}
+            title={"Precio promedio por m2"}
+            amount={cantidad_m2}
+            error={errorM2}
+            change={calculateM2Change()}
           />
         </div>
 

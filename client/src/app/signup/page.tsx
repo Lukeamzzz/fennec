@@ -5,9 +5,13 @@ import { useRouter } from "next/navigation";
 import api from "@/services/api";
 import { showCustomToast } from "@/lib/showCustomToast";
 import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
+import {useAuth} from "@/providers/AuthProvider";
+import {signInWithEmailAndPassword} from "firebase/auth";
+import {auth} from "@/lib/firebase";
 
 function SignupPage() {
   const router = useRouter();
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -15,6 +19,7 @@ function SignupPage() {
     confirmPassword: '',
     telefono: ''
   });
+  const uid = user?.uid;
   const [error, setError] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -24,6 +29,7 @@ function SignupPage() {
       [name]: value
     }));
   };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,19 +54,49 @@ function SignupPage() {
         tipoRole: "usuario"
       };
 
-      console.log("Enviando a backend:", userData);
       const response = await api.post('/auth/signup', userData);
 
       if (response.status !== 200) {
         throw new Error('Registration failed');
       }
 
-      router.push("/login");
+      // Autenticar con Firebase para obtener uid
+      const fbUser = await signInWithEmailAndPassword(auth, formData.email, formData.password);
+
+      // Firebase ya autenticó, ahora usamos el uid del contexto
+      if (!fbUser.user?.uid) throw new Error("UID no disponible");
+
+      const stripe_response = await api.post('/payments/checkout-subscription', {
+        customerEmail: formData.email,
+        uid: fbUser.user?.uid,
+      });
+
+      if (stripe_response.status === 200 && stripe_response.data.checkoutUrl) {
+        showCustomToast({
+          message: "Account created successfully! Redirecting to payment...",
+          type: "success",
+        });
+
+        window.location.href = stripe_response.data.checkoutUrl;
+      } else {
+        throw new Error('Failed to create Stripe checkout session');
+      }
+
     } catch (error: any) {
       console.error("Signup error:", error);
-      setError(error.message || "An error occurred during signup");
+      let errorMessage = "An error occurred during signup";
+
+      if (error.response?.status === 409) {
+        errorMessage = "Email already exists";
+      } else if (error.response?.status === 400) {
+        errorMessage = "Invalid data provided";
+      } else if (error.message) {
+        errorMessage = error.message;
+      }
+
+      setError(errorMessage);
       showCustomToast({
-        message: "Error creating account",
+        message: errorMessage,
         type: "error",
       });
     }
@@ -175,7 +211,7 @@ function SignupPage() {
             </div>
 
             <div>
-              <GoogleAuth mode="login"/>
+              <GoogleAuth mode="signup"/>
             </div>
 
             <div className="text-center mt-4">

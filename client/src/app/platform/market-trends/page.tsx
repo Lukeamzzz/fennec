@@ -1,43 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RegionalAnalysisSection from "@/components/platform/dashboard/RegionalAnalysisSection";
-import StatCard from "@/components/platform/dashboard/StatCard";
-import { BadgeDollarSign, LandPlot } from "lucide-react";
+import { SimpleStatCard } from "@/components/platform/dashboard/StatCard";
+import { LandPlot } from "lucide-react";
 import MexicoCityMap from "@/components/platform/dashboard/mexico-city-map/MexicoCityMap";
-
+import { getNumApartments } from "./hooks/getNumApartments";
+import { getNumHouses } from "./hooks/getNumHouses";
 // Placeholder data for stats cards - replace with actual data fetching
-const statsData = [
-  {
-    title: "Precio Promedio",
-    value: "$33,450 MXN/m²",
-    change: "+5.2%",
-    changeType: "positive",
-    icon: BadgeDollarSign
-  },
-  {
-    title: "Propiedades Listadas",
-    value: "24,583",
-    change: "+12.3%",
-    changeType: "positive",
-    icon: LandPlot
-  },
-  {
-    title: "Días en Mercado",
-    value: "86 días",
-    change: "-8.6%",
-    changeType: "negative",
-    icon: BadgeDollarSign
-  },
-  {
-    title: "Compradores Activos",
-    value: "15,420",
-    change: "+3.8%",
-    changeType: "positive",
-    icon: BadgeDollarSign
-  },
-];
-
 const tabs = [
   { name: "Precios de Casas" },
   { name: "Precios de Departamentos" },
@@ -46,10 +16,23 @@ const tabs = [
 
 export default function MarketTrends() {
   const [activeTab, setActiveTab] = useState("Precios de Casas");
+  const [numApartments, setNumApartments] = useState(0);
+  const [numHouses, setNumHouses] = useState(0);
 
+  useEffect(() => {
+    getNumApartments().then((data) => {
+      const value = data.num_apartments ?? data;
+      setNumApartments(value);
+      console.log("Set numApartments:", value);
+    });
+    getNumHouses().then((data) => {
+      const value = data.num_houses ?? data;
+      setNumHouses(value);
+      console.log("Set numHouses:", value);
+    });
+  }, []);
   const handleTabClick = (tabName: string) => {
     setActiveTab(tabName);
-    // fetch or filter data based on the new tab
   };
 
   return (
@@ -68,16 +51,21 @@ export default function MarketTrends() {
 
       {/* Stats Cards */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        {statsData.map((stat) => (
-          <StatCard
-            key={stat.title}
-            title={stat.title}
-            value={stat.value}
-            change={stat.change}
-            changeType={stat.changeType as "positive" | "negative"}
-            Icon={stat.icon}
-          />
-        ))}
+        <SimpleStatCard
+          title="Numero de Casas"
+          value={(numHouses ?? 0).toString()}
+          Icon={LandPlot}
+        />
+        <SimpleStatCard
+          title="Numero de Departamentos"
+          value={(numApartments ?? 0).toString()}
+          Icon={LandPlot}
+        />
+        <SimpleStatCard
+          title="Numero de Propiedades"
+          value={((numHouses ?? 0) + (numApartments ?? 0)).toString()}
+          Icon={LandPlot}
+        />
       </section>
 
       {/* Tabs */}
@@ -101,18 +89,19 @@ export default function MarketTrends() {
       </section>
 
       {/* Regional Analysis Section */}
-      { activeTab === "Precios de Casas" && <RegionalAnalysisSection />}
-      { activeTab === "Mercado Inmobiliario en Ciudad de México" && 
+      {activeTab === "Precios de Casas" && <RegionalAnalysisSection />}
+      {activeTab === "Mercado Inmobiliario en Ciudad de México" && (
         <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
           <h2 className="text-xl font-semibold text-gray-800 mb-1">
             Mapa Interactivo de Ciudad de México
           </h2>
           <p className="text-sm text-gray-500">
-            Exploración detallada de precios y tendencias inmobiliarias segmentado por alcaldías.
+            Exploración detallada de precios y tendencias inmobiliarias
+            segmentado por alcaldías.
           </p>
           <MexicoCityMap />
         </div>
-      }
+      )}
     </div>
   );
 }
