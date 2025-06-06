@@ -121,9 +121,9 @@ export default function Reports() {
   const handleSendEmail = async () => {
     if (!user || !selectedReport) return;
     const uid = user.uid;
-    const email = user.email;
 
-    const res = await sendReport(uid, email, selectedReport);
+
+    const res = await sendReport(uid, selectedReport);
     if (res.success) {
       alert("Reporte enviado al correo.");
     } else {
