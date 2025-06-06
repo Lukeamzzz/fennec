@@ -137,21 +137,23 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl">
+    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="property-estimator">
       <div className="space-y-4">
-        <div className="text-center justify-center">
-          <h3 className="font-medium">Property Value Estimator</h3>
-          <p className="text-sm text-muted-foreground">
+        <div className="text-center justify-center" data-testid="estimator-header">
+          <h3 className="font-medium" data-testid="estimator-title">Property Value Estimator</h3>
+          <p className="text-sm text-muted-foreground" data-testid="estimator-description">
             Enter property details to get an estimated market value
           </p>
         </div>
          
-        <AlcaldiaDropdown
-          value={input.alcaldia}
-          onChange={(val) => handleChange("alcaldia", val)}
-        />
+        <div data-testid="alcaldia-dropdown-container">
+          <AlcaldiaDropdown
+            value={input.alcaldia}
+            onChange={(val) => handleChange("alcaldia", val)}
+          />
+        </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-4" data-testid="address-fields">
           <div className="flex-1">
             <label
               htmlFor="street"
@@ -161,6 +163,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             </label>
             <input
               id="street"
+              data-testid="input-street"
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
@@ -175,20 +178,25 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             </label>
             <input
               id="zip"
+              data-testid="input-zip"
               type="text"
               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
             />
           </div>
         </div>
 
-        <GroupDropdowns input={input} onChange={handleChange as never} />
+        <div data-testid="group-dropdowns-container">
+          <GroupDropdowns input={input} onChange={handleChange as never} />
+        </div>
 
-        <SizeSlider
-          value={input.metro_cuadrados}
-          onChange={(val) => handleChange("metro_cuadrados", val)}
-        />
+        <div data-testid="size-slider-container">
+          <SizeSlider
+            value={input.metro_cuadrados}
+            onChange={(val) => handleChange("metro_cuadrados", val)}
+          />
+        </div>
 
-        <div>
+        <div data-testid="condicion-field">
           <label
             htmlFor="condicion"
             className="block text-sm font-medium text-gray-700"
@@ -197,6 +205,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
           </label>
           <select
             id="condicion"
+            data-testid="select-condicion"
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
             defaultValue=""
           >
@@ -209,7 +218,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
           </select>
         </div>
 
-        <div>
+        <div data-testid="anotaciones-field">
           <label
             htmlFor="anotacionesExtras"
             className="block text-sm font-medium text-gray-700"
@@ -218,31 +227,36 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
           </label>
           <textarea
             id="anotacionesExtras"
+            data-testid="textarea-anotaciones"
             rows={3}
             placeholder="Ej: Acabados de lujo, buena iluminación..."
             className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
           />
         </div>
 
-        <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
+        <div data-testid="estimate-button-container">
+          <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
+        </div>
 
         {loading && (
-          <div className="my-4 flex justify-center items-center">
+          <div className="my-4 flex justify-center items-center" data-testid="loading-spinner">
             <Quantum size="100" speed="1.75" color="#F56C12" />
           </div>
         )}
 
         { !loading && !error &&
-          <ReporteModal
-            open={modalOpen}
-            onClose={() => setModalOpen(false)}
-            prediction={prediction}
-            onSubmit={handleGenerarReporte}
-          />
+          <div data-testid="reporte-modal-container">
+            <ReporteModal
+              open={modalOpen}
+              onClose={() => setModalOpen(false)}
+              prediction={prediction}
+              onSubmit={handleGenerarReporte}
+            />
+          </div>
         }
 
         {error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-400 rounded-md text-red-700 text-sm">
+          <div className="mt-4 p-4 bg-red-50 border border-red-400 rounded-md text-red-700 text-sm" data-testid="error-message">
             {error}
           </div>
         )}
