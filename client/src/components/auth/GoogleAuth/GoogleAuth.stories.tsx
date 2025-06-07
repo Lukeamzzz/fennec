@@ -1,6 +1,6 @@
 import React from 'react';
 import GoogleAuth from './GoogleAuth';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
 export default {
   title: 'Autenticación/GoogleAuth',
@@ -24,7 +24,7 @@ export default {
           <ArgTypes />
 
           <h2>Uso</h2>
-          <p>El componente requiere especificar el modo ('signup' o 'login') y opcionalmente un callback.</p>
+          <p>El componente requiere especificar el modo (&#39;signup&#39; o &#39;login&#39;) y opcionalmente un callback.</p>
           <pre style={{ backgroundColor: '#000', color: "#00ff00", padding: '20px', borderRadius: '5px' }}>
             <code>
               {`import GoogleAuth from './GoogleAuth';

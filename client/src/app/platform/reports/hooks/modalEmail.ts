@@ -6,9 +6,21 @@ interface EmailPayload {
     subject: string;
     message: string;
 }
+interface ReportData {
+    direccion?: string;
+    codigoPostal?: string;
+    tipoPropiedad?: string;
+    condicion?: string;
+    valorEstimado: number;
+    fechaCreacion?: string;
+    tamanoPropiedad?: number;
+    habitaciones?: number;
+    bathrooms?: number;
+    anotaciones_valuacion?: string;
+}
 
 export const useSendReportEmail = () => {
-    const sendReport = async (uid: string, email: string, report: any) => {
+    const sendReport = async (uid: string, email: string, report: ReportData) => {
         const message = `
       <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; max-width: 800px; margin: 0 auto; background: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); overflow: hidden;">
     <!-- Header -->

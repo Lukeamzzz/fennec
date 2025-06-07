@@ -11,8 +11,9 @@ interface Property {
   beds: number;
   baths: number;
   area: number;
-  [key: string]: any;
+  [key: string]: string | number | string[] | number[] | undefined;
 }
+
 
 interface UseVirtualizedPropertiesProps {
   properties: Property[];

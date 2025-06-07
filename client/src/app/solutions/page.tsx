@@ -1,19 +1,19 @@
 "use client";
 import Navbar from "@/components/shared/navbar/Navbar";
 import Footer from "@/components/shared/footer/Footer";
-import { ArrowRight, BarChart3, Building2, Calculator, ChartNoAxesCombined, CircleDollarSign, Database, Eye, Gauge, MapPin, Search, Shield, TrendingUp, Users } from "lucide-react";
+import { ArrowRight, BarChart3, Building2, Calculator, ChartNoAxesCombined, CircleDollarSign, Database, Eye, Search, Shield, TrendingUp, Users } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import {useState, useEffect, SVGProps} from "react";
 
 interface ServiceCardProps {
   title: string;
   description: string;
   features: string[];
-  Icon: React.ComponentType<any>;
+  Icon: React.ComponentType<SVGProps<SVGSVGElement>>;
   isPrimary?: boolean;
 }
 
-const ServiceCard = ({ title, description, features, Icon, isPrimary = false }: ServiceCardProps) => {
+const ServiceCard = ({ title, description, features, Icon }: ServiceCardProps) => {
   return (
     <div className="rounded-xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 group bg-white border border-gray-200 hover:bg-gradient-to-br hover:from-orange-500 hover:to-orange-600 hover:text-white hover:border-orange-500">
       <div className="flex items-center mb-6">
@@ -44,7 +44,7 @@ const ServiceCard = ({ title, description, features, Icon, isPrimary = false }: 
 interface SolutionCardProps {
   title: string;
   description: string;
-  Icon: React.ComponentType<any>;
+  Icon: React.ComponentType<SVGProps<SVGSVGElement>>;
   benefits: string[];
   index?: number;
 }

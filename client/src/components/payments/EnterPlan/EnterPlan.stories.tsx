@@ -1,6 +1,6 @@
 import React from 'react';
 import EnterPlan from './EnterPlan';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
 export default {
   title: 'Planes/EnterPlan',

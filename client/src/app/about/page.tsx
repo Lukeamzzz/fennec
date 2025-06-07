@@ -1,7 +1,6 @@
 
 import Navbar from "@/components/shared/navbar/Navbar";
 import Footer from "@/components/shared/footer/Footer";
-import Image from "next/image";
 import TrustedClients from "@/components/home/TrustedClients";
 
 const AboutPage = () => {

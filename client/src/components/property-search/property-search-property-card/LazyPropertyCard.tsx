@@ -3,10 +3,22 @@ import { motion } from 'framer-motion';
 import PropertyCard from './PropertyCard';
 import PropertyCardSkeleton from '../skeleton/PropertyCardSkeleton';
 
+interface Property {
+  imageUrl: string;
+  propertyType: string;
+  title: string;
+  price: number;
+  address: string;
+  description: string;
+  beds: number;
+  baths: number;
+  area: number;
+}
+
 interface LazyPropertyCardProps {
-  property: any;
+  property: Property;
   index: number;
-  onClick: (property: any) => void;
+  onClick: (property: Property) => void;
 }
 
 const LazyPropertyCard: React.FC<LazyPropertyCardProps> = ({ 

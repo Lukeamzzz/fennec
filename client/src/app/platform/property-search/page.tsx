@@ -12,7 +12,52 @@ import Pagination from '@/components/property-search/pagination/Pagination';
 import PaginationInfo from '@/components/property-search/pagination/PaginationInfo';
 import '@/components/property-search/start-property-search/animations.css';
 import { motion, AnimatePresence } from 'framer-motion';
-import { usePropertySearch } from './hooks/usePropertySearch';
+import { usePropertySearch} from './hooks/usePropertySearch';
+
+
+export interface ApiPropertyData {
+  id?: number;
+  imageUrl?: string;
+  imagen?: string;
+  propertyType?: string;
+  tipoPropiedad?: string;
+  title?: string;
+  titulo?: string;
+  price?: number;
+  precio?: number;
+  address?: string;
+  direccion?: string;
+  description?: string;
+  descripcion?: string;
+  beds?: number;
+  recamaras?: number;
+  habitaciones?: number;
+  baths?: number;
+  banos?: number;
+  area?: number;
+  dimensiones?: number;
+  dimensionesM2?: number;
+  year?: number;
+  año?: number;
+  construccion?: number;
+  amenities?: Array<{ name: string; icon: string }>;
+  amenidades?: Array<{ name: string; icon: string }>;
+  images?: string[];
+  imagenes?: string[];
+  latitude?: number;
+  lat?: number;
+  latitud?: number;
+  longitude?: number;
+  lng?: number;
+  longitud?: number;
+  alcaldia?: string;
+  colonia?: string;
+  estacionamientos?: number;
+  precioPorM2?: number;
+  banosPorHabitacion?: number;
+  habitacionesTotales?: number;
+}
+
 
 // Datos de ejemplo para las propiedades (fallback)
 const sampleProperties = [
@@ -124,9 +169,12 @@ export default function PropertySearchPage() {
     setSelectedProperty(null);
   };
 
-  const handlePropertyClick = (property: any) => {
-    setSelectedProperty(property);
+  const handlePropertyClick = (property: ApiPropertyData) => {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    setSelectedProperty(ApiProperty(property, 0));
   };
+
 
   const handleCloseDetails = () => {
     setSelectedProperty(null);

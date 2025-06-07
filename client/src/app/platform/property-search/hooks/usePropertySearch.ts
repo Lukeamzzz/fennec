@@ -65,6 +65,49 @@ interface UsePropertySearchReturn {
   resetSearch: () => void;
 }
 
+export interface ApiProperty {
+  id?: number;
+  imageUrl?: string;
+  imagen?: string;
+  propertyType?: string;
+  tipoPropiedad?: string;
+  title?: string;
+  titulo?: string;
+  price?: number;
+  precio?: number;
+  address?: string;
+  direccion?: string;
+  description?: string;
+  descripcion?: string;
+  beds?: number;
+  recamaras?: number;
+  habitaciones?: number;
+  baths?: number;
+  banos?: number;
+  area?: number;
+  dimensionesM2?: number;
+  dimensiones?: number;
+  year?: number;
+  año?: number;
+  construccion?: number;
+  amenities?: Array<{ name: string; icon: string }>;
+  amenidades?: Array<{ name: string; icon: string }>;
+  images?: string[];
+  imagenes?: string[];
+  latitude?: number;
+  lat?: number;
+  latitud?: number;
+  longitude?: number;
+  lng?: number;
+  longitud?: number;
+  alcaldia?: string;
+  colonia?: string;
+  estacionamientos?: number;
+  precioPorM2?: number;
+  banosPorHabitacion?: number;
+  habitacionesTotales?: number;
+}
+
 // Datos de ejemplo para fallback
 const generateMockProperties = (alcaldia: string, page: number, itemsPerPage: number): Property[] => {
   const baseProperties = [
@@ -141,7 +184,8 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
   const [itemsPerPage] = useState(12);
 
   // Función para mapear datos del API a la estructura esperada
-  const mapApiDataToProperty = (apiData: any, index: number): Property => {
+  const mapApiDataToProperty = (apiData: ApiProperty, index: number): Property => {
+
     // Crear un título más descriptivo
     const title = apiData.title || apiData.titulo || 
       `${apiData.propertyType || apiData.tipoPropiedad || 'Casa'} en ${apiData.colonia || apiData.alcaldia || 'Ubicación Privilegiada'}`;
@@ -258,9 +302,12 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
       console.log('Respuesta del API:', data);
 
       // Mapear los datos recibidos usando la estructura real del API
-      const mappedProperties = Array.isArray(data.propiedades) 
-        ? data.propiedades.map((item: any, index: number) => mapApiDataToProperty(item, (page - 1) * itemsPerPage + index))
-        : [];
+      const mappedProperties = Array.isArray(data.propiedades)
+        ? data.propiedades.map((item: ApiProperty, index: number) =>
+              mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
+          )
+
+          : [];
 
       console.log('Propiedades mapeadas:', mappedProperties);
 
@@ -374,8 +421,8 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
       // Limitar al número de elementos por página
       const propiedadesLimitadas = todasLasPropiedades.slice(0, itemsPerPage);
 
-      const mappedProperties = propiedadesLimitadas.map((item: any, index: number) => 
-        mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
+      const mappedProperties = propiedadesLimitadas.map((item: ApiProperty, index: number) =>
+          mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
       );
 
       console.log('Propiedades combinadas y mapeadas:', mappedProperties);

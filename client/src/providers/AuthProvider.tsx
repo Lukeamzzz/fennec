@@ -1,5 +1,5 @@
 "use client";
-import { User, getIdToken, onAuthStateChanged } from "firebase/auth";
+import { User } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../lib/firebase";
 import api from "../services/api";
@@ -19,6 +19,11 @@ const AuthContext = createContext<AuthContextProps>({
   role: null,
   logout: async () => {},
 });
+interface MockUser {
+  uid: string;
+  email: string;
+  displayName?: string;
+}
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -27,10 +32,16 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).__FIREBASE_AUTH_MOCK__) {
+    if (typeof window !== 'undefined' && '__FIREBASE_AUTH_MOCK__' in window) {
       console.log('🧪 Cypress: Using Firebase Auth Mock');
-      const mockAuth = (window as any).__FIREBASE_AUTH_MOCK__;
-      mockAuth.onAuthStateChanged((mockUser: any) => {
+
+      const mockAuth = (window as typeof window & {
+        __FIREBASE_AUTH_MOCK__: {
+          onAuthStateChanged: (cb: (user: MockUser | null) => void) => void;
+        };
+      }).__FIREBASE_AUTH_MOCK__;
+
+      mockAuth.onAuthStateChanged((mockUser) => {
         setUser(mockUser);
         if (mockUser) {
           setIdToken('fake-token-cypress');
@@ -43,38 +54,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setLoading(false);
       });
+
       return;
     }
-
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
-      
-      if (firebaseUser) {
-        try {
-          const token = await getIdToken(firebaseUser);
-          setIdToken(token);
-          // Inject token into Axios
-          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          
-          // Set a default role - components will handle backend auth
-          setRole("usuario");
-        } catch (err) {
-          console.error(err);
-          setIdToken(null);
-          setRole("usuario");
-          delete api.defaults.headers.common["Authorization"];
-        }
-      } else {
-        setIdToken(null);
-        setRole(null);
-        delete api.defaults.headers.common["Authorization"];
-      }
-      
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
   }, []);
+
 
   const logout = async () => {
     try {

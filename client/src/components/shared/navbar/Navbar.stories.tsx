@@ -1,6 +1,6 @@
 import React from 'react';
 import Navbar from './Navbar';
-import { Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
 export default {
   title: 'Layout/Navbar',

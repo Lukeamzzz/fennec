@@ -1,7 +1,7 @@
 
 import React from 'react';
 import SearchFilters from './SearchFilters';
-import { Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
 export default {
   title: 'Búsqueda/SearchFilters',
@@ -68,12 +68,7 @@ const PropertySearchPage = () => {
       },
     },
   },
-  tags: ['autodocs'],
-  decorators: [
-    (Story:any) => {
-      return <div style={{ maxWidth: '450px' }}><Story /></div>;
-    }
-  ]
+  tags: ['autodocs']
 };
 
 // Historia básica

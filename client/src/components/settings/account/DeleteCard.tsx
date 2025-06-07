@@ -11,7 +11,9 @@ import {deleteUser} from "@firebase/auth";
 
 function DeleteCard({ onClose }) {
     const [inputValue, setInputValue] = useState<string>("");
-    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [, setIsLoading] = useState<boolean>(false);
+
+
     const router = useRouter();
 
     const handleSubmit = async (e: { preventDefault: () => void }) => {

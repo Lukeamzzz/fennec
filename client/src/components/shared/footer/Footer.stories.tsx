@@ -1,6 +1,6 @@
 import React from 'react';
 import Footer from './Footer';
-import { Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
 export default {
   title: 'Layout/Footer',

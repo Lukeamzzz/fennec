@@ -20,7 +20,6 @@ export default function SuccessPage() {
                     return;
                 }
 
-                const token = await user.getIdToken();
                 const uid = user.uid;
 
                 // Validar el pago

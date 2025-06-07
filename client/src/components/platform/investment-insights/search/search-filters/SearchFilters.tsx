@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, RotateCcw, Home, Building, Map } from 'lucide-react';
+import React, { useState } from 'react';
+import { ChevronDown, RotateCcw, Home, Building } from 'lucide-react';
 import * as Slider from '@radix-ui/react-slider';
 
 interface SearchFiltersProps {
@@ -39,7 +39,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
   const [sliderValues, setSliderValues] = useState<[number, number]>([0, 100]);
   const [bedrooms, setBedrooms] = useState('Cualquier');
   const [bathrooms, setBathrooms] = useState('Cualquier');
-  const [minSize, setMinSize] = useState(0);
+  const [] = useState(0);
   const [sizeRange, setSizeRange] = useState<[number, number]>([0, 5000]);
   const [sizeSliderValues, setSizeSliderValues] = useState<[number, number]>([0, 100]);
   const [isLocationOpen, setIsLocationOpen] = useState(false);
@@ -433,7 +433,7 @@ const SearchFilters: React.FC<SearchFiltersProps> = ({ onFiltersChange, onSearch
         {/* Mensaje cuando los filtros están listos */}
         {areAllFieldsFilled() && (
           <div className="text-center text-xs text-gray-400 mt-2">
-            Ajusta los filtros adicionales y haz clic en "Buscar" para ver todas las {propertyType.toLowerCase()}s
+            Ajusta los filtros adicionales y haz clic en &#34;Buscar&#34; para ver todas las {propertyType.toLowerCase()}s
           </div>
         )}
       </div>

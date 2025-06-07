@@ -4,7 +4,6 @@ import { usePathname, useRouter } from "next/navigation";
 import { protectedRoutes } from "@/utils/protectedRoutes";
 import { useAuth } from "@/providers/AuthProvider";
 import { useEffect } from "react";
-import axios from "axios";
 import api from "@/services/api";
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
