@@ -1,5 +1,5 @@
 "use client";
-import { User } from "firebase/auth";
+import { User, getIdToken, onAuthStateChanged } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../lib/firebase";
 import api from "../services/api";
@@ -19,11 +19,6 @@ const AuthContext = createContext<AuthContextProps>({
   role: null,
   logout: async () => {},
 });
-interface MockUser {
-  uid: string;
-  email: string;
-  displayName?: string;
-}
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -32,17 +27,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && '__FIREBASE_AUTH_MOCK__' in window) {
+
+
+    interface FirebaseAuthMock {
+      currentUser: User | null;
+      onAuthStateChanged: (callback: (user: User | null) => void) => () => void;
+    }
+
+    interface WindowWithMock extends Window {
+      __FIREBASE_AUTH_MOCK__?: FirebaseAuthMock;
+    }
+
+
+    const win = window as WindowWithMock;
+
+    if (typeof window !== 'undefined' && win.__FIREBASE_AUTH_MOCK__) {
       console.log('🧪 Cypress: Using Firebase Auth Mock');
 
-      const mockAuth = (window as typeof window & {
-        __FIREBASE_AUTH_MOCK__: {
-          onAuthStateChanged: (cb: (user: MockUser | null) => void) => void;
-        };
-      }).__FIREBASE_AUTH_MOCK__;
-
-      mockAuth.onAuthStateChanged((mockUser) => {
-        setUser(mockUser);
+      const mockAuth = win.__FIREBASE_AUTH_MOCK__;
+      mockAuth?.onAuthStateChanged((mockUser) => {
+        setUser(mockUser as User); // puedes castear o mapear si necesitas más compatibilidad
         if (mockUser) {
           setIdToken('fake-token-cypress');
           setRole('usuario');
@@ -57,8 +61,37 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       return;
     }
-  }, []);
 
+
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      setUser(firebaseUser);
+
+      if (firebaseUser) {
+        try {
+          const token = await getIdToken(firebaseUser);
+          setIdToken(token);
+          // Inject token into Axios
+          api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+
+          // Set a default role - components will handle backend auth
+          setRole("usuario");
+        } catch (err) {
+          console.error(err);
+          setIdToken(null);
+          setRole("usuario");
+          delete api.defaults.headers.common["Authorization"];
+        }
+      } else {
+        setIdToken(null);
+        setRole(null);
+        delete api.defaults.headers.common["Authorization"];
+      }
+
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const logout = async () => {
     try {
@@ -73,9 +106,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 

@@ -56,9 +56,10 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
             } else {
                 throw new Error("Stripe checkout failed");
             }
-        } catch (err) {
+        } catch {
             showCustomToast({ message: "Subscription error", type: "error" });
         }
+
     };
 
     return (
