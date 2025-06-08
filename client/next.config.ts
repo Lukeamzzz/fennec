@@ -5,7 +5,7 @@ const securityHeaders = [
         key: "Content-Security-Policy",
         value: `
       default-src 'self';
-      script-src 'self' blob: https://api.mapbox.com https://events.mapbox.com;
+      script-src 'self'
       style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com;
       object-src 'none';
       base-uri 'self';
