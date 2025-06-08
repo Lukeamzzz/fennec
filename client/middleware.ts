@@ -5,15 +5,17 @@ export function middleware(request: NextRequest) {
 
     const cspHeader = `
     default-src 'self';
-    script-src 'self' 'nonce-${nonce}' 'strict-dynamic';
-    style-src 'self' 'nonce-${nonce}';
-    img-src 'self' data: blob:;
-    font-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' 'nonce-${nonce}' blob: https://api.mapbox.com https://events.mapbox.com;
+    style-src 'self' 'unsafe-inline' 'nonce-${nonce}' https://api.mapbox.com https://fonts.googleapis.com;
+    img-src 'self' data: blob: https://api.mapbox.com;
+    font-src 'self' https://fonts.gstatic.com;
     object-src 'none';
     base-uri 'self';
     form-action 'self';
     frame-ancestors 'none';
     upgrade-insecure-requests;
+    connect-src 'self' https://fennec-back-447938427814.northamerica-south1.run.app:8080 https://identitytoolkit.googleapis.com https://api.mapbox.com https://events.mapbox.com https://fennec-prediccion.onrender.com https://securetoken.googleapis.com;
+    worker-src 'self' blob:;
   `;
 
     const contentSecurityPolicyHeaderValue = cspHeader.replace(/\s{2,}/g, " ").trim();
