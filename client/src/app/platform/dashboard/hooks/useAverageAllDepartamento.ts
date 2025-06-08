@@ -15,19 +15,16 @@ export function useAverageAllDepartamento() {
         // User is authenticated, make the API call
         setLoading(true);
         setError(null);
-        
+
         try {
           const response = await api.post("/api/departamento/promedio_todos");
           setAveragePrice(response.data);
           console.log("Promedio calculado:", response.data);
-<<<<<<< HEAD
-        } catch (err: any) {
-          console.error("Error al obtener promedio todos departamentos:", err);
-=======
+
         } catch (err: unknown) {
           console.error("Error al obtener promedio:", err);
->>>>>>> f9add5223745ada6740b2a63014631b475428766
-          
+
+
           if (err && typeof err === 'object' && 'response' in err) {
             const errorWithResponse = err as { response?: { status?: number } };
             if (errorWithResponse.response?.status === 401) {

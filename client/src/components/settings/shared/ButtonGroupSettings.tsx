@@ -8,17 +8,17 @@ interface TabButtonGroupProps {
 function TabButtonGroup({ activeTab, onTabChange }: TabButtonGroupProps) {
     const tabs = [
         { id: 'profile', label: 'Perfil' },
-        { id: 'notifications', label: 'Notificaciones' },
         { id: 'account', label: 'Cuenta' },
     ];
 
+
     return (
-        <div className="border-b border-gray-200">
-            <nav className="flex justify-center">
+        <div className="w-full border-b border-gray-200">
+            <nav className="w-full flex justify-evenly">
                 {tabs.map((tab) => (
                     <button
                         key={tab.id}
-                        className={`px-6 py-4 text-sm font-medium ${
+                        className={`w-full px-6 py-4 text-md font-medium text-center transition-colors ${
                             activeTab === tab.id
                                 ? 'text-orange-500 border-b-2 border-orange-500'
                                 : 'text-gray-500 hover:text-gray-700'
@@ -31,6 +31,7 @@ function TabButtonGroup({ activeTab, onTabChange }: TabButtonGroupProps) {
             </nav>
         </div>
     );
+
 }
 
 export default TabButtonGroup;

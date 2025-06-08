@@ -182,37 +182,32 @@ export default function PropertySearchPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-gray-900">Property Search</h1>
-            <div className="flex items-center space-x-4">
-              <button className="p-2 text-gray-600 hover:text-gray-900">
-                <Bell className="h-6 w-6" />
-              </button>
-              <button className="p-2 text-gray-600 hover:text-gray-900">
-                <User className="h-6 w-6" />
-              </button>
-            </div>
-          </div>
+
+      <header className="ml-15 pt-10">
+        <div className="flex justify-between items-center mb-2">
+          <h1 className="text-3xl font-bold text-gray-800 capitalize">
+            Búsqueda de propiedades
+          </h1>
         </div>
+        <p className="text-gray-600">
+          Encuentra todas las oportunidades que hay en el mercado
+        </p>
       </header>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex gap-8">
           {/* Sidebar con filtros */}
           <div className="w-80 flex-shrink-0">
-            <SearchFilters 
-              onSearch={handleSearch}
-              onReset={handleReset}
+            <SearchFilters
+                onSearch={handleSearch}
+                onReset={handleReset}
             />
           </div>
 
           {/* Contenido principal */}
           <div className="flex-1">
             {!hasSearched ? (
-              // Mostrar mensaje inicial cuando no se ha buscado
+                // Mostrar mensaje inicial cuando no se ha buscado
               <div className="space-y-8">
                 <div className="bg-white rounded-lg shadow-sm p-8">
                   <h2 className="text-3xl font-bold text-gray-900 mb-4">

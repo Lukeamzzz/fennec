@@ -209,42 +209,52 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             Condición
           </label>
           <select
-            id="condicion"
-            data-testid="select-condicion"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            defaultValue=""
+              id="condicion"
+              data-testid="select-condicion"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              defaultValue=""
           >
             <option value="">Selecciona una condición</option>
-            <option value="Excelente">Excelente</option>
-            <option value="Muy Buena">Muy Buena</option>
-            <option value="Buena">Buena</option>
-            <option value="Regular">Regular</option>
-            <option value="Mala">Mala</option>
+            <option value="Excelente" title="La propiedad está como nueva, sin necesidad de mejoras.">
+              Excelente
+            </option>
+            <option value="Muy Buena" title="Muy bien conservada, mínimas reparaciones necesarias.">
+              Muy Buena
+            </option>
+            <option value="Buena" title="Buen estado general, pero podría beneficiarse de mejoras menores.">
+              Buena
+            </option>
+            <option value="Regular" title="Requiere algunas reparaciones visibles.">
+              Regular
+            </option>
+            <option value="Mala" title="Estado deteriorado, requiere reparaciones importantes.">
+              Mala
+            </option>
           </select>
         </div>
 
         <div data-testid="anotaciones-field">
           <label
-            htmlFor="anotacionesExtras"
-            className="block text-sm font-medium text-gray-700"
+              htmlFor="anotacionesExtras"
+              className="block text-sm font-medium text-gray-700"
           >
             Anotaciones Adicionales
           </label>
           <textarea
-            id="anotacionesExtras"
-            data-testid="textarea-anotaciones"
-            rows={3}
-            placeholder="Ej: Acabados de lujo, buena iluminación..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+              id="anotacionesExtras"
+              data-testid="textarea-anotaciones"
+              rows={3}
+              placeholder="Ej: Acabados de lujo, buena iluminación..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
           />
         </div>
 
         <div data-testid="estimate-button-container">
-          <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
+          <ButtonPropertyEstimator onClick={handleEstimate} loading={loading}/>
         </div>
 
         {loading && (
-          <div className="my-4 flex justify-center items-center" data-testid="loading-spinner">
+            <div className="my-4 flex justify-center items-center" data-testid="loading-spinner">
             <Quantum size="100" speed="1.75" color="#F56C12" />
           </div>
         )}

@@ -329,7 +329,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
                       <HousePlus size={20} className="mr-2" strokeWidth={2} />
                       Añadir Propiedad
                     </button>
-                    {allProperties.length > 4 && (
+                    {allProperties.length > 0 && (
                       <button
                         onClick={() => setShowAllInvestments(true)}
                         className="mt-2 w-full flex items-center justify-center text-orange-600 border border-orange-200 rounded-lg py-2 hover:bg-orange-50 transition-colors"
