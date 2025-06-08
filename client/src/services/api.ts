@@ -2,7 +2,7 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 
 const api = axios.create({
-    baseURL: "https://fennec-back-447938427814.northamerica-south1.run.app:8080",
+    baseURL: "http://localhost:8080",
     timeout: 50000,
 });
 
