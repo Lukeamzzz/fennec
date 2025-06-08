@@ -5,6 +5,7 @@ import FeatureCard from "@/components/home/FeatureCard";
 import Link from "next/link";
 import TypingEffect from "@/lib/TypingEffect";
 import TestimonialCard from "@/components/home/TestimonialCard";
+import Image from "next/image";
 
 const plans = [
   {
@@ -54,7 +55,7 @@ export default function Home() {
           <p className="text-white text-2xl">Accede a análisis estratégicos, visualizaciones intuitivas y modelos predictivos para comprender el mercado, anticipar tendencias y tomar decisiones con mayor confianza.</p>
         </div>
         
-        <img src="./images/3DHouse.png" alt="" className="w-1/3"/>
+        <Image src="/images/3DHouse.png" alt="3D House" width={400} height={400} className="w-1/3"/>
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">

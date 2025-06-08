@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import AlcaldiaDropdown from "@/components/platform/dashboard/dropdowns/AlcaldiaDropdown";
 import GroupDropdowns from "@/components/platform/dashboard/dropdowns/GroupDropdowns";
 import SizeSlider from "@/components/platform/dashboard/SizeSlider";
@@ -32,6 +32,7 @@ interface ValuacionPayload {
   anotacionesExtra: string;
   valorEstimado: number;
   anotacionesValuacion: string;
+  [key: string]: string | number | boolean | null;
 }
 
 const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
@@ -47,11 +48,18 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
     estacionamientos: 1,
   });
 
+  const handleAlcaldiaChange = useCallback((alcaldia: string) => {
+    setInput(prev => ({ ...prev, alcaldia }));
+    if (onAlcaldiaChange) {
+      onAlcaldiaChange(alcaldia);
+    }
+  }, [onAlcaldiaChange]);
+
   useEffect(() => {
-    if (onAlcaldiaChange && input.alcaldia) {
+    if (input.alcaldia && onAlcaldiaChange) {
       onAlcaldiaChange(input.alcaldia);
     }
-  }, []);
+  }, [input.alcaldia, onAlcaldiaChange]);
 
   const { submitPrediction, prediction, loading, error } =
     usePropertyEstimator();
@@ -146,7 +154,7 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
         <div data-testid="alcaldia-dropdown-container">
           <AlcaldiaDropdown
             value={input.alcaldia}
-            onChange={(val) => handleChange("alcaldia", val)}
+            onChange={handleAlcaldiaChange}
           />
         </div>
 

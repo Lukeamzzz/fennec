@@ -8,22 +8,56 @@ declare module 'mapbox-gl' {
     bearing?: number;
   }
 
+  export interface ControlOptions {
+    showCompass?: boolean;
+    showZoom?: boolean;
+    visualizePitch?: boolean;
+  }
+
+  export interface LayerSpecification {
+    id: string;
+    type: string;
+    source: string;
+    layout?: Record<string, unknown>;
+    paint?: Record<string, unknown>;
+  }
+
+  export interface SourceSpecification {
+    type: string;
+    data?: unknown;
+    url?: string;
+    tiles?: string[];
+  }
+
+  export interface MarkerOptions {
+    color?: string;
+    draggable?: boolean;
+  }
+
   export class Map {
     constructor(options: MapboxOptions);
-    addControl(control: any, position?: string): this;
-    on(type: string, listener: Function): this;
-    addSource(id: string, source: any): this;
-    addLayer(layer: any): this;
-    getCanvas(): { style: any };
+    addControl(control: NavigationControl | ScaleControl, position?: string): this;
+    on(type: string, listener: (event?: MapMouseEvent) => void): this;
+    addSource(id: string, source: SourceSpecification): this;
+    addLayer(layer: LayerSpecification): this;
+    getCanvas(): { style: CSSStyleDeclaration };
     remove(): void;
   }
 
   export class NavigationControl {
-    constructor();
+    constructor(options?: ControlOptions);
   }
 
   export class ScaleControl {
     constructor();
+  }
+
+  export class Marker {
+    constructor(options?: MarkerOptions);
+    setLngLat(lnglat: [number, number]): this;
+    setPopup(popup: Popup): this;
+    addTo(map: Map): this;
+    remove(): this;
   }
 
   export class Popup {
@@ -41,7 +75,9 @@ declare module 'mapbox-gl' {
   export interface MapboxGeoJSONFeature {
     properties?: {
       id?: string;
-      [key: string]: any;
+      [key: string]: string | number | boolean | null | undefined;
     };
   }
+
+  export let accessToken: string;
 } 

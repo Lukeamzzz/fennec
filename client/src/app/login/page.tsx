@@ -42,11 +42,11 @@ function LoginPage() {
             } catch (backendErr) {
                 console.error("Backend error:", backendErr);
                 await auth.signOut();
-                setError("Account not found in the system. Please sign up first.");
+                setError("La cuenta no fue encontrada en el sistema. Por favor regístrate.");
             }
         } catch (err) {
             console.error("Firebase error:", err);
-            setError("Invalid credentials. Please try again.");
+            setError("Credenciales inválidas. Intenta de nuevo.");
         }
     };
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "@/providers/AuthProvider";
 import api from "@/services/api";
 
@@ -10,12 +10,45 @@ export interface AlcaldiaData {
   precioM2Depto: number;
 }
 
+// Interface para la respuesta de la API
+interface ApiResponse {
+  data?: {
+    promedio?: number;
+  } | number;
+}
+
+// Función helper para extraer el valor numérico de la respuesta
+const extractNumericValue = (response: ApiResponse): number => {
+  if (typeof response.data === 'number') {
+    return response.data;
+  }
+  if (typeof response.data === 'object' && response.data?.promedio) {
+    return response.data.promedio;
+  }
+  return 0;
+};
+
 // Hook personalizado para obtener datos de múltiples alcaldías
 export const useAlcaldiasData = (alcaldias: string[]) => {
   const [data, setData] = useState<Record<string, AlcaldiaData>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const { user, loading: authLoading } = useAuth();
+
+  const [alcaldiasData, setAlcaldiasData] = useState<AlcaldiaData[]>([]);
+
+  // Función para procesar los datos de alcaldías
+  const processAlcaldiasData = useCallback((data: Record<string, unknown>[]): AlcaldiaData[] => {
+    return data.map((item: Record<string, unknown>) => ({
+      precioCasa: Number(item.precioCasa || 0),
+      precioDepto: Number(item.precioDepto || 0),
+      precioM2Casa: Number(item.precioM2Casa || 0),
+      precioM2Depto: Number(item.precioM2Depto || 0),
+    }));
+  }, []);
+
+  // Memoizar la cadena de alcaldías para evitar re-renders innecesarios
+  const alcaldiasKey = useMemo(() => alcaldias.join(','), [alcaldias]);
 
   useEffect(() => {
     const fetchAlcaldiasData = async () => {
@@ -34,7 +67,7 @@ export const useAlcaldiasData = (alcaldias: string[]) => {
       try {
         const promises = alcaldias.map(async (alcaldia) => {
           // Crear un timeout específico para cada petición (8 segundos)
-          const timeoutPromise = new Promise((_, reject) => {
+          const timeoutPromise = new Promise<never>((_, reject) => {
             setTimeout(() => reject(new Error('Timeout')), 8000);
           });
 
@@ -51,15 +84,15 @@ export const useAlcaldiasData = (alcaldias: string[]) => {
             deptoPromedioRes,
             casaM2Res,
             deptoM2Res
-          ] = await Promise.race([fetchPromise, timeoutPromise]) as any[];
+          ] = await Promise.race([fetchPromise, timeoutPromise]) as ApiResponse[];
 
           return {
             alcaldia,
             data: {
-              precioCasa: casaPromedioRes?.data?.promedio || casaPromedioRes?.data || 0,
-              precioDepto: deptoPromedioRes?.data?.promedio || deptoPromedioRes?.data || 0,
-              precioM2Casa: casaM2Res?.data || 0,
-              precioM2Depto: deptoM2Res?.data || 0,
+              precioCasa: extractNumericValue(casaPromedioRes),
+              precioDepto: extractNumericValue(deptoPromedioRes),
+              precioM2Casa: extractNumericValue(casaM2Res),
+              precioM2Depto: extractNumericValue(deptoM2Res),
             }
           };
         });
@@ -72,17 +105,20 @@ export const useAlcaldiasData = (alcaldias: string[]) => {
         });
         
         setData(newData);
-      } catch (err: any) {
+        setAlcaldiasData(processAlcaldiasData(results));
+      } catch (err: unknown) {
         console.error("Error fetching alcaldías data:", err);
         
+        const error = err as Error & { response?: { status: number }; code?: string };
+        
         // Manejo específico de diferentes tipos de errores
-        if (err.message === 'Timeout' || err.code === 'ECONNABORTED' || err.message.includes('timeout')) {
+        if (error.message === 'Timeout' || error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
           setError("⏱️ Las peticiones están tardando mucho. Verifica que el servidor esté funcionando.");
-        } else if (err.response?.status === 401) {
+        } else if (error.response?.status === 401) {
           setError("🔒 No tienes permisos para acceder a estos datos. Por favor, inicia sesión.");
-        } else if (err.response?.status === 500) {
+        } else if (error.response?.status === 500) {
           setError("🔧 Error del servidor. Por favor, intenta más tarde.");
-        } else if (err.code === 'NETWORK_ERROR' || !err.response) {
+        } else if (error.code === 'NETWORK_ERROR' || !error.response) {
           setError("🌐 Error de conexión. Verifica tu conexión a internet y que el servidor esté corriendo.");
         } else {
           setError("❌ Error al obtener datos de las alcaldías. Por favor, intenta más tarde.");
@@ -93,7 +129,7 @@ export const useAlcaldiasData = (alcaldias: string[]) => {
     };
 
     fetchAlcaldiasData();
-  }, [alcaldias.join(','), user, authLoading]);
+  }, [alcaldiasKey, user, authLoading, processAlcaldiasData]);
 
-  return { data, loading: loading || authLoading, error };
+  return { data, loading: loading || authLoading, error, alcaldiasData };
 }; 

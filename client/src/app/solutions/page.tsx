@@ -1,8 +1,7 @@
 "use client";
 import Navbar from "@/components/shared/navbar/Navbar";
 import Footer from "@/components/shared/footer/Footer";
-import { ArrowRight, BarChart3, Building2, Calculator, ChartNoAxesCombined, CircleDollarSign, Database, Eye, Search, Shield, TrendingUp, Users } from "lucide-react";
-import Link from "next/link";
+import { BarChart3, Building2, Calculator, ChartNoAxesCombined, CircleDollarSign, Database, Eye, Search, Shield, TrendingUp, Users } from "lucide-react";
 import {useState, useEffect, SVGProps} from "react";
 
 interface ServiceCardProps {

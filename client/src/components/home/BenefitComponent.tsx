@@ -1,25 +1,38 @@
-import React from 'react'
+import React from 'react';
+import Image from 'next/image';
 
-function BenefitComponent({ imageOnRight = true }) {
-  return (
-    <div className={`flex flex-col ${imageOnRight ? 'md:flex-row' : 'md:flex-row-reverse'} items-center justify-between gap-8 p-8 bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 max-w-4xl mx-auto`}>
-      <div className='w-full md:w-3/5'>
-        <h2 className='text-2xl font-bold text-gray-800 mb-4'>Lorem ipsum</h2>
-        <p className='text-gray-600 leading-relaxed'>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Incidunt vitae laboriosam, commodi 
-          ullam dolorem nam maxime neque recusandae. Corrupti consequatur ea explicabo qui quibusdam 
-          commodi voluptas aliquam provident rerum distinctio.
-        </p>
-      </div>
-      <div className='w-full md:w-2/5 flex-shrink-0'>
-        <img 
-          src="./images/placeholder-img.webp" 
-          alt="Benefit illustration" 
-          className='rounded-lg w-full h-auto object-cover shadow-md'
-        />
-      </div>
-    </div>
-  )
+interface BenefitComponentProps {
+  title: string;
+  description: string;
+  imageSrc: string;
+  imageAlt: string;
+  reverse?: boolean;
 }
 
-export default BenefitComponent
+const BenefitComponent: React.FC<BenefitComponentProps> = ({
+  title,
+  description,
+  imageSrc,
+  imageAlt,
+  reverse = false
+}) => {
+  return (
+    <div className={`flex items-center ${reverse ? 'flex-row-reverse' : ''} gap-8 mb-12`}>
+      <div className="flex-1">
+        <Image 
+          src={imageSrc} 
+          alt={imageAlt} 
+          width={400}
+          height={300}
+          className="w-full h-auto rounded-lg shadow-lg" 
+        />
+      </div>
+      <div className="flex-1">
+        <h3 className="text-2xl font-bold mb-4">{title}</h3>
+        <p className="text-gray-600 leading-relaxed">{description}</p>
+      </div>
+    </div>
+  );
+};
+
+export default BenefitComponent;

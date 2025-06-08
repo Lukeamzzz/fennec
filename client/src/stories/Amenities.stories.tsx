@@ -13,26 +13,20 @@ type Story = StoryObj<typeof Amenities>;
 // Historia por defecto
 export const Default: Story = {
     args: {
-        amenities: ["Piscina", "Gimnasio", "Estacionamiento"],
         investmentGrade: "A+",
-        phone: "5551234567",
-    },
-};
-
-// Historia: Sin amenidades
-export const EmptyAmenities: Story = {
-    args: {
-        amenities: [],
-        investmentGrade: "B",
-        phone: "5559876543",
     },
 };
 
 // Historia: Grado de inversión bajo
 export const LowInvestmentGrade: Story = {
     args: {
-        amenities: ["Jardín", "Terraza"],
         investmentGrade: "C",
-        phone: "5551122334",
+    },
+};
+
+// Historia: Grado de inversión numérico
+export const NumericGrade: Story = {
+    args: {
+        investmentGrade: 8.5,
     },
 };
