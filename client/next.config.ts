@@ -4,7 +4,7 @@ const securityHeaders = [
         value: `
       default-src 'self';
       script-src 'self' 'sha256-LcsuUMiDkprrt6ZKeiLP4iYNhWo8NqaSbAgtoZxVK3s=' https://api.mapbox.com https://events.mapbox.com;
-      style-src 'self' https://api.mapbox.com https://fonts.googleapis.com;
+      style-src 'self' 'unsafe-hashes' https://api.mapbox.com https://fonts.googleapis.com;
       object-src 'none';
       base-uri 'self';
       frame-ancestors 'none';
