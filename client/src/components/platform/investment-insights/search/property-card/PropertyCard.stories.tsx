@@ -1,6 +1,6 @@
 import React from 'react';
 import PropertyCard from './PropertyCard';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
 // Creamos datos de ejemplo para nuestras historias
 const sampleProperty = {
@@ -34,7 +34,7 @@ export default {
           <p>Este componente muestra la información principal de una propiedad inmobiliaria en formato de tarjeta con las siguientes características:</p>
           <ul>
             <li>Imagen principal de la propiedad con indicador de tipo (Casa, Departamento, Terreno)</li>
-            <li>Botón de "Me gusta" para guardar propiedades favoritas</li>
+            <li>Botón de &#34;Me gusta&#34; para guardar propiedades favoritas</li>
             <li>Título, precio y dirección de la propiedad</li>
             <li>Descripción breve con límite de dos líneas</li>
             <li>Iconos con características principales: recámaras, baños, estacionamiento y metros cuadrados</li>

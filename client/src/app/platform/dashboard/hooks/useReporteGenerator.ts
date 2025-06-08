@@ -2,9 +2,12 @@ import { useCallback } from "react";
 import { getAuth } from "firebase/auth";
 import api from "@/services/api";
 
+interface ReportInput {
+    [key: string]: string | number | boolean | null;
+}
 
 export function useReporteGenerator() {
-    const generarReporte = useCallback(async (input: any) => {
+    const generarReporte = useCallback(async (input: ReportInput) => {
         try {
             const auth = getAuth();
             const user = auth.currentUser;

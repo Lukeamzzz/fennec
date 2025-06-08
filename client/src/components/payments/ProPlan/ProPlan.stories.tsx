@@ -1,9 +1,9 @@
-import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import ProPlan from './ProPlan';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
-export default {
-  title: 'Planes/ProPlan',
+const meta: Meta<typeof ProPlan> = {
+  title: 'Components/ProPlan',
   component: ProPlan,
   parameters: {
     layout: 'centered',
@@ -116,7 +116,7 @@ const PricingPage = () => {
       description: 'Precio anual del plan en pesos mexicanos',
     },
     features: {
-      control: 'array',
+      control: { type: 'object' },
       description: 'Lista de características incluidas en el plan',
     },
     onSelectPlan: {
@@ -126,8 +126,13 @@ const PricingPage = () => {
   },
 };
 
-// Historia básica con valores por defecto
-export const Default = {};
+type Story = StoryObj<typeof ProPlan>;
+
+const defaultStory: Story = {
+  args: {},
+};
+
+export { defaultStory as Default };
 
 // Historia con precio mensual
 export const Monthly = {
@@ -173,3 +178,5 @@ export const CustomPricing = {
     ]
   }
 };
+
+export default meta;

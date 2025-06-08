@@ -1,6 +1,6 @@
 import React from 'react';
 import PortafolioRisk from './PortafolioRisk';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
 export default {
   title: 'Gráficos/PortafolioRisk',

@@ -27,11 +27,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
-    if (typeof window !== 'undefined' && (window as any).__FIREBASE_AUTH_MOCK__) {
+
+
+    interface FirebaseAuthMock {
+      currentUser: User | null;
+      onAuthStateChanged: (callback: (user: User | null) => void) => () => void;
+    }
+
+    interface WindowWithMock extends Window {
+      __FIREBASE_AUTH_MOCK__?: FirebaseAuthMock;
+    }
+
+
+    const win = window as WindowWithMock;
+
+    if (typeof window !== 'undefined' && win.__FIREBASE_AUTH_MOCK__) {
       console.log('🧪 Cypress: Using Firebase Auth Mock');
-      const mockAuth = (window as any).__FIREBASE_AUTH_MOCK__;
-      mockAuth.onAuthStateChanged((mockUser: any) => {
-        setUser(mockUser);
+
+      const mockAuth = win.__FIREBASE_AUTH_MOCK__;
+      mockAuth?.onAuthStateChanged((mockUser) => {
+        setUser(mockUser as User); // puedes castear o mapear si necesitas más compatibilidad
         if (mockUser) {
           setIdToken('fake-token-cypress');
           setRole('usuario');
@@ -43,19 +58,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         }
         setLoading(false);
       });
+
       return;
     }
 
+
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       setUser(firebaseUser);
-      
+
       if (firebaseUser) {
         try {
           const token = await getIdToken(firebaseUser);
           setIdToken(token);
           // Inject token into Axios
           api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-          
+
           // Set a default role - components will handle backend auth
           setRole("usuario");
         } catch (err) {
@@ -69,7 +86,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         setRole(null);
         delete api.defaults.headers.common["Authorization"];
       }
-      
+
       setLoading(false);
     });
 
@@ -89,9 +106,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
-      {children}
-    </AuthContext.Provider>
+      <AuthContext.Provider value={{ user, loading, idToken, role, logout }}>
+        {children}
+      </AuthContext.Provider>
   );
 };
 

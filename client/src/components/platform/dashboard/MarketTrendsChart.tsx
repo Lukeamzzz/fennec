@@ -8,11 +8,11 @@ import {
   CategoryScale,
   LinearScale,
   Tooltip,
-  Legend,
+  Legend, TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { BarChart3, Home, Building2, MapPin, Info, Check, X } from "lucide-react";
-import { useAlcaldiasData, AlcaldiaData } from "@/app/platform/dashboard/hooks/useAlcaldiasData";
+import { useAlcaldiasData } from "@/app/platform/dashboard/hooks/useAlcaldiasData";
 
 ChartJS.register(
   BarElement,
@@ -120,14 +120,15 @@ const MarketTrendsChart = () => {
         borderWidth: 1,
         cornerRadius: 8,
         callbacks: {
-          label: function(context: any) {
+          label: function (context: TooltipItem<'bar'>) {
             const value = context.parsed.y;
             if (tipoComparacion === 'precio') {
-              return `$${(value / 1000000).toFixed(1)}M MXN`;
+              return `$${(value / 1_000_000).toFixed(1)}M MXN`;
             } else {
               return `$${value.toLocaleString('es-MX')} MXN/m²`;
             }
           }
+
         }
       }
     },
@@ -138,11 +139,12 @@ const MarketTrendsChart = () => {
           color: 'rgba(0, 0, 0, 0.05)',
         },
         ticks: {
-          callback: function(value: any) {
+          callback: function (value: string | number) {
+            const numericValue = typeof value === 'string' ? parseFloat(value) : value;
             if (tipoComparacion === 'precio') {
-              return `$${(value / 1000000).toFixed(1)}M`;
+              return `$${(numericValue / 1_000_000).toFixed(1)}M`;
             } else {
-              return `$${(value / 1000).toFixed(0)}k`;
+              return `$${(numericValue / 1_000).toFixed(0)}k`;
             }
           },
           color: '#6B7280',

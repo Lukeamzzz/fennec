@@ -1,5 +1,5 @@
 import React from 'react';
-import { LandPlot, Home, Building, Compass, MapPin } from 'lucide-react';
+import { Home } from 'lucide-react';
 
 interface PropertyTypeCardProps {
   /**
@@ -28,13 +28,13 @@ const PropertyTypeCard: React.FC<PropertyTypeCardProps> = ({
   const getIcon = () => {
     switch(type.toLowerCase()) {
       case 'departamentos':
-        return Building;
+        return Home;
       case 'casas':
         return Home;
       case 'terreno':
-        return LandPlot;
+        return Home;
       default:
-        return Compass;
+        return Home;
     }
   };
 

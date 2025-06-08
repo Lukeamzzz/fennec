@@ -21,33 +21,25 @@ export default function DashboardPage() {
   const [selectedAlcaldia, setSelectedAlcaldia] = useState("Álvaro Obregón");
   const [selectedTipo, setSelectedTipo] = useState("Casa");
 
-  const { averagePriceCasa, loading, errorAvg } =
+  const { averagePriceCasa } =
     useAverageCasaPrice(selectedAlcaldia, selectedTipo);
   const {
     cantidad,
-    loading: loadingCasas,
     error: errorCasas,
   } = useCasaCount(selectedAlcaldia, selectedTipo);
   const {
     cantidad_m2,
-    loading: loadingM2,
     error: errorM2,
   } = useAverageM2Price(selectedAlcaldia, selectedTipo);
   const {
     averagePrice,
-    loading: loadingAllAvg,
-    error: errorAllAvg,
   } = useAverageAllCasa();
   const {
     averageM2Price,
-    loading: loadingM2AllAvg,
-    error: errorM2AllAvg,
   } = useAverageM2AllCasa();
 
   const {
     averagePrice: averagePriceDepartamento,
-    loading: loadingDeptAvg,
-    error: errorDeptAvg,
   } = useAverageAllDepartamento();
 
   const handleAlcaldiaChange = (newAlcaldia: string) => {

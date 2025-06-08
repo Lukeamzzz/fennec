@@ -11,6 +11,15 @@ const Skeleton = ({ className }: { className?: string }) => (
   <div className={`animate-pulse bg-gray-200 rounded ${className}`}></div>
 );
 
+// Type for stat objects
+interface StatItem {
+  label: string;
+  value: string | number | React.ReactElement;
+  change?: string | null;
+  changeType?: string | null;
+  subLabel: string | React.ReactElement;
+}
+
 interface InvestmentOverviewProps {
   investments: Investment[];
   loadingInvestments: boolean;
@@ -78,7 +87,7 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
     (inv) => inv.tipo_propiedad?.toLowerCase() === "casa"
   ).length;
 
-  const portfolioStats = [
+  const portfolioStats: StatItem[] = [
     {
       label: "Valor Total",
       value: loadingInvestments ? (
@@ -86,6 +95,8 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
       ) : (
         `$${totalInvested.toLocaleString("en-US")}`
       ),
+      change: null,
+      changeType: null,
       subLabel: "Últimos 12 meses",
     },
     {
@@ -95,6 +106,8 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
       ) : (
         totalProperties
       ),
+      change: null,
+      changeType: null,
       subLabel: "Total de propiedades en portafolio",
     },
     {
@@ -104,17 +117,21 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
       ) : (
         numDepartamentos
       ),
+      change: null,
+      changeType: null,
       subLabel: "Total de departamentos en portafolio",
     },
 
     {
       label: "Casas",
       value: loadingInvestments ? <Skeleton className="h-8 w-8" /> : numCasas,
+      change: null,
+      changeType: null,
       subLabel: "Total de casas en portafolio",
     },
   ];
 
-  const marketStats = [
+  const marketStats: StatItem[] = [
     {
       label: "FUNO",
       value: loading ? (

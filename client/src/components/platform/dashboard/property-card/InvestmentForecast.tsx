@@ -1,10 +1,19 @@
 import {Calendar, TrendingUp} from 'lucide-react';
 import * as React from "react";
 
+interface InvestmentForecastProps {
+    valuation3Years: number;
+    valuation5Years: number;
+    growthRate: number;
+    roiMonthly: number;
+}
+
 function InvestmentForecast({
-                                               valuation3Years, valuation5Years, growthRate,
-                                               roiMonthly
-                                           }) {
+                                valuation3Years,
+                                valuation5Years,
+                                growthRate,
+                                roiMonthly,
+                            }: InvestmentForecastProps) {
     return (
         <div className="px-6 py-4 border-t grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

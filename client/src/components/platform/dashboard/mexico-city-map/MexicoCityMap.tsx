@@ -1,6 +1,6 @@
 "use client";
 import api from '@/services/api';
-import { ChevronDown, ChevronDownIcon } from 'lucide-react';
+import { ChevronDown } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 
 // Define types for the alcaldia data

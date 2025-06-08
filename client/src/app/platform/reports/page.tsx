@@ -119,11 +119,10 @@ export default function Reports() {
   const { user } = useAuth();
 
   const handleSendEmail = async () => {
-    if (!user || !selectedReport) return;
+    if (!user || !user.email || !selectedReport) return;
     const uid = user.uid;
+    const res = await sendReport(uid, user.email, selectedReport);
 
-
-    const res = await sendReport(uid, selectedReport);
     if (res.success) {
       alert("Reporte enviado al correo.");
     } else {

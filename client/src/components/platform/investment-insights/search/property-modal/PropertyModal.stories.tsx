@@ -1,6 +1,6 @@
 import React from 'react';
 import PropertyModal from './PropertyModal';
-import { Title, Description, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 import { useArgs } from '@storybook/client-api';
 
 // Creamos datos de ejemplo para nuestras historias
@@ -50,7 +50,7 @@ export default {
           <h2>Props</h2>
           <ArgTypes of={PropertyModal} />
           <h2>Uso</h2>
-          <p>El componente se utiliza típicamente junto con PropertyCard para mostrar detalles adicionales al hacer clic en "Ver detalles".</p>
+          <p>El componente se utiliza típicamente junto con PropertyCard para mostrar detalles adicionales al hacer clic en &#34;Ver detalles&#34;.</p>
           <pre style={{ backgroundColor: '#000', color: "#00ff00", padding: '20px', borderRadius: '5px' }}>
             <code>
               {`import React, { useState } from 'react';
@@ -121,15 +121,7 @@ const PropertyView = ({ property }) => {
       action: 'closed',
     }
   },
-  decorators: [
-    (Story:any) => {
-      return (
-        <div style={{ height: '100vh', position: 'relative' }}>
-          <Story />
-        </div>
-      );
-    },
-  ],
+
 };
 
 // Historia principal con el modal abierto mostrando una casa

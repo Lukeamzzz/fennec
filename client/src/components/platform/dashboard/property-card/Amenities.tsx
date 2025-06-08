@@ -1,6 +1,8 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-expect-error
-export default function Amenities({investmentGrade }) {
+interface AmenitiesProps {
+  investmentGrade: string | number;
+}
+
+export default function Amenities({ investmentGrade }: AmenitiesProps) {
     return (
         <>
             <div className="px-6 py-4 border-t flex justify-end text-right">

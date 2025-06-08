@@ -1,6 +1,6 @@
 import React from 'react';
 import PropertyList from './PropertyList';
-import { Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
 // Mock para DashboardPropertyCard en caso de que sea necesario
 // Esto depende de cómo esté implementado DashboardPropertyCard.js en tu proyecto

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ProfileSection from "@/components/settings/profile/ProfileSection";
-import Header_settings from "@/components/settings/shared/HeaderSettings";
 import ButtonGroupSettings from "@/components/settings/shared/ButtonGroupSettings";
 import NotificationSection from "@/components/settings/notifications/NotificationSection";
 import AccountSection from "@/components/settings/account/AccountSection";

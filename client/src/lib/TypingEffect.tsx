@@ -8,34 +8,27 @@ const TypingEffect = () => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   useEffect(() => {
-    const currentWord = words[currentWordIndex];
-    let typingSpeed = 100;
-
-    if (isDeleting) { // Delete faster than typing
-      typingSpeed -= 30;
-    }
-
     const timeout = setTimeout(() => {
-      setDisplayText((prev) =>
-        isDeleting
-          ? prev.slice(0, -1)
-          : currentWord.slice(0, prev.length + 1)
-      );
-
-      // When finished typing the word
-      if (!isDeleting && displayText === currentWord) {
-        setTimeout(() => setIsDeleting(true), 3000);
+      const currentWord = words[currentWordIndex];
+      
+      if (isDeleting) {
+        setDisplayText(currentWord.substring(0, displayText.length - 1));
+        
+        if (displayText === '') {
+          setIsDeleting(false);
+          setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+        }
+      } else {
+        setDisplayText(currentWord.substring(0, displayText.length + 1));
+        
+        if (displayText === currentWord) {
+          setTimeout(() => setIsDeleting(true), 1000);
+        }
       }
-
-      // When finished deleting the word
-      if (isDeleting && displayText === "") {
-        setIsDeleting(false);
-        setCurrentWordIndex((prev) => (prev + 1) % words.length);
-      }
-    }, typingSpeed);
+    }, isDeleting ? 50 : 100);
 
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, currentWordIndex]);
+  }, [displayText, isDeleting, currentWordIndex, words]);
 
   return (
     <h1 className="text-5xl font-semibold text-gray-900">

@@ -20,11 +20,16 @@ export function useAverageAllDepartamento() {
           const response = await api.post("/api/departamento/promedio_todos");
           setAveragePrice(response.data);
           console.log("Promedio calculado:", response.data);
-        } catch (err: any) {
+        } catch (err: unknown) {
           console.error("Error al obtener promedio:", err);
           
-          if (err.response?.status === 401) {
-            setError("No autorizado - verifica tu sesión");
+          if (err && typeof err === 'object' && 'response' in err) {
+            const errorWithResponse = err as { response?: { status?: number } };
+            if (errorWithResponse.response?.status === 401) {
+              setError("No autorizado - verifica tu sesión");
+            } else {
+              setError("No se pudo obtener el promedio");
+            }
           } else {
             setError("No se pudo obtener el promedio");
           }

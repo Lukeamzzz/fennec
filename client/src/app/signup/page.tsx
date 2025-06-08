@@ -5,13 +5,12 @@ import { useRouter } from "next/navigation";
 import api from "@/services/api";
 import { showCustomToast } from "@/lib/showCustomToast";
 import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
-import { useAuth } from "@/providers/AuthProvider";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 
 function SignupPage() {
   const router = useRouter();
-  const { user } = useAuth();
+
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -63,16 +62,20 @@ function SignupPage() {
       });
 
       router.push("/plans");
-    } catch (error: any) {
+    }  catch (error: unknown) {
       console.error("Signup error:", error);
       let errorMessage = "An error occurred during signup";
 
-      if (error.response?.status === 409) {
-        errorMessage = "Email already exists";
-      } else if (error.response?.status === 400) {
-        errorMessage = "Invalid data provided";
-      } else if (error.message) {
-        errorMessage = error.message;
+      if (typeof error === "object" && error !== null) {
+        const err = error as { response?: { status?: number }, message?: string };
+
+        if (err.response?.status === 409) {
+          errorMessage = "Email already exists";
+        } else if (err.response?.status === 400) {
+          errorMessage = "Invalid data provided";
+        } else if (err.message) {
+          errorMessage = err.message;
+        }
       }
 
       setError(errorMessage);
@@ -206,7 +209,7 @@ function SignupPage() {
         <div className="w-1/2 bg-orange-600 p-8 flex items-center justify-center text-white">
           <div className="max-w-md">
             <h2 className="text-5xl font-bold mb-8">
-              "Discover your next real estate opportunity with Fennec."
+              &quot;Discover your next real estate opportunity with Fennec.&quot;
             </h2>
             <div>
               <p className="font-semibold">- Andres Tavera</p>

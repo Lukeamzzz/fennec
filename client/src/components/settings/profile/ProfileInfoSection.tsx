@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import api from "@/services/api";
 import { TailChase } from 'ldrs/react';
 import 'ldrs/react/TailChase.css';
+import axios from "axios";
 
 function ProfileInfoSection() {
   const { logout, idToken, user, loading } = useAuth();
@@ -30,8 +31,8 @@ function ProfileInfoSection() {
           ...response.data,
           telefono: response.data.telefono || ""
         });
-      } catch (error: any) {
-        if (error?.response?.status === 401) {
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error) && error.response?.status === 401) {
           router.push("/login");
           return;
         }
@@ -75,9 +76,15 @@ function ProfileInfoSection() {
         message: "Teléfono actualizado correctamente",
         type: "success",
       });
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMsg = "Error al actualizar el teléfono";
+
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+
       showCustomToast({
-        message: "Error al actualizar el teléfono",
+        message: errorMsg,
         type: "error",
       });
     }
@@ -87,9 +94,15 @@ function ProfileInfoSection() {
     try {
       await logout();
       router.push("/login");
-    } catch (error) {
+    } catch (error: unknown) {
+      let errorMsg = "Error cerrando sesión";
+
+      if (axios.isAxiosError(error) && error.response?.data?.message) {
+        errorMsg = error.response.data.message;
+      }
+
       showCustomToast({
-        message: "Error cerrando sesión",
+        message: errorMsg,
         type: "error",
       });
     }

@@ -1,9 +1,9 @@
-import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react';
 import PlanSection from './PlanSection';
-import { Title, Description, Primary, Controls, Stories } from '@storybook/blocks';
+import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
-export default {
-  title: 'Planes/PlanSection',
+const meta: Meta<typeof PlanSection> = {
+  title: 'Components/PlanSection',
   component: PlanSection,
   parameters: {
     layout: 'fullscreen',
@@ -114,5 +114,12 @@ const PricingPage = () => {
   tags: ['autodocs'],
 };
 
+export default meta;
 
-export const Default = {};
+type Story = StoryObj<typeof PlanSection>;
+
+const defaultStory: Story = {
+  args: {},
+};
+
+export { defaultStory as Default };

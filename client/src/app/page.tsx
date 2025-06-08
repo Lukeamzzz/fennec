@@ -5,6 +5,7 @@ import FeatureCard from "@/components/home/FeatureCard";
 import Link from "next/link";
 import TypingEffect from "@/lib/TypingEffect";
 import TestimonialCard from "@/components/home/TestimonialCard";
+import Image from "next/image";
 
 export default function Home() {
   return (
@@ -17,7 +18,7 @@ export default function Home() {
           <p className="text-white text-2xl">Access strategic analysis, intuitive visualizations and predictive models to understand the market, anticipate trends and make decisions with greater confidence.</p>
         </div>
         
-        <img src="./images/3DHouse.png" alt="" className="w-1/3"/>
+        <Image src="/images/3DHouse.png" alt="3D House" width={400} height={400} className="w-1/3"/>
       </div>
 
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
@@ -26,7 +27,7 @@ export default function Home() {
 
       <div className="bg-white w-full mb-30">
         <h1 className="text-gray-900 text-5xl font-bold text-center mb-7">We turn data into opportunities</h1>
-        <h4 className="text-gray-600 text-center text-xl font-medium mb-10">Discover the potential and real value of any property with Fennec's advanced tools</h4>
+        <h4 className="text-gray-600 text-center text-xl font-medium mb-10">Discover the potential and real value of any property with Fennec&apos;s advanced tools</h4>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-7 mx-20">
           <FeatureCard

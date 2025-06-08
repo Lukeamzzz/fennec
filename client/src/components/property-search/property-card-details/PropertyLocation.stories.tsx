@@ -15,15 +15,12 @@ type Story = StoryObj<typeof PropertyLocation>;
 
 export const Predeterminado: Story = {
   args: {
-    address: 'Calle Reforma 100, Polanco, Ciudad de México',
-    // We're using a placeholder image here, in a real app you would use a valid map URL
-    mapUrl: '/images/placeholder-img.webp'
+    address: 'Calle Reforma 100, Polanco, Ciudad de México'
   }
 };
 
 export const SinMapa: Story = {
   args: {
     address: 'Calle Reforma 100, Polanco, Ciudad de México',
-    mapUrl: undefined
   }
 }; 
