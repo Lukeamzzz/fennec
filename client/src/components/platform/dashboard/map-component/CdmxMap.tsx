@@ -9,16 +9,16 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import {Layers, Eye, EyeOff} from 'lucide-react';
 
 interface CdmxMapProps {
-    className?: string,
-    initialZoom?: number,
-    initialCenter?: [number, number],
-    dataEndpoint?: string
+    className?: string;
+    initialZoom?: number;
+    initialCenter?: [number, number];
+    dataEndpoint?: string;
 }
 
 // Configura el token de Mapbox
 const accessToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
 
-const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCenter, dataEndpoint}) => {
+const CdmxMap: React.FC<CdmxMapProps> = ({ className = '' }) => {
     const mapContainer = useRef<HTMLDivElement>(null);
     const mapRef = useRef<mapboxgl.Map | null>(null);
     const [mapError, setMapError] = useState<string | null>(null);
@@ -44,7 +44,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
 
         try {
             // Set the access token
-            (mapboxgl as any).accessToken = accessToken;
+            (mapboxgl as unknown as { accessToken: string }).accessToken = accessToken || '';
 
             // Create the map
             const map = new mapboxgl.Map({
@@ -62,9 +62,9 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                 [-98.8, 19.8]  // Northeast coordinates (límite noreste)
             ] as [[number, number], [number, number]];
 
-            (map as any).setMaxBounds(bounds);
-            (map as any).setMinZoom(9);    // Zoom mínimo para mantener vista del área metropolitana
-            (map as any).setMaxZoom(18);   // Zoom máximo para detalles de calles
+            (map as unknown as { setMaxBounds: (bounds: [[number, number], [number, number]]) => void }).setMaxBounds(bounds);
+            (map as unknown as { setMinZoom: (zoom: number) => void }).setMinZoom(9);    // Zoom mínimo para mantener vista del área metropolitana
+            (map as unknown as { setMaxZoom: (zoom: number) => void }).setMaxZoom(18);   // Zoom máximo para detalles de calles
 
             // Add navigation controls
             map.addControl(new mapboxgl.NavigationControl(), 'top-right');
@@ -179,8 +179,8 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     console.log('Properties data loaded:', propertiesData.features?.length, 'features');
 
                     // Count houses and apartments
-                    const houses = propertiesData.features?.filter((f: any) => f.properties?.type === 'casa') || [];
-                    const apartments = propertiesData.features?.filter((f: any) => f.properties?.type === 'departamento') || [];
+                    const houses = propertiesData.features?.filter((f: { properties?: { type?: string } }) => f.properties?.type === 'casa') || [];
+                    const apartments = propertiesData.features?.filter((f: { properties?: { type?: string } }) => f.properties?.type === 'departamento') || [];
                     console.log('Houses:', houses.length, 'Apartments:', apartments.length);
 
                     // Add properties source
@@ -195,7 +195,6 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                         id: 'properties-casas',
                         type: 'circle',
                         source: 'properties',
-                        filter: ['==', ['get', 'type'], 'casa'],
                         paint: {
                             'circle-radius': 6,
                             'circle-color': '#3B82F6',
@@ -204,7 +203,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                             'circle-opacity': showPropertiesLayer ? 0.8 : 0,
                             'circle-stroke-opacity': showPropertiesLayer ? 1 : 0
                         }
-                    });
+                    } as mapboxgl.LayerSpecification);
                     console.log('Houses layer added');
 
                     // Add apartments layer
@@ -212,7 +211,6 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                         id: 'properties-departamentos',
                         type: 'circle',
                         source: 'properties',
-                        filter: ['==', ['get', 'type'], 'departamento'],
                         paint: {
                             'circle-radius': 6,
                             'circle-color': '#10B981',
@@ -221,11 +219,11 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                             'circle-opacity': showPropertiesLayer ? 0.8 : 0,
                             'circle-stroke-opacity': showPropertiesLayer ? 1 : 0
                         }
-                    });
+                    } as mapboxgl.LayerSpecification);
                     console.log('Apartments layer added');
 
                     // Add click event for CDMX boundary (colonias)
-                    (map as any).on('click', 'cdmx-boundary-fill', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'cdmx-boundary-fill', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
                             const feature = e.features[0];
                             const properties = feature.properties;
@@ -234,11 +232,11 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                                 .setLngLat(e.lngLat)
                                 .setHTML(`
                   <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">${properties.NOMGEO || 'Colonia'}</h3>
+                    <h3 class="font-bold text-lg mb-2">${properties?.NOMGEO || 'Colonia'}</h3>
                     <div class="space-y-1 text-sm">
-                      <p><strong>Código Postal:</strong> ${properties.CVEGEO || 'N/A'}</p>
-                      <p><strong>Área:</strong> ${properties.AREA ? `${parseFloat(properties.AREA).toFixed(2)} km²` : 'N/A'}</p>
-                      <p><strong>Perímetro:</strong> ${properties.PERIMETER ? `${parseFloat(properties.PERIMETER).toFixed(2)} km` : 'N/A'}</p>
+                      <p><strong>Código Postal:</strong> ${properties?.CVEGEO || 'N/A'}</p>
+                      <p><strong>Área:</strong> ${properties?.AREA ? `${parseFloat(String(properties.AREA)).toFixed(2)} km²` : 'N/A'}</p>
+                      <p><strong>Perímetro:</strong> ${properties?.PERIMETER ? `${parseFloat(String(properties.PERIMETER)).toFixed(2)} km` : 'N/A'}</p>
                       <p class="text-gray-600 mt-2">Colonia de la Ciudad de México</p>
                     </div>
                   </div>
@@ -248,11 +246,8 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add click event for CDMX boundary line
-                    (map as any).on('click', 'cdmx-boundary-line', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'cdmx-boundary-line', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
                             new mapboxgl.Popup()
                                 .setLngLat(e.lngLat)
                                 .setHTML(`
@@ -271,7 +266,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add click event for colonias
-                    (map as any).on('click', 'colonias-fill', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'colonias-fill', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
                             const feature = e.features[0];
                             const properties = feature.properties;
@@ -294,7 +289,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add click event for seismic zones
-                    (map as any).on('click', 'seismic-intensity', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'seismic-intensity', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
                             const feature = e.features[0];
                             const properties = feature.properties;
@@ -306,6 +301,8 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                                 if (riskLevel >= 3) return 'Medio';
                                 return 'Bajo';
                             };
+
+                            const riskLevel = typeof properties?.risk_level === 'number' ? properties.risk_level : 0;
 
                             new mapboxgl.Popup()
                                 .setLngLat(e.lngLat)
@@ -319,7 +316,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                       </div>
                       <div class="flex justify-between">
                         <span><strong>Nivel de Riesgo:</strong></span>
-                        <span class="font-medium">${getRiskDescription(properties?.risk_level || 0)} (${properties?.risk_level || 'N/A'})</span>
+                        <span class="font-medium">${getRiskDescription(riskLevel)} (${properties?.risk_level || 'N/A'})</span>
                       </div>
                       <div class="mt-2 p-2 bg-gray-50 rounded">
                         <p class="text-xs text-gray-700">${properties?.description || 'Zona de intensidad sísmica'}</p>
@@ -335,7 +332,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add click event for houses
-                    (map as any).on('click', 'properties-casas', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'properties-casas', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
                             const feature = e.features[0];
                             const properties = feature.properties;
@@ -369,7 +366,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add click event for apartments
-                    (map as any).on('click', 'properties-departamentos', (e: any) => {
+                    (map as unknown as { on: (event: string, layer: string, callback: (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => void) => void }).on('click', 'properties-departamentos', (e: mapboxgl.MapMouseEvent & { features?: mapboxgl.MapboxGeoJSONFeature[] }) => {
                         if (e.features && e.features.length > 0) {
                             const feature = e.features[0];
                             const properties = feature.properties;
@@ -403,48 +400,48 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
 
                     // Add hover events
-                    (map as any).on('mouseenter', 'cdmx-boundary-fill', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseenter', 'cdmx-boundary-fill', () => {
                         map.getCanvas().style.cursor = 'pointer';
                     });
 
-                    (map as any).on('mouseleave', 'cdmx-boundary-fill', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'cdmx-boundary-fill', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
-                    (map as any).on('mouseenter', 'colonias-fill', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseenter', 'colonias-fill', () => {
                         map.getCanvas().style.cursor = 'pointer';
                     });
 
-                    (map as any).on('mouseleave', 'colonias-fill', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'colonias-fill', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
-                    (map as any).on('mouseenter', 'seismic-intensity', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseenter', 'seismic-intensity', () => {
                         map.getCanvas().style.cursor = 'pointer';
                     });
 
-                    (map as any).on('mouseleave', 'seismic-intensity', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'seismic-intensity', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
-                    (map as any).on('mouseleave', 'cdmx-boundary-line', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'cdmx-boundary-line', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
                     // Add hover events for properties
-                    (map as any).on('mouseenter', 'properties-casas', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseenter', 'properties-casas', () => {
                         map.getCanvas().style.cursor = 'pointer';
                     });
 
-                    (map as any).on('mouseleave', 'properties-casas', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'properties-casas', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
-                    (map as any).on('mouseenter', 'properties-departamentos', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseenter', 'properties-departamentos', () => {
                         map.getCanvas().style.cursor = 'pointer';
                     });
 
-                    (map as any).on('mouseleave', 'properties-departamentos', () => {
+                    (map as unknown as { on: (event: string, layer: string, callback: () => void) => void }).on('mouseleave', 'properties-departamentos', () => {
                         map.getCanvas().style.cursor = '';
                     });
 
@@ -454,8 +451,8 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                 }
             });
 
-            // Handle map errors
-            map.on('error', (e: any) => {
+            // Handle map errors - Fixed error handler type
+            map.on('error', (e?: mapboxgl.MapMouseEvent) => {
                 console.error('Mapbox error:', e);
                 setMapError('Error loading map. Please check your connection.');
             });
@@ -481,31 +478,31 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
         if (!map) return;
 
         // Update colonias layer visibility
-        if ((map as any).getLayer('colonias-fill')) {
-            (map as any).setPaintProperty('colonias-fill', 'fill-opacity', showColoniasLayer ? 0.5 : 0);
+        if ((map as unknown as { getLayer: (id: string) => unknown }).getLayer('colonias-fill')) {
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('colonias-fill', 'fill-opacity', showColoniasLayer ? 0.5 : 0);
         }
-        if ((map as any).getLayer('colonias-line')) {
-            (map as any).setPaintProperty('colonias-line', 'line-opacity', showColoniasLayer ? 0.8 : 0);
+        if ((map as unknown as { getLayer: (id: string) => unknown }).getLayer('colonias-line')) {
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('colonias-line', 'line-opacity', showColoniasLayer ? 0.8 : 0);
         }
 
         // Update seismic layer visibility
-        if ((map as any).getLayer('seismic-intensity')) {
-            (map as any).setPaintProperty('seismic-intensity', 'fill-opacity', showSeismicLayer ? 0.7 : 0);
+        if ((map as unknown as { getLayer: (id: string) => unknown }).getLayer('seismic-intensity')) {
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('seismic-intensity', 'fill-opacity', showSeismicLayer ? 0.7 : 0);
         }
 
         // Update properties layer visibility
-        if ((map as any).getLayer('properties-casas')) {
-            (map as any).setPaintProperty('properties-casas', 'circle-opacity', showPropertiesLayer ? 0.8 : 0);
-            (map as any).setPaintProperty('properties-casas', 'circle-stroke-opacity', showPropertiesLayer ? 1 : 0);
+        if ((map as unknown as { getLayer: (id: string) => unknown }).getLayer('properties-casas')) {
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('properties-casas', 'circle-opacity', showPropertiesLayer ? 0.8 : 0);
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('properties-casas', 'circle-stroke-opacity', showPropertiesLayer ? 1 : 0);
         }
-        if ((map as any).getLayer('properties-departamentos')) {
-            (map as any).setPaintProperty('properties-departamentos', 'circle-opacity', showPropertiesLayer ? 0.8 : 0);
-            (map as any).setPaintProperty('properties-departamentos', 'circle-stroke-opacity', showPropertiesLayer ? 1 : 0);
+        if ((map as unknown as { getLayer: (id: string) => unknown }).getLayer('properties-departamentos')) {
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('properties-departamentos', 'circle-opacity', showPropertiesLayer ? 0.8 : 0);
+            (map as unknown as { setPaintProperty: (layer: string, property: string, value: number) => void }).setPaintProperty('properties-departamentos', 'circle-stroke-opacity', showPropertiesLayer ? 1 : 0);
         }
     }, [showColoniasLayer, showSeismicLayer, showPropertiesLayer, isLayerLoaded]);
 
     return (
-        <div className="relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden">
+        <div className={`relative w-full h-[600px] bg-white rounded-lg shadow-sm overflow-hidden ${className}`}>
             <div
                 ref={mapContainer}
                 className="absolute inset-0"

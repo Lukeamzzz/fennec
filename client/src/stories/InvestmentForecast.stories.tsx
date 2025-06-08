@@ -17,8 +17,6 @@ export const Default: Story = {
         valuation5Years: 5500000,
         growthRate: 5,        // % anual
         roiMonthly: 10000,    // ingreso mensual por renta
-        breakevenYears: 7,    // años hasta punto de equilibrio
-        occupancyRate: 85,    // % de ocupación
     },
 };
 
@@ -29,8 +27,6 @@ export const HighGrowth: Story = {
         valuation5Years: 7000000,
         growthRate: 12,
         roiMonthly: 12000,
-        breakevenYears: 6,
-        occupancyRate: 90,
     },
 };
 
@@ -41,7 +37,5 @@ export const LowPerformance: Story = {
         valuation5Years: 3200000,
         growthRate: 2,
         roiMonthly: 4000,
-        breakevenYears: 12,
-        occupancyRate: 60,
     },
 };

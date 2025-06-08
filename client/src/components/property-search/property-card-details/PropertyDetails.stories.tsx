@@ -27,9 +27,6 @@ const imagenesMuestra = [
   '/images/placeholder-img.webp',
 ];
 
-// Placeholder map URL (in a real app, you'd use a real map service)
-const urlMapaMuestra = '/images/placeholder-img.webp';
-
 export const ApartamentoDeLujo: Story = {
   args: {
     title: 'Apartamento de Lujo',
@@ -49,8 +46,7 @@ export const ApartamentoDeLujo: Story = {
     ],
     isSaved: false,
     images: imagenesMuestra,
-    initialImageIndex: 0,
-    mapUrl: urlMapaMuestra
+    initialImageIndex: 0
   }
 };
 
@@ -72,7 +68,6 @@ export const CasaFamiliar: Story = {
     ],
     isSaved: true,
     images: imagenesMuestra,
-    initialImageIndex: 0,
-    mapUrl: urlMapaMuestra
+    initialImageIndex: 0
   }
 }; 

@@ -10,29 +10,27 @@ const meta: Meta<typeof CardProperties> = {
 export default meta;
 type Story = StoryObj<typeof CardProperties>;
 
-// Historia: cambio positivo
-export const PositiveChange: Story = {
+// Historia: propiedades normales
+export const Default: Story = {
     args: {
         title: "Total de Propiedades",
         amount: 120,
-        change: 5.3,
     },
 };
 
-// Historia: cambio negativo
-export const NegativeChange: Story = {
+// Historia: con error
+export const WithError: Story = {
     args: {
         title: "Total de Propiedades",
-        amount: 80,
-        change: -2.4,
+        amount: 0,
+        error: "Error al cargar datos",
     },
 };
 
-// Historia: sin cambio
-export const NoChange: Story = {
+// Historia: cantidad alta
+export const HighAmount: Story = {
     args: {
         title: "Total de Propiedades",
-        amount: 100,
-        change: 0,
+        amount: 1500,
     },
 };

@@ -122,11 +122,22 @@ function LoginPage() {
 
                     {/* Sign Up Link */}
                     <div className="text-center mt-4">
-                        <p className="text-gray-500">
-                            Don't have an account?{" "}
-                            <Link href="/signup" className="text-orange-500 hover:underline">
-                                Sign Up
+                        <p className="text-sm text-gray-600 text-center">
+                            Don&apos;t have an account?{' '}
+                            <Link href="/register" className="text-orange-500 hover:underline">
+                                Sign up
                             </Link>
+                        </p>
+                        <p className="text-xs text-gray-500 text-center mt-4">
+                            By signing in, you agree to our{' '}
+                            <Link href="/terms" className="text-orange-500 hover:underline">
+                                Terms of Service
+                            </Link>{' '}
+                            and{' '}
+                            <Link href="/privacy" className="text-orange-500 hover:underline">
+                                Privacy Policy
+                            </Link>
+                            .
                         </p>
                     </div>
                 </div>
@@ -135,7 +146,7 @@ function LoginPage() {
             {/* Right Section */}
             <div className="w-1/2 bg-orange-600 p-8 flex items-center justify-center text-white">
                 <div className="max-w-md">
-                    <h2 className="text-5xl font-bold mb-8">"Fennec, where real state data meets destiny."</h2>
+                    <h2 className="text-5xl font-bold mb-8">&quot;Fennec, where real state data meets destiny.&quot;</h2>
                     <div>
                         <p className="font-semibold">- Gerardo Alavez</p>
                         <p className="text-sm opacity-80">Co-Founder</p>

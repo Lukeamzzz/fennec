@@ -83,6 +83,14 @@ const CTATypingEffect = () => {
     return () => clearTimeout(timeout);
   }, [displayText, isDeleting, currentWordIndex]);
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [words]);
+
   return (
     <h2 className="text-4xl font-bold text-white mb-4">
       Ready to <span className="text-orange-200">{displayText}</span>

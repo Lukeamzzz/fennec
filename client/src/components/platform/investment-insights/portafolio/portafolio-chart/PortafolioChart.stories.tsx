@@ -1,8 +1,9 @@
 import React from "react";
 import PortafolioChart from "./PortafolioChart";
 import { Title, Primary, Controls, Stories, ArgTypes } from "@storybook/blocks";
+import type { Meta, StoryObj } from '@storybook/react';
 
-export default {
+const meta: Meta<typeof PortafolioChart> = {
   title: "Gráficos/PortafolioChart",
   component: PortafolioChart,
   parameters: {
@@ -160,19 +161,29 @@ const InvestorDashboard = () => {
       control: "text",
       description: "Subtítulo descriptivo del widget",
     },
-    distributionData: {
-      control: "object",
-      description: "Datos para el gráfico de distribución",
-    },
-    properties: {
-      control: "object",
-      description: "Lista de propiedades con detalles para la tabla resumen",
-    },
   },
 };
 
-// Historia básica con datos por defecto
-export const Default = {};
+export default meta;
+
+type Story = StoryObj<typeof PortafolioChart>;
+
+export const Default: Story = {
+  args: {
+    title: "Título del widget",
+    subtitle: "Subtítulo descriptivo del widget",
+  },
+  argTypes: {
+    title: {
+      control: "text",
+      description: "Título principal del widget",
+    },
+    subtitle: {
+      control: "text",
+      description: "Subtítulo descriptivo del widget",
+    },
+  },
+};
 
 // Historia con distribución personalizada
 export const CustomDistribution = {

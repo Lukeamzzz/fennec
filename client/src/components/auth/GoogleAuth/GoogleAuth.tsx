@@ -4,10 +4,16 @@ import { GoogleAuthProvider, signInWithPopup, signOut } from "firebase/auth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import api from "../../../services/api";
-import { showCustomToast } from "@/lib/showCustomToast";
 
 interface GoogleAuthProps {
   mode: "login" | "signup";
+}
+
+interface BackendError {
+  response?: {
+    status: number;
+  };
+  message?: string;
 }
 
 const GoogleAuth = ({ mode }: GoogleAuthProps) => {
@@ -33,14 +39,16 @@ const GoogleAuth = ({ mode }: GoogleAuthProps) => {
           };
           await api.post("/auth/login", loginData);
         }
-      } catch (backendError: any) {
+      } catch (backendError: unknown) {
         // Backend failed - sign out from Firebase to prevent redirect
         await signOut(auth);
 
+        const error = backendError as BackendError;
+
         // Handle specific error messages
-        if (backendError.response?.status === 401 && mode === "login") {
+        if (error.response?.status === 401 && mode === "login") {
           throw new Error("Account not found. Please sign up first.");
-        } else if (backendError.response?.status === 400 && mode === "signup") {
+        } else if (error.response?.status === 400 && mode === "signup") {
           throw new Error("Account already exists. Please login instead.");
         } else {
           throw new Error("Backend server is not available. Please try again later.");
@@ -49,12 +57,15 @@ const GoogleAuth = ({ mode }: GoogleAuthProps) => {
 
       // Only redirect if everything succeeded
       router.push("/platform/dashboard");
-    } catch (error) {
-      console.error("Error de autenticación:", error);
-      showCustomToast({
-        message: error instanceof Error ? error.message : "Authentication error",
-        type: "error",
-      });
+    } catch (err: unknown) {
+      console.error('Error en autenticación con Google:', err);
+      
+      if (err && typeof err === 'object' && 'code' in err) {
+        const firebaseError = err as { code?: string; message?: string };
+        console.error(firebaseError.message || 'Error al iniciar sesión con Google');
+      } else {
+        console.error('Error al iniciar sesión con Google');
+      }
     } finally {
       setIsLoading(false);
     }

@@ -50,10 +50,19 @@ export function usePropertyEstimator() {
             // Simulate a delay for loader demonstration purposes
             await new Promise(resolve => setTimeout(resolve, 5000))
             setPrediction(response.data);
-        } catch (err: any) {
-            const status = err?.response?.status || 500;
-            const message = err?.response?.data?.message || err.message || "Error inesperado";
-            setError(`Error ${status}: ${message}`);
+        } catch (err: unknown) {
+            console.error("Error estimating property:", err);
+            
+            if (err && typeof err === 'object' && 'response' in err) {
+                const errorWithResponse = err as { response?: { status?: number; data?: { message?: string } } };
+                if (errorWithResponse.response?.status === 401) {
+                    setError("No autorizado - verifica tu sesión");
+                } else {
+                    setError(errorWithResponse.response?.data?.message || "Error al estimar la propiedad");
+                }
+            } else {
+                setError("Error al estimar la propiedad");
+            }
         } finally {
             setLoading(false);
         }

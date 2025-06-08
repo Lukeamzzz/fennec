@@ -18,6 +18,14 @@ interface GetREITParams {
   reit: string;
 }
 
+interface AxiosError {
+  response?: { 
+    status: number; 
+    data?: ApiError | string | Record<string, unknown>;
+  };
+  message: string;
+}
+
 export async function getREIT({ reit }: GetREITParams): Promise<REITData> {
   try {
     console.log(`Obteniendo datos para REIT: ${reit}`);
@@ -104,6 +112,6 @@ export async function getAvailableREITs(): Promise<string[]> {
   }
 }
 
-function isAxiosError(error: unknown): error is { response?: { status: number; data?: unknown } } {
+function isAxiosError(error: unknown): error is AxiosError {
   return typeof error === "object" && error !== null && "response" in error;
 }

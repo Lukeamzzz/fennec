@@ -56,6 +56,5 @@ export const Default: Story = {
       "Certificación LEED",
     ],
     tags: ["Alta Demanda", "Zona Premium"],
-    onDetailsClick: () => console.log("Ver Detalles clicked"),
   },
 };
