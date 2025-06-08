@@ -22,10 +22,10 @@ const ReporteModal: React.FC<ReporteModalProps> = ({ open, onClose, prediction, 
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-lg font-semibold mb-4">Resumen de la Predicción</h2>
                 <div className="space-y-2 text-sm text-gray-700">
-                    <p><strong>Tipo de propiedad:</strong> {prediction.tipo_propiedad}</p>
+                    <p><strong>Tipo de propiedad:</strong> {prediction.tipo_propiedad.charAt(0).toUpperCase() + prediction.tipo_propiedad.slice(1)}</p>
                     <p><strong>Estimado:</strong> ${prediction.precio_estimado.toLocaleString()} MXN</p>
                     <p><strong>Alcaldía:</strong> {prediction.alcaldia}</p>
-                    <p><strong>Fecha de predicción:</strong> {new Date(prediction.fecha_prediccion).toLocaleString()}</p>
+                    <p><strong>Fecha de predicción:</strong> {new Date().toLocaleDateString()}</p>
                 </div>
                 <div className="mt-6 flex justify-end space-x-3">
                     <button

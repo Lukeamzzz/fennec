@@ -24,7 +24,7 @@ export function useAverageCasaPrice(alcaldia: string, tipo: string) {
                 const finalValue = isNaN(parsedPromedio) ? 0 : parsedPromedio;
                 setAveragePrice(finalValue);
             } catch (err) {
-                console.error("Error al obtener promedio:", err);
+                console.error("Error al obtener promedio precio de propiedades:", err);
                 setErrorAvg("No se pudo obtener el promedio");
             } finally {
                 setLoading(false);

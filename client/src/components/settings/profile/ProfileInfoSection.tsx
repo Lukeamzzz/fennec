@@ -112,7 +112,7 @@ function ProfileInfoSection() {
       <div className="bg-white rounded-lg p-6">
         <h2 className="text-xl font-medium text-center mb-2">Información del Perfil</h2>
         <p className="text-gray-500 text-center text-sm mb-6">
-          Esta información se mostrará públicamente.
+          No compartas esta información con nadie
         </p>
 
         <form onSubmit={handleSubmit} >

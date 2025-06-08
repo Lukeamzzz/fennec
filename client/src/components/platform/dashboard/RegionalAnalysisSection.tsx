@@ -25,12 +25,6 @@ const findingsData = [
 export default function RegionalAnalysisSection() {
   return (
     <div className="bg-white p-6 rounded-xl shadow-lg mt-8">
-      <h2 className="text-xl font-semibold text-gray-800 mb-1">
-        Análisis Regional
-      </h2>
-      <p className="text-sm text-gray-500 mb-6">
-        Comparativa de precios y tendencias por región
-      </p>
       <div className="flex flex-col md:flex-row gap-6">
         {/* Chart Section */}
         <div className="w-full md:w-2/3">

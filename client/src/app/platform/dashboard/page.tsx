@@ -78,8 +78,8 @@ export default function DashboardPage() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="flex-1 pt-5">
-        <header className="mb-8 ml-15">
+      <div className="flex-1 pt-10">
+        <header className="ml-15">
           <div className="flex justify-between items-center mb-2">
             <h1 className="text-3xl font-bold text-gray-800 capitalize">
               Bienvenido{profile?.fullName ? `, ${profile.fullName}` : ""}
@@ -119,7 +119,7 @@ export default function DashboardPage() {
         <div className="flex border-orange-500 p-4 space-x-3 mx-auto w-5/7">
           <Info className="w-6 h-6 text-orange-500" />
             <p className="text-sm">
-              Los datos presentados en esta sección se basan en tus selecciones dentro del <strong className="font-bold">Property Value Predictor</strong>.
+              Los datos presentados en esta sección se basan en tus selecciones dentro del <strong className="font-bold">Estimador de valor de propiedades</strong>.
               Para obtener información de tu interés, asegúrate de elegir una <strong className="font-bold">alcaldía</strong> y un <strong className="font-bold">tipo de propiedad</strong>.
             </p>
         </div>

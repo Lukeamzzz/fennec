@@ -71,8 +71,8 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
             <h1 className='text-3xl mt-2 mb-4 font-semibold text-orange-600'>{name}</h1>
             <div className='flex flex-col items-center mb-5'>
                 <h2 className='text-5xl font-semibold'>${price}</h2>
-                <p className='text-sm text-muted-foreground mb-5'>mxn/month</p>
-                <ArrowButton text='Get Started' className='w-full py-3 bg-gradient-to-r from-orange-400 to-orange-600' onClick={handleSubscribe} />
+                <p className='text-sm text-muted-foreground mb-5'>mxn/mes</p>
+                <ArrowButton text='Comenzar ahora' className='w-full py-3 bg-gradient-to-r from-orange-400 to-orange-600' onClick={handleSubscribe} />
             </div>
             <ul className='space-y-2 w-full py-4 flex flex-col'>
                 {features.map((text, index) => (

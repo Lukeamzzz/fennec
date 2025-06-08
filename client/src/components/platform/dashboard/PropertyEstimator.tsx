@@ -89,9 +89,6 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
         ? "/api/casa/data" 
         : "/api/departamento/data";
       
-      // You can make your API call here
-      // const response = await api.post(endpoint, { alcaldia: input.alcaldia });
-      // Handle the response as needed
       
       console.log(`Making API call to ${endpoint} for tipo: ${newTipo}`);
     } catch (error) {
@@ -145,12 +142,12 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="property-estimator">
+    <div className="w-full max-w-3xl p-4 shadow-xl rounded-xl mx-auto" data-testid="property-estimator">
       <div className="space-y-4">
         <div className="text-center justify-center" data-testid="estimator-header">
-          <h3 className="font-medium" data-testid="estimator-title">Property Value Estimator</h3>
+          <h3 className="font-medium pb-1" data-testid="estimator-title">Estimador de valor de propiedades</h3>
           <p className="text-sm text-muted-foreground" data-testid="estimator-description">
-            Enter property details to get an estimated market value
+            Ingresa las características de tu propiedad para obtener una estimación de su valor en el mercado actual.
           </p>
         </div>
          
@@ -212,42 +209,52 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
             Condición
           </label>
           <select
-            id="condicion"
-            data-testid="select-condicion"
-            className="w-full px-3 py-2 border border-gray-300 rounded-md"
-            defaultValue=""
+              id="condicion"
+              data-testid="select-condicion"
+              className="w-full px-3 py-2 border border-gray-300 rounded-md"
+              defaultValue=""
           >
             <option value="">Selecciona una condición</option>
-            <option value="Excelente">Excelente</option>
-            <option value="Muy Buena">Muy Buena</option>
-            <option value="Buena">Buena</option>
-            <option value="Regular">Regular</option>
-            <option value="Mala">Mala</option>
+            <option value="Excelente" title="La propiedad está como nueva, sin necesidad de mejoras.">
+              Excelente
+            </option>
+            <option value="Muy Buena" title="Muy bien conservada, mínimas reparaciones necesarias.">
+              Muy Buena
+            </option>
+            <option value="Buena" title="Buen estado general, pero podría beneficiarse de mejoras menores.">
+              Buena
+            </option>
+            <option value="Regular" title="Requiere algunas reparaciones visibles.">
+              Regular
+            </option>
+            <option value="Mala" title="Estado deteriorado, requiere reparaciones importantes.">
+              Mala
+            </option>
           </select>
         </div>
 
         <div data-testid="anotaciones-field">
           <label
-            htmlFor="anotacionesExtras"
-            className="block text-sm font-medium text-gray-700"
+              htmlFor="anotacionesExtras"
+              className="block text-sm font-medium text-gray-700"
           >
             Anotaciones Adicionales
           </label>
           <textarea
-            id="anotacionesExtras"
-            data-testid="textarea-anotaciones"
-            rows={3}
-            placeholder="Ej: Acabados de lujo, buena iluminación..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
+              id="anotacionesExtras"
+              data-testid="textarea-anotaciones"
+              rows={3}
+              placeholder="Ej: Acabados de lujo, buena iluminación..."
+              className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none"
           />
         </div>
 
         <div data-testid="estimate-button-container">
-          <ButtonPropertyEstimator onClick={handleEstimate} loading={loading} />
+          <ButtonPropertyEstimator onClick={handleEstimate} loading={loading}/>
         </div>
 
         {loading && (
-          <div className="my-4 flex justify-center items-center" data-testid="loading-spinner">
+            <div className="my-4 flex justify-center items-center" data-testid="loading-spinner">
             <Quantum size="100" speed="1.75" color="#F56C12" />
           </div>
         )}

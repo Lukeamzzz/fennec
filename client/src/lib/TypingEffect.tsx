@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 const TypingEffect = () => {
-  const words = ["agents", "agencies", "developers", "investors"];
+  const words = ["agentes", "agencias", "desarrolladoras", "inversionistas"];
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [displayText, setDisplayText] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
@@ -32,8 +32,10 @@ const TypingEffect = () => {
 
   return (
     <h1 className="text-5xl font-semibold text-gray-900">
-      Ideal for real state <span className="text-orange-500">{displayText}</span>
-      <span className="blinking-cursor text-white">|</span>
+      Ideal para <span className="text-orange-500">
+        {displayText}
+        <span className="blinking-cursor text-white">|</span>
+        </span> del sector inmobiliario
       <style>{`
         .blinking-cursor {
           animation: blink 1.3s step-end infinite;

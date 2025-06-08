@@ -2,8 +2,8 @@ import axios from "axios";
 import { getAuth } from "firebase/auth";
 
 const api = axios.create({
-    baseURL: "http://localhost:8080",
-    timeout: 10000,
+    baseURL: "https://fennec-back-447938427814.northamerica-south1.run.app:8080",
+    timeout: 50000,
 });
 
 // Request Interceptor
