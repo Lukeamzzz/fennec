@@ -291,7 +291,7 @@ const CdmxMap: React.FC<CdmxMapProps> = ({ className = '' }) => {
             console.error('Error initializing map:', error);
             setMapError('Error initializing map. Please try again later.');
         }
-    }, []);
+    }, [showColoniasLayer, showPropertiesLayer, showSeismicLayer]);
 
     // Update layer visibility when toggles change
     useEffect(() => {
@@ -398,8 +398,14 @@ const CdmxMap: React.FC<CdmxMapProps> = ({ className = '' }) => {
                     </div>
                 </div>
             )}
+            {mapError && (
+                <div className="absolute top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded z-50">
+                    {mapError}
+                </div>
+            )}
 
-      {/* Leyenda */}
+
+            {/* Leyenda */}
       <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-xs">
 
         {/* Capa Base - Colonias CDMX */}

@@ -13,7 +13,6 @@ import {
 import { Bar } from "react-chartjs-2";
 import { BarChart3, Home, Building2, MapPin, Info, X } from "lucide-react";
 import { useAlcaldiasData } from "@/app/platform/dashboard/hooks/useAlcaldiasData";
-import { indexedDBLocalPersistence } from "firebase/auth";
 
 ChartJS.register(
   BarElement,

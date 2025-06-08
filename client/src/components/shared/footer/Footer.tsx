@@ -10,6 +10,7 @@ const Footer = () => {
                 <div className="pt-10 flex flex-col md:flex-row items-center justify-between">
                     <Link href="/">
                         <div className="flex items-center mb-6 md:mb-0">
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
                             <img src="/images/IconOnly.png" alt="FennecLogo" className="w-20 h-20 object-contain object-center" />
                             <span className="text-xl font-bold">FENNEC</span>
                         </div>

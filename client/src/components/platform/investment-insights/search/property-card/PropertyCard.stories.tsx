@@ -20,6 +20,7 @@ const sampleProperty = {
 // Mock para PropertyModal si es necesario
 // Esto depende de cómo esté implementado PropertyModal en tu proyecto
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Propiedades/DashboardPropertyCard',
   component: PropertyCard,
@@ -76,42 +77,17 @@ export default {
           <pre style={{ backgroundColor: '#000', color: "#00ff00", padding: '20px', borderRadius: '5px' }}>
             <code>
               {`import PropertyCard from './PropertyCard';
-              
-// Uso individual
-const PropertyDetail = () => {
-  const property = {
-    id: 1,
-    title: "Casa de Lujo",
-    price: 4500000,
-    address: "Calle Principal 123",
-    description: "Hermosa propiedad con vista al mar",
-    recamaras: 3,
-    banos: 2,
-    estacionamiento: 2,
-    metros: 150,
-    type: "Casa",
-    image: "/img/casa.jpg"
-  };
+
   
   return (
     <div className="max-w-sm mx-auto">
       <PropertyCard property={property} />
     </div>
   );
-};
+}
 
-// Uso en una lista
-const PropertyList = () => {
-  const properties = [...]; // Array de propiedades
-  
-  return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-      {properties.map(property => (
-        <PropertyCard key={property.id} property={property} />
-      ))}
-    </div>
-  );
-};`}
+
+`}
             </code>
           </pre>
           <Primary />

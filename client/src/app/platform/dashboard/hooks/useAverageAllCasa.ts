@@ -9,20 +9,28 @@ export function useAverageAllCasa() {
 
   useEffect(() => {
     const auth = getAuth();
-    
+
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
         // User is authenticated, make the API call
         setLoading(true);
         setError(null);
-        
+
         try {
           const response = await api.post("/api/casa/promedio_todas");
           setAveragePrice(response.data);
           console.log("Promedio calculado:", response.data);
-        } catch (err: any) {
-          console.error("Error al obtener promedio todas:", err);
-          
+        } catch (err) {
+          if (err instanceof Error) {
+            console.error("Error al obtener promedio todas:", err.message);
+          } else {
+            console.error("Error desconocido al obtener promedio todas:", err);
+          }
+
+
+
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-expect-error
           if (err.response?.status === 401) {
             setError("No autorizado - verifica tu sesión");
           } else {
@@ -37,6 +45,7 @@ export function useAverageAllCasa() {
         setLoading(false);
       }
     });
+
 
     // Cleanup subscription on unmount
     return () => unsubscribe();

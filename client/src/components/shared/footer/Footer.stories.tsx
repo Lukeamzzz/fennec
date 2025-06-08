@@ -2,6 +2,7 @@ import React from 'react';
 import Footer from './Footer';
 import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Layout/Footer',
   component: Footer,

@@ -209,7 +209,7 @@ function SignupPage() {
         <div className="w-1/2 bg-orange-600 p-8 flex items-center justify-center text-white">
           <div className="max-w-md">
             <h2 className="text-5xl font-bold mb-8">
-              "Descubre tu próxima oportunidad inmobiliaria con Fennec"
+              &#34;Descubre tu próxima oportunidad inmobiliaria con Fennec&#34;
             </h2>
             <div>
               <p className="font-semibold">- Andrés Tavera</p>

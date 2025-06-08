@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 
 const TypingEffect = () => {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const words = ["agentes", "agencias", "desarrolladoras", "inversionistas"];
   const [currentWordIndex, setCurrentWordIndex] = useState<number>(0);
   const [displayText, setDisplayText] = useState<string>("");

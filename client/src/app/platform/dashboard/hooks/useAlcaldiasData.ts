@@ -129,7 +129,8 @@ export const useAlcaldiasData = (alcaldias: string[]) => {
     };
 
     fetchAlcaldiasData();
-  }, [alcaldiasKey, user, authLoading, processAlcaldiasData]);
+  }, [alcaldias, alcaldiasKey, user, authLoading, processAlcaldiasData]);
+
 
   return { data, loading: loading || authLoading, error, alcaldiasData };
 }; 

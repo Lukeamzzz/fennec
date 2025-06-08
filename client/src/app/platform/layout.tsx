@@ -1,4 +1,5 @@
 import Sidebar from "@/components/platform/shared/Sidebar";
+import React from "react";
 
 export default function ProductLayout({
   children,

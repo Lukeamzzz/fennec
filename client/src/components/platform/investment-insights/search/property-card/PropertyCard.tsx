@@ -122,7 +122,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({ property }) => {
     <>
       <div className="bg-white rounded-lg overflow-hidden shadow-md transition-transform duration-300 hover:shadow-xl">
         <div className="relative">
-          <img 
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
             src={property.image} 
             alt={property.title} 
             className="w-full h-48 object-cover"

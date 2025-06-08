@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
-import { headers } from "next/headers";
 import { ConditionalAuthWrapper } from "@/components/auth/ConditionalAuthWrapper/ConditionalAuthWrapper";
 
 const geistSans = Geist({
@@ -25,7 +24,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const nonce = (await headers()).get("x-nonce") || "";
 
   return (
     <html lang="en">

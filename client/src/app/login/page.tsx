@@ -135,7 +135,7 @@ function LoginPage() {
       {/* Right Section */}
       <div className="w-1/2 bg-orange-600 p-8 flex items-center justify-center text-white">
         <div className="max-w-md">
-          <h2 className="text-5xl font-bold mb-8">"Fennec, donde los datos inmobiliarios se encuentran con el destino."</h2>
+          <h2 className="text-5xl font-bold mb-8">&#34;Fennec, donde los datos inmobiliarios se encuentran con el destino.&#34;</h2>
           <div>
             <p className="font-semibold">- Gerardo Alavez</p>
             <p className="text-sm opacity-80">Co-Fundador</p>

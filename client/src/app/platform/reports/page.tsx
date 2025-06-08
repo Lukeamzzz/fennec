@@ -129,6 +129,14 @@ export default function Reports() {
       alert("Hubo un error al enviar el correo.");
     }
   };
+  if (loading) {
+    return (
+        <div className="min-h-screen flex items-center justify-center">
+          <p className="text-gray-600 text-lg">Cargando reportes...</p>
+        </div>
+    );
+  }
+
 
   if (error) {
     return (
