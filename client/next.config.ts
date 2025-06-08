@@ -4,9 +4,9 @@ const securityHeaders = [
     {
         key: "Content-Security-Policy",
         value: `
-      default-src 'self';
-      script-src 'self'
-      style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com;
+        default-src 'self';
+        script-src 'self';
+        style-src 'self';
       object-src 'none';
       base-uri 'self';
       frame-ancestors 'none';
