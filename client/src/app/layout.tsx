@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { AuthProvider } from "@/providers/AuthProvider";
-import { AuthGuard } from "@/components/auth/AuthGuard/AuthGuard";
 import { Toaster } from "sonner";
 import { headers } from "next/headers";
+import { ConditionalAuthWrapper } from "@/components/auth/ConditionalAuthWrapper/ConditionalAuthWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,26 +21,26 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({
-                                           children,
-                                         }: Readonly<{
+  children,
+}: Readonly<{
   children: React.ReactNode;
 }>) {
   const nonce = (await headers()).get("x-nonce") || "";
 
   return (
-      <html lang="en">
+    <html lang="en">
       <head>
         {/* Solo si necesitas usar scripts inline */}
         {/* <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `console.log("Init CSP OK");` }} /> */}
       </head>
       <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-      <AuthProvider>
-        <AuthGuard>{children}</AuthGuard>
-      </AuthProvider>
-      <Toaster position="bottom-right" />
+        <ConditionalAuthWrapper>
+          {children}
+        </ConditionalAuthWrapper>
+        <Toaster position="bottom-right" />
       </body>
-      </html>
+    </html>
   );
 }

@@ -6,41 +6,38 @@ import Link from "next/link";
 export default function PlansPage() {
   const plans = [
     {
-      name: "Starter",
+      name: "Inicial",
       price: 499,
       features: [
-        "5 property valuations per month",
-        "Market trend reports",
-        "Limited data visualization",
-        "Email support"
-      ],
-      bgColor: "bg-white"
+        "5 valoraciones de propiedad al mes",
+        "Informes de tendencias del mercado",
+        "Visualización de datos limitada",
+        "Soporte por correo electrónico"
+      ]
     },
     {
-      name: "Professional",
+      name: "Profesional",
       price: 999,
       features: [
-        "15 property valuations per month",
-        "Detailed market analysis",
-        "Interactive data visualization",
-        "Priority email & chat support",
-        "Custom reports generation",
+        "15 valoraciones de propiedad al mes",
+        "Análisis detallado del mercado",
+        "Visualización interactiva de datos",
+        "Soporte prioritario por correo y chat",
+        "Generación de informes personalizados"
       ],
-      isPopular: true,
-      bgColor: "bg-white"
+      isPopular: true
     },
     {
-      name: "Enterprise",
+      name: "Empresarial",
       price: 1999,
       features: [
-        "50 property valuations per month",
-        "Real-time market analytics",
-        "Advanced risk modeling",
-        "Custom data visualization",
-        "24/7 dedicated support",
-        "Custom integration support"
-      ],
-      bgColor: "bg-white"
+        "50 valoraciones de propiedad al mes",
+        "Análisis en tiempo real del mercado",
+        "Modelado avanzado de riesgos",
+        "Visualización de datos personalizada",
+        "Soporte dedicado 24/7",
+        "Soporte para integración personalizada"
+      ]
     }
   ];
 
@@ -50,13 +47,13 @@ export default function PlansPage() {
       <div className="container mx-auto px-4 py-6">
         <Link href="/" className="inline-flex items-center text-gray-600 hover:text-gray-900">
           <ArrowLeft className="h-5 w-5 mr-2" />
-          Back to Home
+          Volver a inicio
         </Link>
       </div>
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-7">
         <div className="text-center mb-16">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Choose the right plan for you</h1>
+          <h1 className="text-5xl font-bold text-gray-900 mb-4">Escoge el plan correcto para ti</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-7xl mx-auto">
@@ -67,7 +64,6 @@ export default function PlansPage() {
               price={plan.price}
               features={plan.features}
               isPopular={plan.isPopular}
-              bgColor={plan.bgColor}
             />
           ))}
         </div>

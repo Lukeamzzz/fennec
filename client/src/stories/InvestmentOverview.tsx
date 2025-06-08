@@ -241,7 +241,7 @@ const InvestmentOverview: React.FC<InvestmentOverviewProps> = ({
   const currentDescription =
     activeTab === "portafolio"
       ? "Tu portafolio de inversión inmobiliaria muestra un crecimiento sólido y consistente. Las propiedades en zonas premium han generado rendimientos superiores al promedio del mercado, con una ocupación estable y flujo de efectivo positivo."
-      : "El mercado inmobiliario mexicano muestra signos de estabilización después de la volatilidad post-pandemia. Las zonas premium de CDMX, Monterrey y Guadalajara siguen siendo los polos de mayor rentabilidad, con un crecimiento sostenido en el segmento de propiedades de lujo. Se anticipa un incremento moderado pero constante en los precios durante los próximos 18 meses.";
+      : "Las FIBRAs (Fideicomisos de Inversión en Bienes Raíces) ofrecen una forma accesible y eficiente de invertir en el sector inmobiliario sin necesidad de adquirir propiedades directamente. Al igual que los REITs en otros países, estos instrumentos permiten a los inversionistas participar en desarrollos comerciales, industriales y residenciales, generando rendimientos atractivos a través de la renta de espacios.";
 
   return (
     <>

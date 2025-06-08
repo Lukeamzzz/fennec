@@ -3,7 +3,7 @@ import { getAuth } from "firebase/auth";
 
 const api = axios.create({
   baseURL: "https://fennec-prediccion.onrender.com",
-  timeout: 5000,
+  timeout: 50000,
 });
 
 // Request Interceptor

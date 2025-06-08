@@ -224,184 +224,6 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                     });
                     console.log('Apartments layer added');
 
-                    // Add click event for CDMX boundary (colonias)
-                    (map as any).on('click', 'cdmx-boundary-fill', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">${properties.NOMGEO || 'Colonia'}</h3>
-                    <div class="space-y-1 text-sm">
-                      <p><strong>Código Postal:</strong> ${properties.CVEGEO || 'N/A'}</p>
-                      <p><strong>Área:</strong> ${properties.AREA ? `${parseFloat(properties.AREA).toFixed(2)} km²` : 'N/A'}</p>
-                      <p><strong>Perímetro:</strong> ${properties.PERIMETER ? `${parseFloat(properties.PERIMETER).toFixed(2)} km` : 'N/A'}</p>
-                      <p class="text-gray-600 mt-2">Colonia de la Ciudad de México</p>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
-                    // Add click event for CDMX boundary line
-                    (map as any).on('click', 'cdmx-boundary-line', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">Ciudad de México</h3>
-                    <div class="space-y-1 text-sm">
-                      <p><strong>Área Total:</strong> 1,485 km²</p>
-                      <p><strong>Población:</strong> ~9.2 millones</p>
-                      <p><strong>Colonias:</strong> ${cdmxBoundaryData.features?.length || 'N/A'}</p>
-                      <p class="text-gray-600 mt-2">Límites por colonias y códigos postales oficiales</p>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
-                    // Add click event for colonias
-                    (map as any).on('click', 'colonias-fill', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">${properties?.d_asenta || properties?.name || 'Colonia'}</h3>
-                    <div class="space-y-1 text-sm">
-                      <p><strong>Código Postal:</strong> ${properties?.d_codigo || properties?.postal_code || 'N/A'}</p>
-                      <p><strong>Tipo:</strong> ${properties?.d_tipo_asenta || properties?.type || 'Colonia'}</p>
-                      <p><strong>Municipio:</strong> ${properties?.D_mnpio || properties?.municipality || 'N/A'}</p>
-                      <p class="text-gray-600 mt-2">Colonia de la Ciudad de México</p>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
-                    // Add click event for seismic zones
-                    (map as any).on('click', 'seismic-intensity', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            // Mapear el nivel de riesgo a descripción
-                            const getRiskDescription = (riskLevel: number) => {
-                                if (riskLevel >= 7) return 'Muy Alto';
-                                if (riskLevel >= 5) return 'Alto';
-                                if (riskLevel >= 3) return 'Medio';
-                                return 'Bajo';
-                            };
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">${properties?.name || properties?.zone || 'Zona Sísmica'}</h3>
-                    <div class="space-y-2 text-sm">
-                      <div class="flex justify-between">
-                        <span><strong>Intensidad:</strong></span>
-                        <span class="font-medium" style="color: ${properties?.color || '#666'}">${properties?.intensity || 'N/A'}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span><strong>Nivel de Riesgo:</strong></span>
-                        <span class="font-medium">${getRiskDescription(properties?.risk_level || 0)} (${properties?.risk_level || 'N/A'})</span>
-                      </div>
-                      <div class="mt-2 p-2 bg-gray-50 rounded">
-                        <p class="text-xs text-gray-700">${properties?.description || 'Zona de intensidad sísmica'}</p>
-                      </div>
-                      <div class="text-xs text-gray-500 mt-2 border-t pt-2">
-                        <p><strong>Fuente:</strong> ${properties?.source || 'Datos oficiales CDMX'}</p>
-                      </div>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
-                    // Add click event for houses
-                    (map as any).on('click', 'properties-casas', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">🏠 Casa</h3>
-                    <div class="space-y-2 text-sm">
-                      <div class="flex justify-between">
-                        <span><strong>ID:</strong></span>
-                        <span class="font-medium">${properties?.id || 'N/A'}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span><strong>Precio:</strong></span>
-                        <span class="font-medium text-green-600">$${properties?.price ? Number(properties.price).toLocaleString() : 'N/A'}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span><strong>Coordenadas:</strong></span>
-                        <span class="text-xs text-gray-600">${e.lngLat.lng.toFixed(4)}, ${e.lngLat.lat.toFixed(4)}</span>
-                      </div>
-                      <div class="mt-2 p-2 bg-blue-50 rounded">
-                        <p class="text-xs text-blue-700">Propiedad disponible para inversión</p>
-                      </div>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
-                    // Add click event for apartments
-                    (map as any).on('click', 'properties-departamentos', (e: any) => {
-                        if (e.features && e.features.length > 0) {
-                            const feature = e.features[0];
-                            const properties = feature.properties;
-
-                            new mapboxgl.Popup()
-                                .setLngLat(e.lngLat)
-                                .setHTML(`
-                  <div class="p-3">
-                    <h3 class="font-bold text-lg mb-2">🏢 Departamento</h3>
-                    <div class="space-y-2 text-sm">
-                      <div class="flex justify-between">
-                        <span><strong>ID:</strong></span>
-                        <span class="font-medium">${properties?.id || 'N/A'}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span><strong>Precio:</strong></span>
-                        <span class="font-medium text-green-600">$${properties?.price ? Number(properties.price).toLocaleString() : 'N/A'}</span>
-                      </div>
-                      <div class="flex justify-between">
-                        <span><strong>Coordenadas:</strong></span>
-                        <span class="text-xs text-gray-600">${e.lngLat.lng.toFixed(4)}, ${e.lngLat.lat.toFixed(4)}</span>
-                      </div>
-                      <div class="mt-2 p-2 bg-green-50 rounded">
-                        <p class="text-xs text-green-700">Propiedad disponible para inversión</p>
-                      </div>
-                    </div>
-                  </div>
-                `)
-                                .addTo(map);
-                        }
-                    });
-
                     // Add hover events
                     (map as any).on('mouseenter', 'cdmx-boundary-fill', () => {
                         map.getCanvas().style.cursor = 'pointer';
@@ -579,101 +401,77 @@ const CdmxMap: React.FC<CdmxMapProps> = ({className = '', initialZoom, initialCe
                 </div>
             )}
 
-            {/* Leyenda */}
-            <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-xs">
-                <h3 className="font-bold text-sm mb-3 text-gray-800">Leyenda del Mapa</h3>
+      {/* Leyenda */}
+      <div className="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm rounded-lg shadow-lg p-4 max-w-xs">
 
-                {/* Información de navegación */}
-                <div className="mb-4 pb-3 border-b border-gray-200">
-                    <h4 className="font-semibold text-xs mb-2 text-blue-700">Área de Navegación</h4>
-                    <div className="text-xs text-gray-600 space-y-1">
-                        <p>• Restringido al Área Metropolitana</p>
-                        <p>• Ciudad de México y zonas aledañas</p>
-                        <p>• Zoom: 9x - 18x</p>
-                    </div>
-                </div>
+        {/* Capa Base - Colonias CDMX */}
+        <div className="mb-2 border-gray-200">
+          <div className='flex items-center gap-1 mb-2'>
+            <p className='w-4 h-4 bg-orange-500 rounded-sm'></p>
+            <h4 className="font-semibold text-xs text-gray-700">Capa base</h4>
+          </div>
 
-                {/* Capa Base - Colonias CDMX */}
-                <div className="mb-4 pb-3 border-b border-gray-200">
-                    <h4 className="font-semibold text-xs mb-2 text-gray-700">Capa Base</h4>
-                    <div className="flex items-center mb-2">
-                        <div className="w-4 h-4 rounded mr-2 border-2"
-                             style={{backgroundColor: '#FFF3E0', borderColor: '#F56C12'}}></div>
-                        <span className="text-xs text-gray-700">Colonias de la CDMX</span>
-                    </div>
-                    <div className="text-xs text-gray-600 space-y-1">
-                        <p>• Límites por colonias y códigos postales</p>
-                        <p>• Datos oficiales detallados</p>
-                        <p>• Siempre visible como referencia</p>
-                    </div>
-                </div>
-
-                {/* Colonias Layer */}
-                {showColoniasLayer && (
-                    <div className="mb-3">
-                        <h4 className="font-semibold text-xs mb-2 text-gray-700">Colonias de la CDMX</h4>
-                        <div className="flex items-center mb-2">
-                            <div className="w-4 h-4 rounded mr-2 border-2"
-                                 style={{backgroundColor: '#E8F5E8', borderColor: '#2E7D32'}}></div>
-                            <span className="text-xs text-gray-700">Colonias Detalladas</span>
-                        </div>
-                        <div className="text-xs text-gray-600 space-y-1">
-                            <p>• Límites precisos por colonia</p>
-                            <p>• Códigos postales específicos</p>
-                            <p>• Información detallada por zona</p>
-                        </div>
-                    </div>
-                )}
-
-                {/* Seismic Intensity Layer */}
-                {showSeismicLayer && (
-                    <div className="mb-3">
-                        <h4 className="font-semibold text-xs mb-2 text-gray-700">Intensidad Sísmica</h4>
-                        <div className="space-y-1">
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded mr-2" style={{backgroundColor: '#F44336'}}></div>
-                                <span className="text-xs text-gray-700">Alta</span>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded mr-2" style={{backgroundColor: '#FF9800'}}></div>
-                                <span className="text-xs text-gray-700">Media</span>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded mr-2" style={{backgroundColor: '#4CAF50'}}></div>
-                                <span className="text-xs text-gray-700">Baja</span>
-                            </div>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-2">Datos oficiales de riesgo sísmico CDMX</p>
-                    </div>
-                )}
-
-                {/* Properties Layer */}
-                {showPropertiesLayer && (
-                    <div className="mb-3">
-                        <h4 className="font-semibold text-xs mb-2 text-gray-700">Propiedades Disponibles</h4>
-                        <div className="space-y-1">
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full mr-2 border-2"
-                                     style={{backgroundColor: '#3B82F6', borderColor: '#1E40AF'}}></div>
-                                <span className="text-xs text-gray-700">🏠 Casas</span>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="w-3 h-3 rounded-full mr-2 border-2"
-                                     style={{backgroundColor: '#10B981', borderColor: '#047857'}}></div>
-                                <span className="text-xs text-gray-700">🏢 Departamentos</span>
-                            </div>
-                        </div>
-                        <p className="text-xs text-gray-600 mt-2">Propiedades disponibles para inversión</p>
-                    </div>
-                )}
-            </div>
-
-            {mapError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white bg-opacity-90">
-                    <p className="text-red-600">{mapError}</p>
-                </div>
-            )}
+          <div className="text-xs text-gray-600 space-y-1">
+            <p>• Límites por alcaldías</p>
+            <p>• Siempre visible como referencia</p>
+          </div>
         </div>
+
+        {/* Colonias Layer */}
+        {showColoniasLayer && (
+          <div className="mb-3">
+            <div className="flex items-center mb-2 gap-1">
+              <p className="w-4 h-4 rounded-sm bg-green-800"></p>
+              <h4 className="font-semibold text-xs text-gray-700">Colonias de CDMX</h4>
+            </div>
+            
+            <div className="text-xs text-gray-600 space-y-1">
+              <p>• Límites precisos por colonia</p>
+              <p>• Información detallada por zona</p>
+            </div>
+          </div>
+        )}
+
+        {/* Seismic Intensity Layer */}
+        {showSeismicLayer && (
+          <div className="mb-3">
+            <h4 className="font-semibold text-xs mb-2 text-gray-700">Capa de intensidad sísmica</h4>
+            <div className="space-y-1">
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#F44336' }}></div>
+                <span className="text-xs text-gray-700">Alta</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#FF9800' }}></div>
+                <span className="text-xs text-gray-700">Media</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-3 h-3 rounded mr-2" style={{ backgroundColor: '#4CAF50' }}></div>
+                <span className="text-xs text-gray-700">Baja</span>
+              </div>
+            </div>
+            <p className="text-xs text-gray-600 mt-2">Datos oficiales de riesgo sísmico CDMX</p>
+          </div>
+        )}
+
+        </div>
+        {/* Properties Layer */}
+        {showPropertiesLayer && (
+          <div>
+            <h4 className="font-semibold text-xs mb-2 text-gray-700">Propiedades listadas</h4>
+            <div className="space-y-1">
+              <div className="flex items-center">
+                <div className="w-4 h-4 rounded-full mr-2 border-2 bg-blue-600"></div>
+                <span className="text-xs text-gray-700">Casas</span>
+              </div>
+              <div className="flex items-center">
+                <div className="w-4 h-4 rounded-full mr-2 border-2 bg-green-600"></div>
+                <span className="text-xs text-gray-700">Departamentos</span>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
     );
 };
 

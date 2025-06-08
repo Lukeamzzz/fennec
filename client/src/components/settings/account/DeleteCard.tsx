@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { showCustomToast } from "@/lib/showCustomToast";
 import { useRouter } from "next/navigation";
-import {auth} from "@/lib/firebase";
+import { auth } from "@/lib/firebase";
 import api from "@/services/api";
-import {deleteUser} from "@firebase/auth";
+import { deleteUser } from "@firebase/auth";
 
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-expect-error
@@ -11,8 +11,7 @@ import {deleteUser} from "@firebase/auth";
 
 function DeleteCard({ onClose }) {
     const [inputValue, setInputValue] = useState<string>("");
-    const [, setIsLoading] = useState<boolean>(false);
-
+    const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const router = useRouter();
 
@@ -35,13 +34,17 @@ function DeleteCard({ onClose }) {
                 throw new Error("Usuario no autenticado");
             }
 
-            // Eliminar en la API
+            // Delete from backend first
+            console.log("Deleting user from backend...");
             await api.post('/auth/delete/user');
+            console.log("Backend deletion successful");
 
-            // Eliminar en Firebase
+            // Only delete from Firebase if backend deletion succeeded
+            console.log("Deleting user from Firebase...");
             await deleteUser(currentUser);
+            console.log("Firebase deletion successful");
 
-            // Redirect to landing page and show toast
+            // Redirect and show toast
             router.push('/');
             showCustomToast({
                 message: "Cuenta eliminada exitosamente",
@@ -50,8 +53,18 @@ function DeleteCard({ onClose }) {
 
         } catch (error) {
             console.error("Error al eliminar cuenta:", error);
+            
+            // More specific error handling
+            let errorMessage = "Error al eliminar la cuenta. Por favor, intenta de nuevo.";
+            
+            if ((error as { code?: string }).code === 'auth/requires-recent-login') {
+                errorMessage = "Por seguridad, necesitas volver a iniciar sesión antes de eliminar tu cuenta.";
+            } else if ((error as { message?: string }).message?.includes('network')) {
+                errorMessage = "Error de conexión. Verifica tu internet e intenta de nuevo.";
+            }
+            
             showCustomToast({
-                message: "Error al eliminar la cuenta. Por favor, intenta de nuevo.",
+                message: errorMessage,
                 type: "error",
             });
         } finally {
@@ -79,6 +92,7 @@ function DeleteCard({ onClose }) {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                            disabled={isLoading}
                         />
                     </div>
                     <div className="flex justify-between p-6 border-t">
@@ -86,21 +100,26 @@ function DeleteCard({ onClose }) {
                             type="button"
                             onClick={onClose}
                             className="px-4 py-2 border border-gray-300 rounded-md hover:bg-gray-100"
+                            disabled={isLoading}
                         >
                             Cancelar
                         </button>
 
                         <button
                             type="submit"
-                            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600"
+                            className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
+                            disabled={isLoading}
                         >
-                            Eliminar Cuenta
+                            {isLoading && (
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            )}
+                            {isLoading ? "Eliminando..." : "Eliminar Cuenta"}
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-    )
+    );
 }
 
 export default DeleteCard;

@@ -81,9 +81,6 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
         ? "/api/casa/data" 
         : "/api/departamento/data";
       
-      // You can make your API call here
-      // const response = await api.post(endpoint, { alcaldia: input.alcaldia });
-      // Handle the response as needed
       
       console.log(`Making API call to ${endpoint} for tipo: ${newTipo}`);
     } catch (error) {
@@ -137,12 +134,12 @@ const PropertyEstimator: React.FC<PropertyEstimatorProps> = ({
   };
 
   return (
-    <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="property-estimator">
+    <div className="w-full max-w-3xl p-4 shadow-xl rounded-xl mx-auto" data-testid="property-estimator">
       <div className="space-y-4">
         <div className="text-center justify-center" data-testid="estimator-header">
-          <h3 className="font-medium" data-testid="estimator-title">Property Value Estimator</h3>
+          <h3 className="font-medium pb-1" data-testid="estimator-title">Estimador de valor de propiedades</h3>
           <p className="text-sm text-muted-foreground" data-testid="estimator-description">
-            Enter property details to get an estimated market value
+            Ingresa las características de tu propiedad para obtener una estimación de su valor en el mercado actual.
           </p>
         </div>
          

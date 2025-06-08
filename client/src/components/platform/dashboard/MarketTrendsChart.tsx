@@ -11,8 +11,9 @@ import {
   Legend, TooltipItem,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { BarChart3, Home, Building2, MapPin, Info, Check, X } from "lucide-react";
+import { BarChart3, Home, Building2, MapPin, Info, X } from "lucide-react";
 import { useAlcaldiasData } from "@/app/platform/dashboard/hooks/useAlcaldiasData";
+import { indexedDBLocalPersistence } from "firebase/auth";
 
 ChartJS.register(
   BarElement,
@@ -41,13 +42,16 @@ const MarketTrendsChart = () => {
     "Álvaro Obregón",
     "Coyoacán",
     "Tlalpan",
-    "Cuajimalpa",
+    "Cuajimalpa de Morelos",
     "Iztapalapa",
     "Gustavo A. Madero",
     "Xochimilco",
     "Cuauhtémoc",
     "Venustiano Carranza",
-    "Azcapotzalco"
+    "Azcapotzalco",
+    "Tlahuac",
+    "La Magdalena Contreras",
+    "Iztacalco"
   ];
 
   // Obtener datos reales de las alcaldías seleccionadas
@@ -116,7 +120,6 @@ const MarketTrendsChart = () => {
         backgroundColor: 'rgba(0, 0, 0, 0.8)',
         titleColor: '#fff',
         bodyColor: '#fff',
-        borderColor: '#F56C12',
         borderWidth: 1,
         cornerRadius: 8,
         callbacks: {
@@ -213,7 +216,6 @@ const MarketTrendsChart = () => {
             <div className="space-y-2 text-xs text-red-600">
               <p><strong>Posibles soluciones:</strong></p>
               <ul className="list-disc list-inside space-y-1 text-left">
-                <li>Verifica que el servidor backend esté corriendo en puerto 8080</li>
                 <li>Revisa tu conexión a internet</li>
                 <li>Intenta refrescar la página</li>
                 <li>Si el problema persiste, contacta al administrador</li>
@@ -226,7 +228,7 @@ const MarketTrendsChart = () => {
             data-testid="btn-reintentar"
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition-colors text-sm font-medium"
           >
-            🔄 Reintentar {retryCount > 0 && `(${retryCount})`}
+            Reintentar {retryCount > 0 && `(${retryCount})`}
           </button>
           
           <p className="text-xs text-gray-500">
@@ -241,12 +243,9 @@ const MarketTrendsChart = () => {
     <div className="w-full max-w-xl p-4 shadow-xl rounded-xl" data-testid="market-trends-chart">
       {/* Header */}
       <div className="text-center justify-center mb-4">
-        <div className="flex items-center justify-center gap-2 mb-2">
-          <BarChart3 className="h-5 w-5 text-orange-500" />
-          <h3 className="font-medium" data-testid="chart-title">Comparativa de Alcaldías</h3>
-        </div>
+        <h3 className="font-medium pb-1" data-testid="chart-title">Comparativa de Alcaldías</h3>
         <p className="text-sm text-muted-foreground">
-          {loading ? "Cargando datos..." : "Precios promedio CDMX"}
+          Comparación detallada de precios en Ciudad de México
         </p>
       </div>
 
@@ -300,7 +299,7 @@ const MarketTrendsChart = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Precio Total
+              Precio promedio de propiedad
             </button>
             <button
               onClick={() => setTipoComparacion('m2')}
@@ -311,14 +310,14 @@ const MarketTrendsChart = () => {
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
-              Precio por m²
+              Precio promedio por m²
             </button>
           </div>
         </div>
 
         {/* Selector de alcaldías mejorado */}
         <div>
-          <div className="flex items-center gap-2 mb-2">
+          <div className="flex items-center gap-2">
             <label className="block text-sm font-medium text-gray-700">
               Alcaldías a Comparar
             </label>
@@ -333,7 +332,6 @@ const MarketTrendsChart = () => {
               {showTooltip && (
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-3 py-2 bg-gray-800 text-white text-xs rounded-lg shadow-lg z-30 w-64">
                   <div className="text-center">
-                    <p className="font-medium mb-1">💡 Tip de Comparación</p>
                     <p>La primera alcaldía seleccionada será la <span className="font-semibold text-orange-300">base de comparación</span>. Las demás mostrarán su diferencia porcentual respecto a esta.</p>
                   </div>
                   <div className="absolute top-full left-1/2 transform -translate-x-1/2 border-4 border-transparent border-t-gray-800"></div>
@@ -343,26 +341,21 @@ const MarketTrendsChart = () => {
           </div>
 
           {/* Alcaldías seleccionadas */}
-          <div className="mb-2">
-            <div className="flex flex-wrap gap-2" data-testid="alcaldias-seleccionadas">
+          <div className="my-3">
+            <div className="flex flex-wrap gap-2 justify-center" data-testid="alcaldias-seleccionadas">
               {alcaldiasSeleccionadas.map((alcaldia, index) => (
                 <div
                   key={alcaldia}
                   data-testid={`alcaldia-selected-${index}`}
-                  className={`flex items-center gap-1 px-2 py-1 rounded-md text-xs ${
-                    index === 0 
-                      ? 'bg-orange-100 text-orange-700 border border-orange-200' 
-                      : 'bg-blue-100 text-blue-700 border border-blue-200'
-                  }`}
+                  className="flex items-center gap-1 px-2 py-1 rounded-md text-xs bg-orange-100 text-orange-700"
                 >
-                  {index === 0 && <span className="text-xs">📍</span>}
                   <span className="font-medium">{alcaldia}</span>
                   {index === 0 ? (
                     <span className="text-xs opacity-75">(Base)</span>
                   ) : (
                     <button
                       onClick={() => removeAlcaldia(alcaldia)}
-                      className="ml-1 hover:bg-red-200 rounded-full p-0.5"
+                      className="ml-1 cursor-pointer"
                       disabled={alcaldiasSeleccionadas.length <= 2}
                     >
                       <X className="h-3 w-3" />
@@ -403,9 +396,8 @@ const MarketTrendsChart = () => {
                       data-testid={`dropdown-item-${alcaldia.replace(/\s+/g, '-').toLowerCase()}`}
                       className={`w-full text-left px-3 py-2 text-sm transition-colors flex items-center justify-between ${
                         isSelected
-                          ? isBase 
-                            ? 'bg-orange-50 text-orange-600'
-                            : 'bg-blue-50 text-blue-600'
+                          ? 
+                            'bg-orange-50 text-orange-600'
                           : isClickable
                             ? 'hover:bg-gray-50 text-gray-700 cursor-pointer'
                             : 'text-gray-400 cursor-not-allowed'
@@ -415,7 +407,7 @@ const MarketTrendsChart = () => {
                       <div className="flex items-center gap-2">
                         <div className={`w-2 h-2 rounded-full ${
                           isSelected 
-                            ? isBase ? 'bg-orange-500' : 'bg-blue-500'
+                            ? 'bg-orange-500'
                             : 'bg-gray-300'
                         }`} />
                         <span>{alcaldia}</span>
@@ -423,16 +415,15 @@ const MarketTrendsChart = () => {
                         {isSelected && !canDeselect && <span className="text-xs opacity-75">(Mín. 2)</span>}
                       </div>
                       <div className="flex items-center gap-1">
-                        {isSelected && <Check className="h-3 w-3" />}
                         {canDeselect && (
                           <div
                             onClick={(e) => {
                               e.stopPropagation();
                               removeAlcaldia(alcaldia);
                             }}
-                            className="ml-1 hover:bg-red-200 rounded-full p-0.5 cursor-pointer"
+                            className="ml-1 rounded-full p-0.5 cursor-pointer"
                           >
-                            <X className="h-2 w-2" />
+                            <X className="size-3" />
                           </div>
                         )}
                       </div>
@@ -447,15 +438,13 @@ const MarketTrendsChart = () => {
 
       {/* Gráfico */}
       <div className="h-48 mb-4" data-testid="chart-container">
-        {loading ? (
-          <div className="flex items-center justify-center h-full" data-testid="loading-state">
-            <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500 mx-auto" data-testid="loading-spinner"></div>
+        {
+          loading ? (
+            <div className="flex justify-center items-center h-full" data-testid="loading-state">
               <p className="text-sm text-gray-500 mt-2" data-testid="loading-text">Cargando datos...</p>
             </div>
-          </div>
-        ) : (
-          <Bar data={chartData} options={chartOptions} data-testid="chart-bars" />
+          ) : (
+            <Bar data={chartData} options={chartOptions} data-testid="chart-bars"/>
         )}
       </div>
 
@@ -507,7 +496,7 @@ const MarketTrendsChart = () => {
                     {index === 0 ? (
                       <span className="text-gray-500">Base</span>
                     ) : (
-                      <span className={`font-medium ${diferencia > 0 ? 'text-red-600' : 'text-green-600'}`}>
+                      <span className={`font-medium ${diferencia > 0 ? 'text-green-600' : 'text-red-600' }`}>
                         {diferencia > 0 ? '+' : ''}{diferencia.toFixed(1)}%
                       </span>
                     )}

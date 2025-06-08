@@ -21,7 +21,7 @@ export function useAverageAllDepartamento() {
           setAveragePrice(response.data);
           console.log("Promedio calculado:", response.data);
         } catch (err: any) {
-          console.error("Error al obtener promedio:", err);
+          console.error("Error al obtener promedio todos departamentos:", err);
           
           if (err.response?.status === 401) {
             setError("No autorizado - verifica tu sesión");

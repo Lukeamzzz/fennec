@@ -52,17 +52,17 @@ export default function MarketTrends() {
       {/* Stats Cards */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <SimpleStatCard
-          title="Numero de Casas"
+          title="Número de Casas"
           value={(numHouses ?? 0).toString()}
           Icon={House}
         />
         <SimpleStatCard
-          title="Numero de Departamentos"
+          title="Número de Departamentos"
           value={(numApartments ?? 0).toString()}
           Icon={Building}
         />
         <SimpleStatCard
-          title="Numero de Propiedades"
+          title="Número de Propiedades"
           value={((numHouses ?? 0) + (numApartments ?? 0)).toString()}
           Icon={LandPlot}
         />
