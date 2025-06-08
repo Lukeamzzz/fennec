@@ -65,7 +65,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className="relative">
       <div className="relative h-80 overflow-hidden">
-        <img 
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
           src={mainImage} 
           alt={title} 
           className="w-full h-full object-cover transition-transform duration-300 ease-in-out"
@@ -139,7 +140,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                   }
                 }}
               >
-                <img 
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
                   src={img} 
                   alt={`Miniatura ${index + 1}`} 
                   className="w-full h-full object-cover"

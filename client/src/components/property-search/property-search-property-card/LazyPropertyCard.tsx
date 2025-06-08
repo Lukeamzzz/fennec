@@ -53,6 +53,7 @@ const LazyPropertyCard: React.FC<LazyPropertyCardProps> = ({
 
     return () => {
       if (cardRef.current) {
+        // eslint-disable-next-line react-hooks/exhaustive-deps
         observer.unobserve(cardRef.current);
       }
     };

@@ -47,6 +47,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
   const [showAllInvestments, setShowAllInvestments] = useState(false);
 
   // Process investments data for the chart
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const processInvestmentsData = () => {
     const colors = [
       "#FF7043",
@@ -163,7 +164,7 @@ const PortafolioChart: React.FC<PortafolioChartProps> = ({
         chartInstance.current.destroy();
       }
     };
-  }, [investments, isFlipped, loading]);
+  }, [investments, isFlipped, loading, processInvestmentsData]);
 
   const handleSubmit = async (formData: PropertyFormData) => {
     try {

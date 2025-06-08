@@ -53,7 +53,8 @@ function TrustedClients() {
                   className="flex-none h-24 w-48 flex items-center justify-center"
                 >
                   <div className="w-36 h-16 rounded flex items-center justify-center">
-                    <img 
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src="/images/tec-logo.png" 
                       alt={`${client.name} logo`} 
                       className="max-h-12" 

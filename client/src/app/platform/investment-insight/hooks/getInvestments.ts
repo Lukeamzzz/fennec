@@ -1,5 +1,6 @@
 import api from "@/services/api";
 import { getAuth, onAuthStateChanged, User } from "firebase/auth";
+import {AxiosError} from "axios";
 
 export interface Investment {
   monto_invertido: number;
@@ -28,21 +29,26 @@ function getCurrentUser(): Promise<User | null> {
   });
 }
 
+
 export async function getInvestments(): Promise<Investment[]> {
   try {
     const user = await getCurrentUser();
 
     if (user) {
-      // User is authenticated, make the API call
+      // Usuario autenticado, hace la petición
       const response = await api.get("/api/investment/list-investments");
       return response.data;
     } else {
-      // User is not authenticated
       console.warn("User is not authenticated. Cannot fetch investments.");
       throw new Error("User not authenticated.");
     }
-  } catch (err: any) {
-    console.error("Error al obtener inversiones:", err);
+  } catch (err) {
+    if (err && typeof err === "object" && "isAxiosError" in err) {
+      const axiosError = err as AxiosError;
+      console.error("Error al obtener inversiones:", axiosError.message);
+    } else {
+      console.error("Error desconocido al obtener inversiones:", err);
+    }
     throw new Error("No se pudo obtener las inversiones");
   }
 }

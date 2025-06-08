@@ -9,6 +9,7 @@ const Navbar = () => {
     <div className='w-full h-fit py-6 flex flex-row justify-center px-40 items-center fixed z-50 bg-white shadow-sm'>
         <div className='w-1/3'>
             <Link href="/">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="./images/Fennec-logo-trans.png" alt="Logo Fennec" className='w-40' />
             </Link>
         </div>

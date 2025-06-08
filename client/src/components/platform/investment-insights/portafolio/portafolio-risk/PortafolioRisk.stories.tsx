@@ -2,6 +2,7 @@ import React from 'react';
 import PortafolioRisk from './PortafolioRisk';
 import { Title, Primary, Controls, Stories, ArgTypes } from '@storybook/blocks';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Gráficos/PortafolioRisk',
   component: PortafolioRisk,

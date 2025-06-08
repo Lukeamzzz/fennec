@@ -5,6 +5,7 @@ import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 // Mock para DashboardPropertyCard en caso de que sea necesario
 // Esto depende de cómo esté implementado DashboardPropertyCard.js en tu proyecto
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Propiedades/PropertyList',
   component: PropertyList,
@@ -81,5 +82,4 @@ const SearchResultsPage = () => {
   tags: ['autodocs'],
 };
 
-// Historia básica
-export const Default = {};
+

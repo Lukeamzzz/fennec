@@ -2,6 +2,7 @@ import React from 'react';
 import Navbar from './Navbar';
 import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Layout/Navbar',
   component: Navbar,
@@ -82,31 +83,4 @@ const Layout = ({ children }) => {
     },
   },
   tags: ['autodocs'],
-};
-
-// Historia básica
-export const Default = {};
-
-// Historia con enfoque en los enlaces
-export const NavigationLinks = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'Destaca los enlaces de navegación principales y su distribución en la barra.',
-      },
-    },
-    viewMode: 'docs',
-  },
-};
-
-// Historia con enfoque en los botones de acción
-export const ActionButtons = {
-  parameters: {
-    docs: {
-      description: {
-        story: 'Muestra los botones de acción (Iniciar Sesión y Comenzar) y su posicionamiento en la barra.',
-      },
-    },
-    viewMode: 'docs',
-  },
 };

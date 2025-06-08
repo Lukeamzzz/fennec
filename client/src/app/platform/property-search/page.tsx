@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Bell, User } from 'lucide-react';
 import { Hourglass } from 'ldrs/react'
 import 'ldrs/react/Hourglass.css'
 import SearchFilters from '@/components/platform/investment-insights/search/search-filters/SearchFilters';

@@ -75,7 +75,8 @@ const PropertyModal: React.FC<PropertyModalProps> = ({ property, isOpen, onClose
               <div className="overflow-y-auto p-0">
                 {/* Imagen principal */}
                 <div className="relative w-full h-64 sm:h-80 md:h-96">
-                  <img 
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
                     src={property.image} 
                     alt={property.title} 
                     className="w-full h-full object-cover"

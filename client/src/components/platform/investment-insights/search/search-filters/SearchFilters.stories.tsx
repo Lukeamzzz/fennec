@@ -3,6 +3,7 @@ import React from 'react';
 import SearchFilters from './SearchFilters';
 import { Title, Primary, Controls, Stories } from '@storybook/blocks';
 
+// eslint-disable-next-line import/no-anonymous-default-export
 export default {
   title: 'Búsqueda/SearchFilters',
   component: SearchFilters,
@@ -71,37 +72,4 @@ const PropertySearchPage = () => {
   tags: ['autodocs']
 };
 
-// Historia básica
-export const Default = {};
 
-// Historia con filtros avanzados abiertos
-export const ExpandedFilters = {
-  render: () => {
-    // Para esta historia modificamos el componente para que inicie con los filtros avanzados visibles
-    const SearchFiltersExpanded = () => {
-      const SearchFiltersComponent = SearchFilters;
-      React.useEffect(() => {
-        // Esperamos a que el componente esté montado
-        setTimeout(() => {
-          const buttons = document.querySelectorAll('button');
-          buttons.forEach((btn) => {
-            if (btn.textContent?.includes('Mostrar filtros')) {
-              (btn as HTMLButtonElement).click();
-            }
-          });
-        }, 100);
-      }, []);
-    
-      return <SearchFiltersComponent />;
-    };
-    
-    return <SearchFiltersExpanded />;
-  },
-  parameters: {
-    docs: {
-      description: {
-        story: 'Muestra el componente con la sección de filtros avanzados expandida.',
-      },
-    },
-  }
-};
