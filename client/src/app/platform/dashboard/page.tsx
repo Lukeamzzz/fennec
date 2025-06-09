@@ -7,7 +7,6 @@ import CardProperties from "@/components/platform/dashboard/CardProperties";
 import CardMarketGrowth from "@/components/platform/dashboard/CardMarketGrowth";
 import PropertyEstimator from "@/components/platform/dashboard/PropertyEstimator";
 import MarketTrendsChart from "@/components/platform/dashboard/MarketTrendsChart";
-import CdmxMap from "@/components/platform/dashboard/map-component/CdmxMap";
 import {useAverageCasaPrice} from "@/app/platform/dashboard/hooks/useAverageCasaPrice";
 import {useCasaCount} from "@/app/platform/dashboard/hooks/useCasaCount";
 import {useAverageM2Price} from "@/app/platform/dashboard/hooks/useAverageM2Price";
@@ -140,24 +139,6 @@ export default function DashboardPage() {
               <div className="w-full flex justify-center">
                 <MarketTrendsChart />
               </div>
-            </div>
-          </div>
-
-          {/* Mapa de la CDMX */}
-          <div className="bg-white rounded-2xl shadow-md p-6">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
-              Mapa de la Ciudad de México
-            </h2>
-            <p className="text-sm text-gray-500 text-center mb-6">
-              Visualiza información geográfica de mercado por alcaldía
-            </p>
-            <div className="h-[600px] w-full">
-              <CdmxMap
-                initialZoom={10}
-                initialCenter={[-99.133209, 19.432608]}
-                dataEndpoint="/api/alcaldias-data"
-                className="w-full h-full"
-              />
             </div>
           </div>
         </div>
