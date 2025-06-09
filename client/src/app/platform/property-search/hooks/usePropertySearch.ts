@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import api from "@/services/api";
+import axios, {AxiosError} from "axios";
 
 interface SearchFilters {
   location: string;
@@ -272,75 +274,48 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
   const performSearch = async (filters: SearchFilters, page: number = 1) => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
-      console.log('Enviando filtros a la API:', filters);
-      console.log('Página solicitada:', page);
-      
       const apiFilters = mapFiltersToApi(filters, page);
-      console.log('Filtros mapeados para API:', apiFilters);
-      
+      console.log("Filtros mapeados:", apiFilters);
+
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
-      
-      const response = await fetch('http://localhost:8080/propiedades/filtrar', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(apiFilters),
-        signal: controller.signal
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const response = await api.post("/propiedades/filtrar", apiFilters, {
+        signal: controller.signal,
       });
 
       clearTimeout(timeoutId);
+      const data = response.data;
 
-      if (!response.ok) {
-        throw new Error(`Error ${response.status}: ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      console.log('Respuesta del API:', data);
-
-      // Mapear los datos recibidos usando la estructura real del API
       const mappedProperties = Array.isArray(data.propiedades)
-        ? data.propiedades.map((item: ApiProperty, index: number) =>
+          ? data.propiedades.map((item: ApiProperty, index: number) =>
               mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
           )
-
           : [];
-
-      console.log('Propiedades mapeadas:', mappedProperties);
 
       setSearchResults(mappedProperties);
       setCurrentPage(data.paginaActual || page);
-      
-      // Usar los datos de paginación del servidor
       setTotalResults(data.totalResultados || mappedProperties.length);
-      setTotalPages(data.totalPaginas || Math.ceil((data.totalResultados || mappedProperties.length) / itemsPerPage));
-      
+      setTotalPages(
+          data.totalPaginas ||
+          Math.ceil((data.totalResultados || mappedProperties.length) / itemsPerPage)
+      );
       setHasSearched(true);
     } catch (err) {
-      console.error('Error en la búsqueda:', err);
-      
-      // Determinar el tipo de error
-      let errorMessage = 'Error desconocido';
-      if (err instanceof Error) {
-        if (err.name === 'AbortError') {
-          errorMessage = 'Tiempo de espera agotado. El servidor no responde.';
-        } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-          errorMessage = 'No se puede conectar al servidor. Usando datos de ejemplo.';
-        } else {
-          errorMessage = err.message;
-        }
+      if (axios.isCancel(err)) {
+        setError("La petición fue cancelada.");
+      } else if (err instanceof AxiosError) {
+        setError(`Error ${err instanceof AxiosError}: ${err instanceof AxiosError}`);
+      } else {
+        setError("Error desconocido en la búsqueda.");
       }
-      
-      setError(errorMessage);
-      
-      // Generar datos de ejemplo como fallback
-      const mockProperties = generateMockProperties(filters.location || 'Ciudad de México', page, itemsPerPage);
+
+      const mockProperties = generateMockProperties(filters.location || "Ciudad de México", page, itemsPerPage);
       setSearchResults(mockProperties);
       setCurrentPage(page);
-      setTotalResults(60); // Simular 60 propiedades totales (5 páginas)
+      setTotalResults(60);
       setTotalPages(Math.ceil(60 / itemsPerPage));
       setHasSearched(true);
     } finally {
@@ -348,88 +323,47 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
     }
   };
 
+
   const performSearchByArea = async (alcaldia: string, page: number = 1) => {
     setIsLoading(true);
     setError(null);
-    
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+    const casasRequestBody = {
+      tipoPropiedad: 'casa',
+      alcaldia,
+      pagina: page,
+      limite: Math.ceil(itemsPerPage / 2)
+    };
+
+    const departamentosRequestBody = {
+      tipoPropiedad: 'departamento',
+      alcaldia,
+      pagina: page,
+      limite: Math.ceil(itemsPerPage / 2)
+    };
+
     try {
-      console.log('Buscando por alcaldía:', alcaldia);
-      console.log('Página solicitada:', page);
-      
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 segundos timeout
-      
-      // Buscar casas
-      const casasRequestBody = { 
-        tipoPropiedad: 'casa',
-        alcaldia: alcaldia,
-        pagina: page,
-        limite: Math.ceil(itemsPerPage / 2) // Dividir el límite entre casas y departamentos
-      };
-      
-      // Buscar departamentos
-      const departamentosRequestBody = { 
-        tipoPropiedad: 'departamento',
-        alcaldia: alcaldia,
-        pagina: page,
-        limite: Math.ceil(itemsPerPage / 2)
-      };
-      
-      console.log('Enviando búsqueda de casas:', casasRequestBody);
-      console.log('Enviando búsqueda de departamentos:', departamentosRequestBody);
-      
-      // Hacer ambas búsquedas en paralelo
       const [casasResponse, departamentosResponse] = await Promise.all([
-        fetch('http://localhost:8080/propiedades/filtrar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(casasRequestBody),
-          signal: controller.signal
-        }),
-        fetch('http://localhost:8080/propiedades/filtrar', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(departamentosRequestBody),
-          signal: controller.signal
-        })
+        api.post("/propiedades/filtrar", casasRequestBody, { signal: controller.signal }),
+        api.post("/propiedades/filtrar", departamentosRequestBody, { signal: controller.signal })
       ]);
 
       clearTimeout(timeoutId);
 
-      if (!casasResponse.ok || !departamentosResponse.ok) {
-        throw new Error(`Error en la búsqueda: ${casasResponse.status} / ${departamentosResponse.status}`);
-      }
+      const casasPropiedades = casasResponse.data.propiedades || [];
+      const departamentosPropiedades = departamentosResponse.data.propiedades || [];
 
-      const [casasData, departamentosData] = await Promise.all([
-        casasResponse.json(),
-        departamentosResponse.json()
-      ]);
-      
-      console.log('Respuesta de casas:', casasData);
-      console.log('Respuesta de departamentos:', departamentosData);
+      const todasLasPropiedades = [...casasPropiedades, ...departamentosPropiedades].slice(0, itemsPerPage);
 
-      // Combinar las propiedades de ambas búsquedas
-      const casasPropiedades = Array.isArray(casasData.propiedades) ? casasData.propiedades : [];
-      const departamentosPropiedades = Array.isArray(departamentosData.propiedades) ? departamentosData.propiedades : [];
-      
-      const todasLasPropiedades = [...casasPropiedades, ...departamentosPropiedades];
-      
-      // Limitar al número de elementos por página
-      const propiedadesLimitadas = todasLasPropiedades.slice(0, itemsPerPage);
-
-      const mappedProperties = propiedadesLimitadas.map((item: ApiProperty, index: number) =>
+      const mappedProperties = todasLasPropiedades.map((item: ApiProperty, index: number) =>
           mapApiDataToProperty(item, (page - 1) * itemsPerPage + index)
       );
 
-      console.log('Propiedades combinadas y mapeadas:', mappedProperties);
-
-      // Calcular totales combinados
-      const totalCasas = casasData.totalResultados || 0;
-      const totalDepartamentos = departamentosData.totalResultados || 0;
+      const totalCasas = casasResponse.data.totalResultados || 0;
+      const totalDepartamentos = departamentosResponse.data.totalResultados || 0;
       const totalCombinado = totalCasas + totalDepartamentos;
 
       setSearchResults(mappedProperties);
@@ -437,28 +371,29 @@ export const usePropertySearch = (): UsePropertySearchReturn => {
       setTotalResults(totalCombinado);
       setTotalPages(Math.ceil(totalCombinado / itemsPerPage));
       setHasSearched(true);
+
     } catch (err) {
-      console.error('Error en la búsqueda por alcaldía:', err);
-      
-      // Determinar el tipo de error
       let errorMessage = 'Error desconocido';
-      if (err instanceof Error) {
-        if (err.name === 'AbortError') {
-          errorMessage = 'Tiempo de espera agotado. El servidor no responde.';
-        } else if (err.message.includes('Failed to fetch') || err.message.includes('NetworkError')) {
-          errorMessage = 'No se puede conectar al servidor. Mostrando propiedades de ejemplo.';
-        } else {
-          errorMessage = err.message;
+
+      if (controller.signal.aborted) {
+        errorMessage = 'Tiempo de espera agotado. El servidor no responde.';
+      } else if (err instanceof AxiosError) {
+        if (err.code === 'ERR_NETWORK') {
+          errorMessage = 'No se puede conectar al servidor.';
+        } else if (err.response) {
+          errorMessage = `Error ${err.response.status}: ${err.response.statusText}`;
         }
+      } else if (err instanceof Error) {
+        errorMessage = err.message;
       }
-      
+
       setError(errorMessage);
-      
-      // Generar datos de ejemplo como fallback
+
+      // fallback mock
       const mockProperties = generateMockProperties(alcaldia, page, itemsPerPage);
       setSearchResults(mockProperties);
       setCurrentPage(page);
-      setTotalResults(48); // Simular 48 propiedades totales (4 páginas)
+      setTotalResults(48);
       setTotalPages(Math.ceil(48 / itemsPerPage));
       setHasSearched(true);
     } finally {
