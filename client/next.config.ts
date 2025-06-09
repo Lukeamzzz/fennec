@@ -10,7 +10,7 @@ const ContentSecurityPolicy = `
   form-action 'self';
   img-src 'self';
   font-src 'self';
-  connect-src 'self';
+  connect-src 'self' https://identitytoolkit.googleapis.com;
   worker-src 'none';
 `.replace(/\s{2,}/g, " ").trim();
 
