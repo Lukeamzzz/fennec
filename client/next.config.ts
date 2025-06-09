@@ -1,25 +1,27 @@
 import type { NextConfig } from "next";
 
+const ContentSecurityPolicy = `
+  default-src 'self';
+  script-src 'self';
+  style-src 'self';
+  object-src 'none';
+  base-uri 'self';
+  frame-ancestors 'none';
+  form-action 'self';
+  img-src 'self';
+  font-src 'self';
+  connect-src 'self';
+  worker-src 'none';
+`.replace(/\s{2,}/g, " ").trim();
+
 const securityHeaders = [
     {
         key: "Content-Security-Policy",
-        value: `
-      default-src 'self';
-      script-src 'self' 'unsafe-inline' blob: https://api.mapbox.com https://events.mapbox.com;
-      style-src 'self' 'unsafe-inline' https://api.mapbox.com https://fonts.googleapis.com;
-      object-src 'none';
-      base-uri 'self';
-      frame-ancestors 'none';
-      form-action 'self';
-      img-src 'self' data: blob: https://api.mapbox.com;
-      font-src 'self' https://fonts.gstatic.com;
-      connect-src 'self' https://fennec-back-deploy-447938427814.northamerica-south1.run.app https://identitytoolkit.googleapis.com https://api.mapbox.com https://events.mapbox.com https://fennec-prediccion.onrender.com https://securetoken.googleapis.com;
-      worker-src 'self' blob:;
-    `.replace(/\s{2,}/g, ' ').trim(),
+        value: ContentSecurityPolicy,
     },
     {
         key: "X-Frame-Options",
-        value: "SAMEORIGIN",
+        value: "DENY",
     },
     {
         key: "X-Content-Type-Options",
@@ -27,11 +29,27 @@ const securityHeaders = [
     },
     {
         key: "Referrer-Policy",
-        value: "no-referrer",
+        value: "strict-origin-when-cross-origin",
     },
     {
         key: "Strict-Transport-Security",
         value: "max-age=31536000; includeSubDomains; preload",
+    },
+    {
+        key: "Permissions-Policy",
+        value: "geolocation=(), camera=(), microphone=(), interest-cohort=()",
+    },
+    {
+        key: "Cross-Origin-Opener-Policy",
+        value: "same-origin",
+    },
+    {
+        key: "Cross-Origin-Embedder-Policy",
+        value: "require-corp",
+    },
+    {
+        key: "Cross-Origin-Resource-Policy",
+        value: "same-origin",
     },
 ];
 
@@ -46,6 +64,5 @@ const nextConfig: NextConfig = {
         ];
     },
 };
-
 
 export default nextConfig;
