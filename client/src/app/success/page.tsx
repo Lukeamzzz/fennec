@@ -114,13 +114,14 @@ function SuccessContent() {
                     <>
                         <h1 className="text-4xl font-bold text-green-600 mb-4">Pago exitoso</h1>
                         <p className="text-gray-700 text-lg mb-6">
-                            Tu transacción fue procesada correctamente.
+                            Tu transacción fue procesada correctamente. <br />
+                            Regresa a la página principal e inicia sesión para acceder a la plataforma.
                         </p>
                         <Link
-                            href="/platform/dashboard"
-                            className="bg-green-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-green-700 transition"
+                            href="/"
+                            className="bg-green-600 text-white px-6 py-3 rounded-2xl shadow hover:bg-green-700 transition cursor-pointer"
                         >
-                            Ir al dashboard
+                            Ir a Home
                         </Link>
                     </>
                 )}
