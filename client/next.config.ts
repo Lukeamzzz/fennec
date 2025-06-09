@@ -13,7 +13,7 @@ const securityHeaders = [
       form-action 'self';
       img-src 'self' data: blob: https://api.mapbox.com;
       font-src 'self' https://fonts.gstatic.com;
-      connect-src 'self' https://fennec-back-447938427814.northamerica-south1.run.app:8080 https://identitytoolkit.googleapis.com https://api.mapbox.com https://events.mapbox.com https://fennec-prediccion.onrender.com https://securetoken.googleapis.com;
+      connect-src 'self' https://fennec-back-deploy-447938427814.northamerica-south1.run.app https://identitytoolkit.googleapis.com https://api.mapbox.com https://events.mapbox.com https://fennec-prediccion.onrender.com https://securetoken.googleapis.com;
       worker-src 'self' blob:;
     `.replace(/\s{2,}/g, ' ').trim(),
     },
