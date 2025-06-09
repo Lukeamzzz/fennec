@@ -40,28 +40,38 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     // User exists, check role-based access
     if (user) {
       // Active user with unpaid role trying to access platform
-      if (pathname.startsWith("/platform") && role !== "professional") {
+      if (pathname.startsWith("/platform") &&
+          role !== "professional" &&
+          role !== "starter" &&
+          role !== "empresarial") {
+
         console.log("Unpaid user trying to access platform, redirecting to plans");
         handleRedirect("/plans");
         return;
       }
 
       // Active user with unpaid role trying to access login/signup (should go to plans instead)
-      if ((pathname === "/login" || pathname === "/signup") && role !== "professional") {
+      if ((pathname === "/login" || pathname === "/signup") &&  role !== "professional" &&
+          role !== "starter" &&
+          role !== "empresarial") {
         console.log("Unpaid user on auth pages, redirecting to plans");
         handleRedirect("/plans");
         return;
       }
 
       // Paid user trying to access login/signup (should go to dashboard)
-      if ((pathname === "/login" || pathname === "/signup") && role === "professional") {
+      if ((pathname === "/login" || pathname === "/signup") &&  role !== "professional" &&
+          role !== "starter" &&
+          role !== "empresarial") {
         console.log("Paid user on auth pages, redirecting to dashboard");
         handleRedirect("/platform/dashboard");
         return;
       }
 
       // Paid user on plans page (should go to dashboard)  
-      if (pathname === "/plans" && role === "professional") {
+      if (pathname === "/plans" && role !== "professional" &&
+          role !== "starter" &&
+          role !== "empresarial") {
         console.log("Paid user on plans page, redirecting to dashboard");
         handleRedirect("/platform/dashboard");
         return;
