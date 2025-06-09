@@ -13,7 +13,8 @@ export default function PlansPage() {
         "Informes de tendencias del mercado",
         "Visualización de datos limitada",
         "Soporte por correo electrónico"
-      ]
+      ],
+      type: "starter"
     },
     {
       name: "Profesional",
@@ -25,7 +26,8 @@ export default function PlansPage() {
         "Soporte prioritario por correo y chat",
         "Generación de informes personalizados"
       ],
-      isPopular: true
+      isPopular: true,
+      type: "professional"
     },
     {
       name: "Empresarial",
@@ -37,7 +39,8 @@ export default function PlansPage() {
         "Visualización de datos personalizada",
         "Soporte dedicado 24/7",
         "Soporte para integración personalizada"
-      ]
+      ],
+      type: "empresarial"
     }
   ];
 
@@ -64,6 +67,7 @@ export default function PlansPage() {
               price={plan.price}
               features={plan.features}
               isPopular={plan.isPopular}
+              type={plan.type}
             />
           ))}
         </div>

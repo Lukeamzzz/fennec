@@ -27,6 +27,8 @@ interface SubscriptionPlan {
      * Optional: A background color class (e.g., Tailwind CSS class) to customize the card's appearance.
      */
     bgColor?: string;
+
+    type: string ;
 }
 
 /**
@@ -34,6 +36,7 @@ interface SubscriptionPlan {
  */
 const CardSubscription: React.FC<SubscriptionPlan> = ({
     name,
+    type,
     price,
     features,
     isPopular = false, // Default value if isPopular prop is not provided
@@ -50,6 +53,7 @@ const CardSubscription: React.FC<SubscriptionPlan> = ({
             const response = await api.post("/payments/checkout-subscription", {
                 customerEmail: user.email,
                 uid: user.uid,
+                type: type
             });
             if (response.status === 200 && response.data.checkoutUrl) {
                 window.location.href = response.data.checkoutUrl;
