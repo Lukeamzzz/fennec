@@ -2,8 +2,8 @@ import type { NextConfig } from "next";
 
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self';
-  style-src 'self';
+  script-src 'self' 'unsafe-inline';
+  style-src 'self' 'unsafe-inline';
   object-src 'none';
   base-uri 'self';
   frame-ancestors 'none';
