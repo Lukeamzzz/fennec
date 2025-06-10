@@ -191,9 +191,9 @@ function SignupPage() {
               <div className="flex-grow border-t border-gray-300"></div>
             </div>
 
-            <div>
+            {/* <div>
               <GoogleAuth mode="signup"/>
-            </div>
+            </div> */}
 
             <div className="text-center mt-4">
               <p className="text-gray-500">

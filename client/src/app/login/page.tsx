@@ -116,11 +116,11 @@ function LoginPage() {
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
-          <div>
+          {/* <div>
             <GoogleAuth mode="signup"/>
-          </div>
+          </div> */}
 
-          {/* Sign Up Link */}
+          Sign Up Link
           <div className="text-center mt-4">
             <p className="text-gray-500">
               ¿Aún no tienes una cuenta?{" "}

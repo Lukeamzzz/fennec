@@ -53,14 +53,15 @@ export default function Reports() {
           anotacionesExtra?: string;
         };
         const mappedReports: ValuationReport[] = (data as ApiReport[]).map(
-          (item) => ({
-            id: item.idUsuario || "",
+          (item, index) => ({
+            // Crear un ID único combinando datos del reporte + índice
+            id: `${item.idUsuario}-${item.direccion}-${item.codigoPostal}-${index}`,
             direccion: item.direccion || "",
             colonia: item.colonia,
             alcaldia: item.alcaldia,
             codigoPostal: item.codigoPostal,
             tipoPropiedad: item.tipoPropiedad,
-            valorEstimado: item.valorEstimado, // <- Removido Math.round()
+            valorEstimado: item.valorEstimado,
             fechaCreacion: item.fechaCreacion || item.fechaActualizacion || "",
             habitaciones: item.recamaras,
             bathrooms: item.banos,
@@ -88,7 +89,7 @@ export default function Reports() {
       currency: "MXN",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(Math.round(amount)); // <- Redondeo movido aquí
+    }).format(Math.round(amount));
   };
 
   const formatDate = (dateString: string) => {
@@ -103,12 +104,10 @@ export default function Reports() {
     }).format(date);
   };
 
-  const handleViewDetails = (reportId: string) => {
-    const report = reports.find((r) => r.id === reportId);
-    if (report) {
-      setSelectedReport(report);
-      setShowModal(true);
-    }
+  // Función corregida para manejar la selección del reporte
+  const handleViewDetails = (report: ValuationReport) => {
+    setSelectedReport(report);
+    setShowModal(true);
   };
 
   const closeModal = () => {
@@ -379,7 +378,7 @@ export default function Reports() {
                   {/* Action Button */}
                   <div className="mt-6">
                     <button
-                      onClick={() => handleViewDetails(report.id)}
+                      onClick={() => handleViewDetails(report)}
                       className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2"
                     >
                       Ver Detalles
