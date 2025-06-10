@@ -120,7 +120,7 @@ function LoginPage() {
             <GoogleAuth mode="signup"/>
           </div> */}
 
-          Sign Up Link
+          {/* Sign Up Link */}
           <div className="text-center mt-4">
             <p className="text-gray-500">
               ¿Aún no tienes una cuenta?{" "}
