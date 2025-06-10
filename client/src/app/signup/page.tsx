@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/services/api";
 import { showCustomToast } from "@/lib/showCustomToast";
-import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
+// import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth } from "@/lib/firebase";
 

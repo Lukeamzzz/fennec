@@ -1,5 +1,5 @@
 "use client";
-import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
+// import GoogleAuth from "@/components/auth/GoogleAuth/GoogleAuth";
 import Link from "next/link";
 import React, { useState } from "react";
 import { auth } from "@/lib/firebase";
