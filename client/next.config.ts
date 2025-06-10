@@ -10,7 +10,7 @@ const ContentSecurityPolicy = `
   form-action 'self';
   img-src 'self';
   font-src 'self';
-  connect-src 'self' https://fennec-back-deploy-447938427814.northamerica-south1.run.app https://identitytoolkit.googleapis.com; https://fennec-prediccion.onrender.com
+  connect-src 'self' https://fennec-back-deploy-447938427814.northamerica-south1.run.app https://identitytoolkit.googleapis.com; https://fennec-prediccion.onrender.com;
   worker-src 'none';
 `.replace(/\s{2,}/g, " ").trim();
 
