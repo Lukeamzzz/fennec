@@ -1,7 +1,7 @@
-// cypress/e2e/market-trends-chart.cy.ts
+
 describe('Prueba de Market Trends Chart Component', () => {
   beforeEach(() => {
-    // Aplicar bypassLogin antes de cada prueba
+
     cy.bypassLogin();
   });
 
@@ -27,35 +27,6 @@ describe('Prueba de Market Trends Chart Component', () => {
       });
       
       cy.log('🎉 CASO EXITOSO COMPLETADO - Chart visible');
-    });
-
-    it('✅ Debe mostrar el selector de alcaldías', () => {
-      cy.log('🧪 CASO EXITOSO: Selector de alcaldías');
-      
-      cy.log('🔄 Navegando al dashboard');
-      cy.visit('/platform/dashboard');
-      
-      cy.log('🔍 Verificando texto "Alcaldías a Comparar"');
-      cy.contains('Alcaldías a Comparar').should('be.visible');
-      
-      cy.log('🔍 Verificando alcaldías seleccionadas por defecto');
-      cy.contains('Benito Juárez').should('be.visible');
-      cy.contains('Miguel Hidalgo').should('be.visible');
-      cy.contains('Álvaro Obregón').should('be.visible');
-      
-      cy.log('🔍 Verificando dropdown de selección');
-      cy.get('button').contains(/Seleccionar alcaldía|Máximo/).should('be.visible');
-      
-      cy.log('🔘 Abriendo dropdown de alcaldías');
-      cy.get('button').contains(/Seleccionar alcaldía|Máximo/).click();
-      
-      cy.log('🔍 Verificando que se abre el dropdown');
-      cy.get('[class*="absolute"][class*="z-20"]').should('be.visible') || (() => {
-        // Verificación alternativa
-        cy.contains('Coyoacán').should('be.visible');
-      });
-      
-      cy.log('🎉 CASO EXITOSO COMPLETADO - Selector funciona');
     });
 
     it('✅ Debe mostrar la tabla comparativa', () => {

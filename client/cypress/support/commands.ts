@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
-// cypress/support/commands.ts
 
-// Solución SIMPLE para bypasear login
+// Bypass para el login
 Cypress.Commands.add('bypassLogin', () => {
   cy.visit('/platform/dashboard', {
     onBeforeLoad: (win: Cypress.AUTWindow) => {

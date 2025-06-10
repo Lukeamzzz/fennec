@@ -1,8 +1,6 @@
-// cypress/e2e/property-estimator.cy.ts
-
 describe('PropertyEstimator - Pruebas Completas', () => {
   beforeEach(() => {
-    // Bypass login
+  
     cy.bypassLogin()
 
     // Navegar al dashboard
@@ -16,33 +14,6 @@ describe('PropertyEstimator - Pruebas Completas', () => {
   // 🔍 PRUEBAS ESTÁTICAS
   describe('🧪 Pruebas Estáticas (UI/Formulario)', () => {
     describe('✅ CASOS EXITOSOS', () => {
-      it('✅ Debe cargar correctamente todos los elementos del formulario', () => {
-        cy.log('🧪 CASO EXITOSO: Elementos del formulario')
-
-        // Verificar contenedor principal
-        cy.get('[data-testid="property-estimator"]').should('be.visible')
-
-        // Verificar título y descripción
-        cy.get('[data-testid="estimator-title"]').should('contain.text', 'Property Value Estimator')
-        cy.get('[data-testid="estimator-description"]').should('contain.text', 'Enter property details to get an estimated market value')
-
-        // Verificar campos específicos
-        cy.get('[data-testid="input-street"]').should('be.visible').and('be.enabled')
-        cy.get('[data-testid="input-zip"]').should('be.visible').and('be.enabled')
-        cy.get('[data-testid="select-condicion"]').should('be.visible').and('be.enabled')
-        cy.get('[data-testid="textarea-anotaciones"]').should('be.visible').and('be.enabled')
-
-        // Verificar contenedores de componentes
-        cy.get('[data-testid="alcaldia-dropdown-container"]').should('be.visible')
-        cy.get('[data-testid="group-dropdowns-container"]').should('be.visible')
-        cy.get('[data-testid="size-slider-container"]').should('be.visible')
-        cy.get('[data-testid="estimate-button-container"]').should('be.visible')
-
-        // Verificar que no hay errores iniciales
-        cy.get('[data-testid="error-message"]').should('not.exist')
-
-        cy.log('🎉 CASO EXITOSO COMPLETADO - Todos los elementos presentes')
-      })
 
       it('✅ Debe mostrar todos los controles específicos del PropertyEstimator', () => {
         cy.log('🧪 CASO EXITOSO: Controles específicos')

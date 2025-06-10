@@ -1,7 +1,6 @@
-// cypress/e2e/property-search.cy.ts
+
 describe('Prueba de Property Search Page', () => {
   beforeEach(() => {
-    // Aplicar bypassLogin antes de cada prueba
     cy.bypassLogin();
   });
 

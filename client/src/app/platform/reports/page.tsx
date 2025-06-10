@@ -60,7 +60,7 @@ export default function Reports() {
             alcaldia: item.alcaldia,
             codigoPostal: item.codigoPostal,
             tipoPropiedad: item.tipoPropiedad,
-            valorEstimado: Math.round(item.valorEstimado),
+            valorEstimado: item.valorEstimado, // <- Removido Math.round()
             fechaCreacion: item.fechaCreacion || item.fechaActualizacion || "",
             habitaciones: item.recamaras,
             bathrooms: item.banos,
@@ -81,13 +81,14 @@ export default function Reports() {
     fetchReports();
   }, []);
 
+  // Función actualizada para manejar el redondeo consistentemente
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("es-MX", {
       style: "currency",
       currency: "MXN",
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
-    }).format(amount);
+    }).format(Math.round(amount)); // <- Redondeo movido aquí
   };
 
   const formatDate = (dateString: string) => {
@@ -129,6 +130,7 @@ export default function Reports() {
       alert("Hubo un error al enviar el correo.");
     }
   };
+
   if (loading) {
     return (
         <div className="min-h-screen flex items-center justify-center">
@@ -136,7 +138,6 @@ export default function Reports() {
         </div>
     );
   }
-
 
   if (error) {
     return (
@@ -153,8 +154,8 @@ export default function Reports() {
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
+        <div className="mb-8" data-test-id="page-header">
+          <h1 className="text-3xl font-bold text-gray-900" data-test-id="page-title">
             Informes de Valuación
           </h1>
           <p className="mt-2 text-gray-600">
@@ -583,23 +584,6 @@ export default function Reports() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5, duration: 0.3 }}
                 >
-                  <h3 className="text-lg font-medium text-gray-900 mb-3">
-                    Análisis de Valuación
-                  </h3>
-                  <motion.div
-                    className="bg-blue-50 border border-blue-200 rounded-lg p-4"
-                    whileHover={{
-                      backgroundColor: "#dbeafe",
-                      boxShadow:
-                        "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-                    }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <p className="text-gray-800 leading-relaxed whitespace-pre-line">
-                      {selectedReport.anotaciones_valuacion ||
-                        "No hay anotaciones de valuación disponibles para este reporte."}
-                    </p>
-                  </motion.div>
                 </motion.div>
 
                 {/* Botones de acción */}

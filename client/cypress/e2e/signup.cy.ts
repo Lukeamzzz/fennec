@@ -1,7 +1,5 @@
-// cypress/e2e/signup.cy.ts
 describe('Prueba de Formulario de Registro', () => {
   beforeEach(() => {
-    // Visitar la página de signup antes de cada prueba
     cy.visit('/signup');
   });
 
